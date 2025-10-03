@@ -37,7 +37,7 @@
 
 	nrsr() {
 	  nrs 
-	  if [$? -eq 0]; then
+	  if [ $? -eq 0 ]; then
 	    echo "Rebuild succeeded. Rebooting..."
 	    reboot
 	  else
