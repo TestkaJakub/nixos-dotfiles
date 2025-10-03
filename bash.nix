@@ -14,7 +14,7 @@
 	  return 1
 	fi
 
-	local sketch="${1%/}"
+	local sketch="$\{1%/}"
 
 	echo "Scanning for connected boards..."
 	local boards
