@@ -30,7 +30,9 @@
 	  (git diff --cached --quiet || git commit -m "update $(date '+%Y-%m-%d %H:%M')") && \
 	  git push && \
 	  sudo nixos-rebuild switch --flake ~/nixos-dotfiles#nixos
+	  status = $?
 	  cd "$OLDPWD"
+	  return $status
 	}
 
 	nrsr() {
