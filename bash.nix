@@ -9,7 +9,7 @@
 
     initExtra = ''
       nrs() {
-        OLDPDW=$(pdw)
+        OLDPDW=$(pwd)
 	cd ~/nixos-dotfiles || return 1
 	git add . || return 1
 	if ! git diff --cached --quiet; then
