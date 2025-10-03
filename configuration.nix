@@ -80,7 +80,7 @@
 
   environment.variables = {
     PF_INFO = "ascii title os host kernel uptime pkgs memory";
-    PF_SOURCE = ""
+    PF_SOURCE = "";
   };
 
   fonts.packages = with pkgs; [
