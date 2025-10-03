@@ -18,15 +18,6 @@
     ./bash.nix
   ];
 
-  programs.pfetch = {
-    serviceConfig = {
-      Environment = [
-        "PF_COLOR=1"
-	"PF_ASCII=openbsd"
-      ];
-    };
-  };
-
   programs.alacritty = {
       enable = true;
       settings = {
