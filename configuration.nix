@@ -55,8 +55,6 @@
       backend = "glx";
       fade = true;
     };
-
-    udev.packages = [ pkgs.arduino-core ];
   };
 
   users.users.jakub = {
