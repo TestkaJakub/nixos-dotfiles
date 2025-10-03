@@ -79,8 +79,8 @@
   ];
 
   environment.variables = {
-    PF_COLOR = "1";
-    PF_ASCII = "openbsd";
+    PF_INFO = "ascii title os host kernel uptime pkgs memory";
+    PF_SOURCE = ""
   };
 
   fonts.packages = with pkgs; [
