@@ -8,6 +8,47 @@
     };
 
     initExtra = ''
+      ard() {
+	if [ -z "$1" ]; then
+	  echo "Usage: ard <SketchDir>"
+	  return 1
+	fi
+
+	local sketch="$1"
+
+	echo "Scanning for connected boards..."
+	local boards
+	boards=$(arduino-cli board list | awk 'NR>1 {print NR-1". "$1" "$4}')
+
+	if [ -z "$boards" ]; then
+	  echo "No boards detected."
+	  return 1
+	fi
+
+	echo "Available boards:"
+	echo "$boards"
+
+	echo -n "Select board number to upload to: "
+	read choice
+
+	local line
+	line=$(arduino-cli board list | awk "NR==$((choice+1))")
+	local port fqbn
+	port=$(echo "$line" | awk '{print $1}')
+	fqbn=$(echo "$line" | awk '{print $4}')
+
+	if [ -z "$port" ] || [ -z "$fqbn" ]; then
+	  echo "Invalid board selection."
+	  return 1
+	fi
+
+	echo "Compiling $sketch for $fqbn..."
+	arduino-cli compile --fqbn "$fqbn" "$sketch" || return 1
+
+	echo "Uploading $sketch to $port ($fqbn)..."
+	arduino-cli upload -p "$port" --fqbn "$fqbn" "sketch"
+      }
+    
       nrs() {
         OLDPDW=$(pwd)
 	cd ~/nixos-dotfiles || return 1
