@@ -9,6 +9,7 @@
       btop
       git
       pfetch
+      arduino-ide
     ];
   };
   
