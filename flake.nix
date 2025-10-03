@@ -12,7 +12,7 @@
       system = "x86_64-linux";
     in {
       nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-        inherit system
+        inherit system;
         modules = [
           ./configuration.nix
           home-manager.nixosModules.home-manager
