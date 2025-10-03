@@ -18,7 +18,7 @@
 
 	echo "Scanning for connected boards..."
 	local boards
-	boards=$(arduino-cli board list | awk 'NR>1 && NF>=2 {print NR-1". "$1" "$(NF-1)}')
+	boards=$(arduino-cli board list | awk 'NR>1 && $(NF-1)!="" {print $0}')
 
 	if [ -z "$boards" ]; then
 	  echo "No boards detected."
@@ -26,12 +26,12 @@
 	fi
 
 	echo "Available boards:"
-	echo "$boards"
+	echo "$boards" | awk '{printf "%d. %s %s\n", NR, $1, $(NF-1)}'
 
 	local count
 	count=$(echo "$boards" | wc -l)
 
-	local choice index index port fqbn
+	local choice index port fqbn
 
 	if [ "$count" -eq 1 ]; then
 	  echo "Only one board, auto-selecting it."
@@ -41,12 +41,12 @@
 	  read choice
 	fi
 
-	line=$(arduino-cli board list | awk "NR==$((choice+1)) && NF>=2")
+	line=$(arduino-cli board list | awk "NR==$choice)
 	prot=$(echo "$line" | awk '{print $1}')
 	fqbn=$(echo "$line" | awk '{print $(NF-1)}')
 
-	if [ -z "$fqbn" ] || [ "$fqbn" = "null" ]; then
-	  echo "No valid FQBN found for selected board."
+	if [ -z "$port" ] || [ -z "fqbn" ]; then
+	  echo "Couldn't determine port or FQBN"
 	  return 1
 	fi
 
