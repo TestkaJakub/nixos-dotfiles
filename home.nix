@@ -1,5 +1,4 @@
 { config, pkgs, ... }:
-errortest
 {
   home = {
     username = "jakub";
