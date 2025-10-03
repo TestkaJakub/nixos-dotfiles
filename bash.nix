@@ -14,7 +14,7 @@
 	  return 1
 	fi
 
-	local sketch="$\{1%/}"
+	local sketch=$(echo "$1" | sed 's:/*$::')
 
 	echo "Scanning for connected boards..."
 	local boards
