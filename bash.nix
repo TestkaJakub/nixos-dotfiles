@@ -41,7 +41,7 @@
 	  read choice
 	fi
 
-	line=$(arduino-cli board list | awk "NR==$choice)
+	line=$(arduino-cli board list | awk "NR==$choice")
 	prot=$(echo "$line" | awk '{print $1}')
 	fqbn=$(echo "$line" | awk '{print $(NF-1)}')
 
