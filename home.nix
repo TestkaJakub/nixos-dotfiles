@@ -26,15 +26,13 @@
         };
       };
     };
-
-    neovim = {
-      enable = true;
-      defaultEditor = true;
-      plugins = with pkgs.vimPlugins; [
-	gruvbox-material
-	nerdtree
-      ];
-    };
+  programs.neovim = {
+    enable = true;
+    defaultEditor = true;
+    plugins = with pkgs.vimPlugins; [
+      gruvbox-material
+      nerdtree
+    ];
   };
 
   home.file.".config/bat/config".text = ''
