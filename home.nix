@@ -9,7 +9,8 @@
       btop
       git
       pfetch
-      arduino-ide
+      arduino-core
+      arduino-cli
     ];
   };
   
