@@ -18,7 +18,7 @@
 
 	echo "Scanning for connected boards..."
 	local boards
-	boards=$(arduino-cli board list | awk 'NR>1 && $NF != "" {print NR-1". "$1" "$NF}')
+	boards=$(arduino-cli board list | awk 'NR>1 && $(NF-1) != "" {print NR-1". "$1" "$(NF-1)}')
 
 	if [ -z "$boards" ]; then
 	  echo "No boards detected."
@@ -43,7 +43,7 @@
 
 	line=$(arduino-cli board list | awk "NR==$((choice+1))")
 	prot=$(echo "$line" | awk '{print $1}')
-	fqbn=$(echo "$line" | awk '{print $NF}')
+	fqbn=$(echo "$line" | awk '{print $(NF-1)}')
 
 	if [ -z "$fqbn" ] || [ "$fqbn" = "null" ]; then
 	  echo "No valid FQBN found for selected board."
