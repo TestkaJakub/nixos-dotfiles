@@ -34,8 +34,14 @@
 	}
 
 	nrsr() {
-	  nrs && reboot
-	}
+	  nrs 
+	  if [$? -eq 0]; then
+	    echo "Rebuild succeeded. Rebooting..."
+	    reboot
+	  else
+	   echo "Rebuild failed, NOT rebooting"
+	  fi
+        }
 
         PS1='\[\e[38;5;206m\]\u\[\e[38;5;63m\]@\[\e[38;5;206m\]\h\[\e[0m\] \D{%d-%m-%Y %H:%m:%S} \w \[\e[38;5;63m\]>\[\e[0m\]'
       '';
