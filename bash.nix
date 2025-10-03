@@ -18,7 +18,7 @@
 
 	echo "Scanning for connected boards..."
 	local boards
-	boards=$(arduino-cli board list | awk 'NR>1 {print NR-1". "$1" "$NF}')
+	boards=$(arduino-cli board list | awk 'NR>1 && $NF != "" {print NR-1". "$1" "$NF}')
 
 	if [ -z "$boards" ]; then
 	  echo "No boards detected."
@@ -29,7 +29,7 @@
 	echo "$boards"
 
 	local count
-	count=$(echo "boards | wc -l)
+	count=$(echo "$boards" | wc -l)
 
 	local choice index index port fqbn
 
