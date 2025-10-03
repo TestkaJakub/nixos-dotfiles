@@ -8,15 +8,9 @@
       bat
       btop
       git
-      pfetch-rs
       arduino-core
       arduino-cli
     ];
-  };
-  
-  environment.variables = {
-    PF_COLOR = "1";
-    PF_ASCII = "openbsd";
   };
 
   imports = [

@@ -75,7 +75,13 @@
     xwallpaper
     pcmanfm
     rofi
+    pfetch-rs
   ];
+
+  environment.variables = {
+    PF_COLOR = "1";
+    PF_ASCII = "openbsd";
+  };
 
   fonts.packages = with pkgs; [
     jetbrains-mono
