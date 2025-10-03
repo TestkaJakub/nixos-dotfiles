@@ -31,7 +31,7 @@
 	  fi
 	  git push || return 1
 	  sudo nixos-rebuild switch --flake ~/nixos-dotfiles#nixos
-	  status = $?
+	  status=$?
 
 	  cd "$OLDPWD" || return 1
 	  return $status
