@@ -3,7 +3,6 @@
 {
   home = {
     username = "jakub";
-    homeDirectory = "/home/jakub";
     stateVersion = "25.05";
   
     packages = with pkgs; [
@@ -56,6 +55,6 @@
     --paging=auto
   '';
 
-  home.file.".config/qtile".source = /home/jakub/nixos-dotfiles/qtile;
+  home.file.".config/qtile".source = ./qtile;
 }
 
