@@ -25,19 +25,21 @@ errortest
       initExtra = ''
         nrs() {
 	  OLDPWD=$(pwd)
-	  cd ~/nixos-dotfiles && \
-	  git add . && \
-	  (git diff --cached --quiet || git commit -m "update $(date '+%Y-%m-%d %H:%M')") && \
-	  git push && \
+	  cd ~/nixos-dotfiles || return 1
+	  git add . || return 1
+	  if ! git diff --cached --quiet; then
+	    git commit -m "update $(date '+%Y-%m-%d %H:%M')" || return 1
+	  fi
+	  git push || return 1
 	  sudo nixos-rebuild switch --flake ~/nixos-dotfiles#nixos
 	  status = $?
-	  cd "$OLDPWD"
+
+	  cd "$OLDPWD" || return 1
 	  return $status
 	}
 
 	nrsr() {
-	  nrs 
-	  if [ $? -eq 0 ]; then
+	  if nrs; then
 	    echo "Rebuild succeeded. Rebooting..."
 	    reboot
 	  else
