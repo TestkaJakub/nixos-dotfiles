@@ -59,7 +59,7 @@
 
   users.users.jakub = {
     isNormalUser = true;
-    extraGroups = [ "wheel" ]; 
+    extraGroups = [ "wheel" "dialout" ]; 
     packages = with pkgs; [
       tree
     ];
