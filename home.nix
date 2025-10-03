@@ -17,10 +17,19 @@
     bash = {
       enable = true;
       shellAliases = {
-	nrs = "sudo nixos-rebuild switch";
+	nrs = ''
+          OLDPWD=$(pwd)
+	  cd ~/nixos-dotfiles && \
+	  git add . && \
+	  (git diff --cached --quiet || git commit -m "update $(date '+%Y-%m-%d %H:%M')") && \
+	  git push && \
+	  sudo nixos-rebuild switch --flake ~/nixos-dotfiles#nixos
+	  cd "$OLDPWD"
+	'';
 	nrsr = "nrs && reboot";
-        nsc = "sudo nvim ~/nixos-dotfiles/configuration.nix";
-        nhc = "sudo nvim ~/nixos-dotfiles/home.nix"; 
+        nsc = "nvim ~/nixos-dotfiles/configuration.nix";
+        nhc = "nvim ~/nixos-dotfiles/home.nix";
+	nfc = "nvim ~/nixos-dotfiles/flake.nix";
       };
 
       initExtra = ''
