@@ -67,7 +67,7 @@
 
   programs.firefox.enable = true;
   programs.hyprland.enable = true;
-  programs.hyprland.packages = hyprland.packages."25.05".hyprland;
+  
   #programs.sway.enable = true;
 
   hardware.graphics.enable = true;
