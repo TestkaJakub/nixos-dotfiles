@@ -7,6 +7,12 @@
       nfc = "sudo nvim ~/nixos-dotfiles/flake.nix";
     };
 
+    profileExtra = ''
+      if [ -z "$DISPLAY" ] && [ "${XDG_VTNR:-0}" -eq 1 ]; then
+        exec Hyprland
+      fi
+    '';
+
     initExtra = ''
       ard() {
         if [ -z "$1" ]; then
