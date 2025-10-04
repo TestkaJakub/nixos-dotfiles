@@ -59,5 +59,7 @@
   '';
 
   home.file.".config/qtile".source = ./qtile;
+
+  home.file.".config/hyprland".source = ./hyprland;
 }
 
