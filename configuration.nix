@@ -23,6 +23,7 @@
     gc = {
       automatic = true;
       dates = "weekly";
+      kad
       options = "--delete-older-than 30d";
     };
   };
@@ -66,6 +67,7 @@
   };
 
   programs.firefox.enable = true;
+  programs.hyprland.enable = true;
   #programs.sway.enable = true;
 
   hardware.graphics.enable = true;
@@ -79,12 +81,15 @@
     pcmanfm
     rofi
     pfetch-rs
+    kitty
   ];
 
   environment.variables = {
     PF_INFO = "ascii title os host kernel uptime pkgs memory";
     PF_SOURCE = "";
   };
+
+  environment.sessionVariables.NIXOS_OZONE_WL = "1"
 
   fonts.packages = with pkgs; [
     jetbrains-mono

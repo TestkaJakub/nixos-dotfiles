@@ -15,7 +15,7 @@
         inherit system;
         modules = [
           ./configuration.nix
-	  ./greetd.nix
+	 # ./greetd.nix
           home-manager.nixosModules.home-manager
         ];
       };
