@@ -66,7 +66,11 @@
   };
 
   programs.firefox.enable = true;
-  programs.hyprland.enable = true;
+  programs.hyprland = {
+    enable = true;
+    withUWSM = true;
+    xwayland.enable = true;
+  };
   
   #programs.sway.enable = true;
 
@@ -89,7 +93,7 @@
     PF_SOURCE = "";
   };
 
-  environment.sessionVariables.NIXOS_OZONE_WL = "1";
+  #environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
   fonts.packages = with pkgs; [
     jetbrains-mono
