@@ -66,7 +66,9 @@
   };
 
   programs.firefox.enable = true;
-  programs.sway.enable = true;
+  #programs.sway.enable = true;
+
+  hardware.opengl.enable = true;
 
   environment.systemPackages = with pkgs; [
     vim

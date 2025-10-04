@@ -17,6 +17,8 @@
     ./bash.nix
   ];
 
+  programs.home-manager.enable = true;
+
   programs.alacritty = {
       enable = true;
       settings = {
@@ -34,6 +36,18 @@
       gruvbox-material
       nerdtree
     ];
+  };
+
+  wayland.windowManager.sway = {
+    enable = true;
+    config = rec {
+      modifier = "Mod4";
+      output = {
+        "Virtual-1" = {
+          mode = "1920x1080@60Hz";
+	};
+      };
+    };
   };
 
   home.file.".config/bat/config".text = ''
