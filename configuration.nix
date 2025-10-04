@@ -23,7 +23,6 @@
     gc = {
       automatic = true;
       dates = "weekly";
-      kad
       options = "--delete-older-than 30d";
     };
   };
@@ -89,7 +88,7 @@
     PF_SOURCE = "";
   };
 
-  environment.sessionVariables.NIXOS_OZONE_WL = "1"
+  environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
   fonts.packages = with pkgs; [
     jetbrains-mono
