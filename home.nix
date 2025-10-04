@@ -129,12 +129,12 @@
             fade_on_empty = false;
             placeholder_text = "";
 
-            outer_color = "rgb(${base00})";
-            inner_color = "rgb(${base00})";
-            font_color = "rgb(${base05})";
-            check_color = "rgb(${base02})";
-            fail_color = "rgb(${base08})";
-            capslock_color = "rgb(${base09})";
+            outer_color = "rgb(ff0000)";
+            inner_color = "rgb(ff0000})";
+            font_color = "rgb(00ff00})";
+            check_color = "rgb(0000ff})";
+            fail_color = "rgb(ffff00)";
+            capslock_color = "rgb(ff00ff)";
           }
         ];
   };
