@@ -35,21 +35,6 @@
   time.timeZone = "Europe/Warsaw";
 
   services = {
-  #  xserver = {
-  #    enable = true;
-  #    windowManager.qtile.enable = true;
-  #    extraConfig = ''
-  #      Section "Monitor"
-  #      Identifier "Virtual-1"
-  #      Option "PreferredMode" "1920x1080"
-  #      EndSection
-  #    '';
-  #    displayManager.sessionCommands = ''
-  #      xwallpaper --zoom ~/Wallpapers/toradora.png
-  #      xset r rate 200 35 &
-  #    '';
-  #  };
-
     picom = {
       enable = true;
       backend = "glx";
