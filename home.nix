@@ -40,23 +40,20 @@
 
   wayland = {
     systemd.target = "wayland-session.target";
-    windowManager.hyprland = {
-      enable = true;
+    windowManager.hyprland.settings = {
       general = {
-        border_size = 10;
+        border_size = "10";
       };
-      settings = {
-        decoration = {
-          shadow_offset = "0.1";
-	  "col.shadow" = "rgba(00000099)";
-        };
-        "$mod" = "SUPER";
-        bindm = [
-          "$mod, mouse:272, movewindow"
-	  "$mod, mouse:273, resizewindow"
-	  "$mod ALT, mouse:272, resizewindow"
-        ];
+      decoration = {
+        shadow_offset = "0.1";
+	"col.shadow" = "rgba(00000099)";
       };
+      "$mod" = "SUPER";
+      bindm = [
+        "$mod, mouse:272, movewindow"
+	"$mod, mouse:273, resizewindow"
+	"$mod ALT, mouse:272, resizewindow"
+      ];
     };
   };
 
