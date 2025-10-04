@@ -66,7 +66,7 @@
   };
 
   programs.firefox.enable = true;
-  programs.sway.enable;
+  programs.sway.enable = true;
 
   environment.systemPackages = with pkgs; [
     vim
