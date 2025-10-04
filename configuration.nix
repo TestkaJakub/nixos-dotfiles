@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
-#let
-#  tokyo-night-sddm = pkgs.libsForQt5.callPackage ./tokyo-night-sddm/default.nix { };
-#in
+let
+  tokyo-night-sddm = pkgs.libsForQt5.callPackage ./tokyo-night-sddm/default.nix { };
+in
 {
   imports =
     [ # Include the results of the hardware scan.
@@ -42,7 +42,7 @@
       enable = true;
       sddm = {
         enable = true;
-#        theme = "tokyo-night-sddm";
+        theme = "tokyo-night-sddm";
 	wayland = {
 	  enable = true;
 	};
@@ -85,7 +85,7 @@
     pfetch-rs
     kitty
     hyprlock
-#    tokyo-night-sddm
+    tokyo-night-sddm
   ];
 
   environment.variables = {
