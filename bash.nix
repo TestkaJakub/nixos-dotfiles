@@ -1,4 +1,4 @@
-
+{
   programs.bash = {
     enable = true;
     shellAliases = {
@@ -9,54 +9,54 @@
 
     initExtra = ''
       ard() {
-  if [ -z "$1" ]; then
-    echo "Usage: ard <SketchDir>"
-    return 1
-  fi
+        if [ -z "$1" ]; then
+          echo "Usage: ard <SketchDir>"
+          return 1
+        fi
 
-  # strip trailing slash safely
-  local sketch
-  sketch=$(echo "$1" | sed 's:/*$::')
+        # strip trailing slash safely
+        local sketch
+        sketch=$(echo "$1" | sed 's:/*$::')
 
-  echo "Scanning for connected boards..."
-  local boards
-  boards=$(arduino-cli board list | awk 'NR>1 && NF>2 && $(NF-1)!="" {print $0}')
+        echo "Scanning for connected boards..."
+        local boards
+        boards=$(arduino-cli board list | awk 'NR>1 && NF>2 && $(NF-1)!="" {print $0}')
 
-  if [ -z "$boards" ]; then
-    echo "No boards detected."
-    return 1
-  fi
+        if [ -z "$boards" ]; then
+          echo "No boards detected."
+          return 1
+        fi
 
-  echo "Available boards:"
-  echo "$boards" | awk '{printf "%d. %s %s\n", NR, $1, $(NF-1)}'
+        echo "Available boards:"
+        echo "$boards" | awk '{printf "%d. %s %s\n", NR, $1, $(NF-1)}'
 
-  local count choice line port fqbn
-  count=$(echo "$boards" | wc -l)
+        local count choice line port fqbn
+        count=$(echo "$boards" | wc -l)
 
-  if [ "$count" -eq 1 ]; then
-    echo "Only one board, auto-selecting it."
-    choice=1
-  else
-    echo -n "Select board number to upload to: "
-    read choice
-  fi
+        if [ "$count" -eq 1 ]; then
+          echo "Only one board, auto-selecting it."
+          choice=1
+        else
+          echo -n "Select board number to upload to: "
+          read choice
+        fi
 
-  # get selected line from the captured list, not a new call
-  line=$(echo "$boards" | awk "NR==$choice")
-  port=$(echo "$line" | awk '{print $1}')
-  fqbn=$(echo "$line" | awk '{print $(NF-1)}')
+        # get selected line from the captured list, not a new call
+        line=$(echo "$boards" | awk "NR==$choice")
+        port=$(echo "$line" | awk '{print $1}')
+        fqbn=$(echo "$line" | awk '{print $(NF-1)}')
 
-  if [ -z "$port" ] || [ -z "$fqbn" ]; then
-    echo "Couldn't determine port or FQBN"
-    return 1
-  fi
+        if [ -z "$port" ] || [ -z "$fqbn" ]; then
+          echo "Couldn't determine port or FQBN"
+          return 1
+        fi
 
-  echo "Compiling $sketch for $fqbn..."
-  arduino-cli compile --fqbn "$fqbn" "$sketch" || return 1
+        echo "Compiling $sketch for $fqbn..."
+        arduino-cli compile --fqbn "$fqbn" "$sketch" || return 1
 
-  echo "Uploading $sketch to $port ($fqbn)..."
-  arduino-cli upload -p "$port" --fqbn "$fqbn" "$sketch"
-}
+        echo "Uploading $sketch to $port ($fqbn)..."
+        arduino-cli upload -p "$port" --fqbn "$fqbn" "$sketch"
+      }
     
       nrs() {
         OLDPDW=$(pwd)
