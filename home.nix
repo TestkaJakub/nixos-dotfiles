@@ -123,9 +123,9 @@
         fade_on_empty = false;
         placeholder_text = "";
         outer_color = "rgb(ff0000)";
-        inner_color = "rgb(ff0000})";
-        font_color = "rgb(00ff00})";
-        check_color = "rgb(0000ff})";
+        inner_color = "rgb(ff0000)";
+        font_color = "rgb(00ff00)";
+        check_color = "rgb(0000ff)";
         fail_color = "rgb(ffff00)";
         capslock_color = "rgb(ff00ff)";
       }
