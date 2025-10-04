@@ -39,7 +39,7 @@
       enable = true;
       sddm = {
         enable = true;
-	theme = "${pkgq.sddm-chili-theme}/share/sddm/themes/chili";
+        theme = "${pkgs.sddm-chili-theme}/share/sddm/themes/chili";
 	wayland = {
 	  enable = true;
 	};
