@@ -83,7 +83,7 @@
 
       PS1='\[\e[38;5;206m\]\u\[\e[38;5;63m\]@\[\e[38;5;206m\]\h\[\e[0m\] \D{%d-%m-%Y %H:%m:%S} \w \[\e[38;5;63m\]>\[\e[0m\] '
     
-      if [ -z "$DISPLAY" ] && [ "${XDG_VTNR:-0}" -eq 1 ]; then
+      if [ -z "$DISPLAY" ] && [ "\${XDG_VTNR:-0}" -eq 1 ]; then
         exec Hyprland
       fi
     '';
