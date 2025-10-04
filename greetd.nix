@@ -16,8 +16,8 @@
     };
   };
 
-  environment.etc."greetd/environments".text = "
+  environment.etc."greetd/environments".text = ''
     sway
-  ";
-}
+  '';
+};
 
