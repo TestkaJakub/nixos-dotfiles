@@ -85,6 +85,7 @@ in
     pfetch-rs
     kitty
     hyprlock
+    tokyo-night-sddm
   ];
 
   environment.variables = {
