@@ -86,6 +86,7 @@
     rofi
     pfetch-rs
     kitty
+    hyprlock
   ];
 
   environment.variables = {
