@@ -1,4 +1,4 @@
-{ config, lib, pkgs, inputs, ... }:
+{ config, lib, pkgs, ... }:
 {
   imports =
     [ # Include the results of the hardware scan.
@@ -67,7 +67,7 @@
 
   programs.firefox.enable = true;
   programs.hyprland.enable = true;
-  programs.hyprland.packages = inputs.hyprland.packages."${pkgs.system}".hyprland;
+  programs.hyprland.packages = inputs.hyprland.packages."25.05".hyprland;
   #programs.sway.enable = true;
 
   hardware.graphics.enable = true;
