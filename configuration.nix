@@ -67,7 +67,7 @@
 
   programs.firefox.enable = true;
   programs.hyprland.enable = true;
-  programs.hyprland.packages."${pkgs.system}".hyprland;
+  programs.hyprland.packages = inputs.hyprland.packages."${pkgs.system}".hyprland;
   #programs.sway.enable = true;
 
   hardware.graphics.enable = true;
