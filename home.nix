@@ -39,7 +39,7 @@
   };
 
   wayland = {
-    systemd.target = wayland-session.target;
+    systemd.target = "wayland-session.target";
     windowManager.hyprland.settings = {
       decoration = {
         shadow_offset = "0.1";
