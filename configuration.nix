@@ -35,6 +35,15 @@
   time.timeZone = "Europe/Warsaw";
 
   services = {
+    displayManager = {
+      enable = true;
+      sddm = {
+        enable = true;
+	wayland = {
+	  enable = true;
+	};
+      };
+    };
     picom = {
       enable = true;
       backend = "glx";
