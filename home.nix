@@ -41,6 +41,9 @@
   wayland = {
     systemd.target = "wayland-session.target";
     windowManager.hyprland.settings = {
+      general = {
+        border_size = "10";
+      };
       decoration = {
         shadow_offset = "0.1";
 	"col.shadow" = "rgba(00000099)";
