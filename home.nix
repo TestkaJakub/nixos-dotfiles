@@ -39,104 +39,99 @@
   };
   programs.hyprlock.enable = true;
   programs.hyprlock.settings = {
-            general = {
-          hide_cursor = false;
-          no_fade_in = true;
-          no_fade_out = false;
-        };
-        background = [
-          {
-            path = toString ../../assets/lockscreen.png;
-            blur_passes = 3;
-            blur_size = 6;
-          }
-        ];
-        shape = [
-          {
-            size = "280, 280";
-            color = "rgb(ff0000)";
-            rounding = 48;
-
-            position = "0, 45";
-            halign = "center"; valign = "center";
-
-            shadow_passes = 3;
-            shadow_size = 8;
-          }
-        ];
-        label = [
-          {
-            position = "0, 105";
-            text = "cmd[update:1000] echo \"<span font_weight='1000'>$(date +'%H')</span>\"";
-            font_size = 78;
-            color = "rgb(eba0ac)"; # mauve
-            font_family = "Inter";
-            halign = "center"; valign = "center";
-          }
-          {
-            position = "0, 20";
-            text = "cmd[update:1000] echo \"<span font_weight='1000'>$(date +'%M')</span>\"";
-            font_size = 78;
-            color = "rgb(${base05})";
-            font_family = "Inter";
-            halign = "center"; valign = "center";
-          }
-          {
-            position = "0, -45";
-            text = "cmd[update:1000] echo \"$(date +'%A, %d %B')\"";
-            font_size = 14;
-            color = "rgb(${base05})";
-            font_family = "Inter";
-            halign = "center"; valign = "center";
-          }
-          {
-            position = "0, 10";
-            halign = "center"; valign = "bottom";
-            color = "rgb(9399b2)";
-            font_size = 8;
-            font_family = "Inter";
-            text = "$LAYOUT";
-          }
-          {
-            position = "-15, -13";
-            halign = "right"; valign = "top";
-            color = "rgb(ffffff)";
-            font_size = 14;
-            font_family = "Font Awesome 6 Free";
-            text = "";
-
-            shadow_passes = 3;
-            shadow_size = 8;
-          }
-          {
-            position = "-41, -10";
-            halign = "right"; valign = "top";
-            color = "rgb(ffffff)";
-            font_size = 14;
-            font_family = "Inter";
-            text = "cmd[update:4000] echo \"<span font_weight='600'>$(cat /sys/class/power_supply/BAT0/capacity)%</span>\"";
-
-            shadow_passes = 3;
-            shadow_size = 8;
-          }
-        ];
-        input-field = [
-          {
-            position = "0, -140";
-            size = "280, 48";
-            outline_thickness = 2;
-            dots_size = 0.3;
-            fade_on_empty = false;
-            placeholder_text = "";
-
-            outer_color = "rgb(ff0000)";
-            inner_color = "rgb(ff0000})";
-            font_color = "rgb(00ff00})";
-            check_color = "rgb(0000ff})";
-            fail_color = "rgb(ffff00)";
-            capslock_color = "rgb(ff00ff)";
-          }
-        ];
+    general = {
+      hide_cursor = false;
+      no_fade_in = true;
+      no_fade_out = false;
+    };
+    background = [
+      {
+        path = toString ../../assets/lockscreen.png;
+        blur_passes = 3;
+        blur_size = 6;
+      }
+    ];
+    shape = [
+      {
+        size = "280, 280";
+        color = "rgb(ff0000)";
+        rounding = 48;
+        position = "0, 45";
+        halign = "center"; valign = "center";
+        shadow_passes = 3;
+        shadow_size = 8;
+      }
+    ];
+    label = [
+      {
+        position = "0, 105";
+        text = "cmd[update:1000] echo \"<span font_weight='1000'>$(date +'%H')</span>\"";
+        font_size = 78;
+        color = "rgb(eba0ac)"; # mauve
+        font_family = "Inter";
+        halign = "center"; valign = "center";
+      }
+      {
+        position = "0, 20";
+        text = "cmd[update:1000] echo \"<span font_weight='1000'>$(date +'%M')</span>\"";
+        font_size = 78;
+        color = "rgb(00ff00)";
+        font_family = "Inter";
+        halign = "center"; valign = "center";
+      }
+      {
+        position = "0, -45";
+        text = "cmd[update:1000] echo \"$(date +'%A, %d %B')\"";
+        font_size = 14;
+        color = "rgb(00ff00)";
+        font_family = "Inter";
+        halign = "center"; valign = "center";
+      }
+      {
+        position = "0, 10";
+        halign = "center"; valign = "bottom";
+        color = "rgb(9399b2)";
+        font_size = 8;
+        font_family = "Inter";
+        text = "$LAYOUT";
+      }
+      {
+        position = "-15, -13";
+        halign = "right"; valign = "top";
+        color = "rgb(ffffff)";
+        font_size = 14;
+        font_family = "Font Awesome 6 Free";
+        text = "";
+        shadow_passes = 3;
+        shadow_size = 8;
+      }
+      {
+        position = "-41, -10";
+        halign = "right"; valign = "top";
+        color = "rgb(ffffff)";
+        font_size = 14;
+        font_family = "Inter";
+        text = "cmd[update:4000] echo \"<span font_weight='600'>$(cat /sys/class/power_supply/BAT0/capacity)%</span>\"";
+        shadow_passes = 3;
+        shadow_size = 8;
+      }
+    ];
+    input-field = [
+      {
+        position = "0, -140";
+        size = "280, 48";
+        outline_thickness = 2;
+        dots_size = 0.3;
+        fade_on_empty = false;
+        placeholder_text = "";
+        outer_color = "rgb(ff0000)";
+        inner_color = "rgb(ff0000})";
+        font_color = "rgb(00ff00})";
+        check_color = "rgb(0000ff})";
+        fail_color = "rgb(ffff00)";
+        capslock_color = "rgb(ff00ff)";
+      }
+    ];
   };
 
   wayland.windowManager.hyprland.settings = {
