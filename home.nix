@@ -137,8 +137,6 @@
             capslock_color = "rgb(${base09})";
           }
         ];
-      };
-      };
   };
 
   wayland.windowManager.hyprland.settings = {
