@@ -8,7 +8,7 @@
     };
 
     profileExtra = ''
-      if [ -z "$DISPLAY" ] && [ "${XDG_VTNR:-0}" -eq 1 ]; then
+      if [ -z "$DISPLAY" ] && [ "\${XDG_VTNR:-0}" -eq 1 ]; then
         exec Hyprland
       fi
     '';
