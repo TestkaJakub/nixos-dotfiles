@@ -41,8 +41,6 @@
   programs.hyprlock.settings = {
     general = {
       hide_cursor = false;
-      no_fade_in = true;
-      no_fade_out = false;
     };
     background = [
       {
