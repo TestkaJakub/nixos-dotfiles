@@ -54,7 +54,7 @@
         shape = [
           {
             size = "280, 280";
-            color = "rgb(${base00})";
+            color = "rgb(ff0000)";
             rounding = 48;
 
             position = "0, 45";
