@@ -1,4 +1,7 @@
 { config, lib, pkgs, ... }:
+let
+  tokyo-night-sddm = pkgs.libsForQt5.callPackage ./tokyo-night-sddm/default.nix { };
+in
 {
   imports =
     [ # Include the results of the hardware scan.
@@ -39,7 +42,7 @@
       enable = true;
       sddm = {
         enable = true;
-        theme = "${pkgs.sddm-chili-theme}/share/sddm/themes/chili";
+        theme = "tokyo-night-sddm";
 	wayland = {
 	  enable = true;
 	};
