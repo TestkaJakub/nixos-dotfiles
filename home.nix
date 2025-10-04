@@ -138,6 +138,7 @@
           }
         ];
       };
+      };
   };
 
   wayland.windowManager.hyprland.settings = {
