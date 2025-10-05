@@ -106,9 +106,7 @@ in
     after = [ "sysinit.target" ];
     serviceConfig = {
       Type = "oneshot";
-      ExecStart = ''
-        echo 2 > /sys/class/leds/tpacpi::kbd_backlight/brightness
-      '';
+      ExecStart = "${pkgs.bash}/bin/bash -c 'echo 2 > /sys/class/leds/tpacpi::kbd_backlight/brightness'";
     };
   };
 
