@@ -45,11 +45,7 @@
       syntastic # syntax highlighting for many languages
       emmet-vim # :tag tag creation
       tabular # :tab tag for aligning stuff
-      indentline
-      #vim-indent-guides
-
-      #vim-airline
-      #vim-airline-themes
+      
     ];
   };
 
