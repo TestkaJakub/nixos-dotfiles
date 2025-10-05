@@ -42,6 +42,7 @@
     plugins = with pkgs.vimPlugins; [
       gruvbox-material
       nerdtree
+      nvim-treesitter
     ];
   };
 
