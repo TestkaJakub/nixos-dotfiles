@@ -45,8 +45,8 @@
       nerdtree
       nvim-treesitter
       syntastic
-      vim-airline
-      vim-airline-themes
+      #vim-airline
+      #vim-airline-themes
     ];
   };
 
