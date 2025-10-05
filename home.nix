@@ -45,6 +45,7 @@
       nvim-treesitter
       syntastic
       vim-airline
+      vim-airline-themes
     ];
   };
 
