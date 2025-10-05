@@ -57,6 +57,9 @@
           rounding = 2;
 	  rounding_power = "2.0";
 	  inactive_opacity = "0.7";
+	  blur = {
+            enabled = false;
+	  };
 	};
         "$mod" = "SUPER";
         bind = [
