@@ -87,6 +87,10 @@ in
     hyprlock
     tokyo-night-sddm
     git
+    (writeShellScriptBin "kbdlight" ''
+    #!/bin/bash
+    echo "$1" > /sys/class/leds/tpacpi::kbd_backlight/brightness
+    '')
   ];
 
   environment.variables = {
