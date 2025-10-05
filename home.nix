@@ -54,6 +54,8 @@
 	};
         "$mod" = "SUPER";
         bind = [
+	  "$mod, F6, exec, bash -c 'echo 2 > /sys/class/leds/tpacpi::kbd_backlight/brightness'"
+	  "bind = $mod, F5, exec, bash -c 'echo 0 > /sys/class/leds/tpacpi::kbd_backlight/brightness'"
           "$mod, B, exec, firefox"
 	  "$mod, q, exec, alacritty"
         ];
