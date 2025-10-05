@@ -54,8 +54,8 @@
 	};
         "$mod" = "SUPER";
         bind = [
-	  "$mod, h, exec, kbdlight 1"
-	  "$mod, g, exec, kbdlight 0"
+	  "$mod, h, exec, kbm 1"
+	  "$mod, g, exec, kbm 0"
           "$mod, B, exec, firefox"
 	  "$mod, q, exec, alacritty"
         ];
