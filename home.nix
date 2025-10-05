@@ -19,7 +19,7 @@
 
   programs.home-manager = { 
     enable = true;
-  }
+  };
 
   programs.alacritty = {
       enable = true;
