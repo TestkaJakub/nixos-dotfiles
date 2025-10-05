@@ -58,7 +58,8 @@
 	  rounding_power = "2.0";
 	  inactive_opacity = "0.7";
 	  blur = {
-            enabled = false;
+            enabled = true;
+	    size = 2;
 	  };
 	};
         "$mod" = "SUPER";
