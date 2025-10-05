@@ -3,7 +3,7 @@
   home = {
     username = "jakub";
     stateVersion = "25.05";
-  
+    backupFileExtension = "backup";
     packages = with pkgs; [
       bat
       btop
