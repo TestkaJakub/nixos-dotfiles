@@ -55,7 +55,7 @@
         "$mod" = "SUPER";
         bind = [
 	  "$mod, h, exec, \"${pkgs.bash}/bin/bash -c 'echo 2 > /sys/class/leds/tpacpi::kbd_backlight/brightness'\""
-	  "$mod, g, exec, bash -c 'echo 0 > /sys/class/leds/tpacpi::kbd_backlight/brightness'"
+	  "$mod, g, exec, \"${pkgs.bash}/bin/bash -c 'echo 0 > /sys/class/leds/tpacpi::kbd_backlight/brightness'\""
           "$mod, B, exec, firefox"
 	  "$mod, q, exec, alacritty"
         ];
