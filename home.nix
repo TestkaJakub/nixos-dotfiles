@@ -43,6 +43,7 @@
       gruvbox-material
       nerdtree
       nvim-treesitter
+      indent-blankline
     ];
   };
 
