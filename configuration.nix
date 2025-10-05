@@ -92,7 +92,32 @@ in
     tokyo-night-sddm
     git
     (writeShellScriptBin "kbm" ''
-    echo "$1" > /sys/class/leds/tpacpi::kbd_backlight/brightness
+      path="/sys/class/leds/tpacpi::kbd_backlight/brightness"
+      max_path="/sys/class/leds/tpacpi::kbd_backlight/max_brightness"
+
+      if [ ! -w "$path" ]; then
+        echo "Error: cannot write to $path" >&2
+        exit 1
+      fi
+
+      cur=$(cat "$path" 2>dev/null || echo 0)
+      max=$(cat "$max_path 2>dev/null || echo 2)
+
+      if [ "$#" -ge 1 ]; then
+        val="$1"
+        if [ "$val" -gt "$max" ]; then
+          val="$max"
+        elif [ "$val" -lt 0 ]; then
+          val=0
+        fi
+      else
+        if ! [[ "$cur" =~ ^[0-9]+$ ]]; then
+          cur=0
+        fi
+        val=$(( (cur + 1) % (max + 1) ))
+      fi
+
+      echo "$val" > "$path"
     '')
   ];
 
