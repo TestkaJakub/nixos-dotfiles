@@ -1,6 +1,6 @@
 { config, pkgs, ... }:
 {
-  home-manager.backupFileExtension = "backup";
+#  home-manager.backupFileExtension = "backup";
   home = {
     username = "jakub";
     stateVersion = "25.05";
