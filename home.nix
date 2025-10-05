@@ -26,7 +26,7 @@
       	window = {
 	  opacity = 0.9;
           padding = {
-            x = 100;
+            x = 10;
 	    y = 10;
 	  };
 	};
