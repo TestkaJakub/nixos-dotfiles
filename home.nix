@@ -54,7 +54,7 @@
 	  "col.inactive_border" = "rgba(5f5fffff) rgba(5f5fffff) 0deg";
 	};
 	decoration = {
-          rounding = 5;
+          rounding = 2;
 	};
         "$mod" = "SUPER";
         bind = [
