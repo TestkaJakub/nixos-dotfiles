@@ -9,10 +9,10 @@ in
     ];
 
   home-manager = {
-    backupFileExtension = "backup";
+    users.jakub.backupFileExtension = "backup";
     useUserPackages = true;
     useGlobalPkgs = true;
-    users.jakub = import ./home.nix;
+    #users.jakub = import ./home.nix;
   };
 
   boot.loader = {
