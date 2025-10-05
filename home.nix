@@ -44,6 +44,7 @@
       nerdtree
       nvim-treesitter
       syntastic
+      vim-airline
     ];
   };
 
