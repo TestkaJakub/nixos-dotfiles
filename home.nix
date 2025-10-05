@@ -10,6 +10,7 @@
       git
       arduino-core
       arduino-cli
+      fastfetch
     ];
   };
   imports = [
