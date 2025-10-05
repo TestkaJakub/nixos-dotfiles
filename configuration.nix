@@ -9,7 +9,7 @@ in
     ];
 
   home-manager = {
-    users.jakub.backupFileExtension = "backup";
+    backupFileExtension = "backup";
     useUserPackages = true;
     useGlobalPkgs = true;
     #users.jakub = import ./home.nix;
