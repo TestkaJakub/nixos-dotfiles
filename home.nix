@@ -56,7 +56,7 @@
         "$mod" = "SUPER";
         bind = [
           "$mod, B, exec, firefox"
-	  "$mod, q, exec, bash"
+	  "$mod, q, exec, alacritty"
         ];
         bindm = [
           "$mod, mouse:272, movewindow"
