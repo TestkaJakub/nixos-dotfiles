@@ -48,8 +48,8 @@
       settings = {
         general = {
           border_size = 1;
-	  gaps_in = 1;
-        };
+	  gaps_in = 5;
+	};
         "$mod" = "SUPER";
         bind = [
           "$mod, B, exec, firefox"
