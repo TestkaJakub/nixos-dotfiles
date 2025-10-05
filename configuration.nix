@@ -8,7 +8,7 @@ in
       ./hardware-configuration.nix
     ];
 
-  home-manager = { pkgs, ... }: {
+  home-manager = {
     backupFileExtension = "backup";
     useUserPackages = true;
     useGlobalPkgs = true;
