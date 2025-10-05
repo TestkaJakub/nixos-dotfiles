@@ -50,7 +50,7 @@
           border_size = 1;
 	  gaps_in = 2;
 	  gaps_out = 4;
-	  "col.inactive_border" = 0x44ffffff;
+	  "col.inactive_border" = "0x44ffffff";
 	};
         "$mod" = "SUPER";
         bind = [
