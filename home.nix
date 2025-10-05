@@ -50,6 +50,9 @@
       #vim-airline
       #vim-airline-themes
     ];
+    vimrcConfig.customRC = ''
+      let g:indent_guides_enable_on_vim_startup = 1
+    '';
   };
 
   wayland = {
