@@ -49,10 +49,6 @@
         general = {
           border_size = 1;
         };
-        decoration = {
-          shadow_offset = "0.1";
-	  "col.shadow" = "rgba(00000099)";
-        };
         "$mod" = "SUPER";
         bind = [
           "$mod, B, exec, firefox"
