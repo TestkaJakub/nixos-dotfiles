@@ -40,7 +40,8 @@
     enable = true;
     defaultEditor = true;
     plugins = with pkgs.vimPlugins; [
-      gruvbox-material
+      #gruvbox-material
+      solarized
       nerdtree
       nvim-treesitter
       syntastic
