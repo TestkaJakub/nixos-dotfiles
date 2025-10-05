@@ -100,8 +100,8 @@ in
         exit 1
       fi
 
-      cur=$(cat "$path" 2>dev/null || echo 0)
-      max=$(cat "$max_path" 2>dev/null || echo 2)
+      cur=$(cat "$path" 2>/dev/null || echo 0)
+      max=$(cat "$max_path" 2>/dev/null || echo 2)
 
       if [ "$#" -ge 1 ]; then
         val="$1"
