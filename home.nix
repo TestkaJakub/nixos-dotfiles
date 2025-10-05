@@ -54,10 +54,9 @@
 	};
         "$mod" = "SUPER";
         bind = [
-	  "$mod, F6, exec, bash kbm 1"
-	  "$mod, F5, exec, bash kbm 0"
+	  "$mod, L, exec, bash kbm"
           "$mod, B, exec, firefox"
-	  "$mod, q, exec, alacritty"
+	  "$mod, Q, exec, alacritty"
         ];
         bindm = [
           "$mod, mouse:272, movewindow"
