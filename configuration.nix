@@ -8,9 +8,10 @@ in
       ./hardware-configuration.nix
     ];
 
-  home-manager = {
+  home-manager = { pkgs, ... }: {
     useUserPackages = true;
     useGlobalPkgs = true;
+    users.jakub.home-manager.backupFileExtension = "backup";
     users.jakub = import ./home.nix;
   };
 

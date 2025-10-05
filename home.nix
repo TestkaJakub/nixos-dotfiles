@@ -1,6 +1,5 @@
 { config, pkgs, ... }:
 {
-  home-manager.backupFileExtension = "backup";
   home = {
     username = "jakub";
     stateVersion = "25.05";
@@ -17,7 +16,9 @@
     ./bash.nix
   ];
 
-  programs.home-manager.enable = true;
+  programs.home-manager = { 
+    enable = true;
+  }
 
   programs.alacritty = {
       enable = true;
