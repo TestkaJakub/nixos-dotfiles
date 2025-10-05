@@ -56,7 +56,7 @@
 	decoration = {
           rounding = 2;
 	  rounding_power = "2.0";
-	  inactive_opacity = "0.6";
+	  inactive_opacity = "0.7";
 	};
         "$mod" = "SUPER";
         bind = [
@@ -73,7 +73,7 @@
     };
   };
 
-  home.file.".config/bat/config".text = ''
+ home.file.".config/bat/config".text = ''
     --theme="Nord"
     --style="numbers,changes,grid"
     --paging=auto
