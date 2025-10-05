@@ -43,7 +43,7 @@
       gruvbox-material
       nerdtree
       nvim-treesitter
-      indent-blankline
+      lukas-reineke/indent-blankline
     ];
   };
 
