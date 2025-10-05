@@ -53,6 +53,9 @@
 	  "col.active_border" = "rgba(ff5fd7ff) rgba(ff5fd7ff) 0deg";
 	  "col.inactive_border" = "rgba(5f5fffff) rgba(5f5fffff) 0deg";
 	};
+	decoration = {
+          rounding = 5;
+	};
         "$mod" = "SUPER";
         bind = [
 	  "$mod, L, exec, bash kbm"
