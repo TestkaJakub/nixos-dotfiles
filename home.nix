@@ -48,7 +48,7 @@
       settings = {
         general = {
           border_size = 1;
-	  gaps_in = 5;
+	  gaps_in = 2;
 	};
         "$mod" = "SUPER";
         bind = [
