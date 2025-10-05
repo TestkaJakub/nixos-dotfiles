@@ -99,5 +99,18 @@ in
   fonts.packages = with pkgs; [
     jetbrains-mono
   ];
+
+  systemd.services."set-kbd-backlight" = {
+    description = "Set ThinkPad keyboard backlight";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "sysinit.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = ''
+        echo 2 > /sys/class/leds/tpacpi::kbd_backlight/brightness
+      '';
+    };
+  };
+
   system.stateVersion = "25.05"; 
 }
