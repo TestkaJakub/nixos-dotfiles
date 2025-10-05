@@ -91,8 +91,7 @@ in
     hyprlock
     tokyo-night-sddm
     git
-    (writeShellScriptBin "kbdlight" ''
-    #!/bin/bash
+    (writeShellScriptBin "kbm" ''
     echo "$1" > /sys/class/leds/tpacpi::kbd_backlight/brightness
     '')
   ];

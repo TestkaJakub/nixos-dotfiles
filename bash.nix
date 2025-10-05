@@ -8,9 +8,9 @@
     };
 
     initExtra = ''
-      kbm() {
-        echo "$1" > /sys/class/leds/tpacpi::kbd_backlight/brightness
-      }
+      #kbm() {
+      #  echo "$1" > /sys/class/leds/tpacpi::kbd_backlight/brightness
+      #}
 
       ard() {
         if [ -z "$1" ]; then
