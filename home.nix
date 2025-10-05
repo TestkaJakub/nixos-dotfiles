@@ -56,7 +56,7 @@
 	decoration = {
           rounding = 2;
 	  rounding_power = "2.0";
-	  inactive_opacity = "0.9";
+	  inactive_opacity = "0.5";
 	};
         "$mod" = "SUPER";
         bind = [
