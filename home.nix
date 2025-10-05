@@ -12,7 +12,7 @@
       arduino-cli
     ];
   };
-
+sfdsg
   imports = [
     ./bash.nix
   ];

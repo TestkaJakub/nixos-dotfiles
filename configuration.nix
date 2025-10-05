@@ -86,6 +86,7 @@ in
     kitty
     hyprlock
     tokyo-night-sddm
+    git
   ];
 
   environment.variables = {
