@@ -45,14 +45,12 @@
       syntastic # syntax highlighting for many languages
       emmet-vim # :tag tag creation
       tabular # :tab tag for aligning stuff
-      vim-indent-guides
+      indentline
+      #vim-indent-guides
 
       #vim-airline
       #vim-airline-themes
     ];
-    vimrcConfig.customRC = ''
-      let g:indent_guides_enable_on_vim_startup = 1
-    '';
   };
 
   wayland = {
