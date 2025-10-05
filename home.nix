@@ -23,7 +23,13 @@
   programs.alacritty = {
       enable = true;
       settings = {
-        window.opacity = 0.9;
+      	window = {
+	  opacity = 0.9;
+          padding = {
+            x = 5;
+	    y = 10;
+	  };
+	};
         font.normal = {
           family = "JetBrains Mono";
           style = "Regular";
