@@ -50,7 +50,8 @@
           border_size = 1;
 	  gaps_in = 2;
 	  gaps_out = 4;
-	  "col.inactive_border" = "rgba(ff0000ff) rgba(00ff00ff) 45deg";
+	  "col.inactive_border" = "rgba(ff5fd7) rgba(ff5fd7) 0deg";
+	  "col.active_border" = "rgba(5f5fffff) rgba(5f5fffff) 0deg";
 	};
         "$mod" = "SUPER";
         bind = [
