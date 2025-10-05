@@ -24,6 +24,6 @@
 #      homeConfigurations.jakub = home-manager.lib.homeManagerConfiguration {
 #        pkgs = nixpkgs.legacyPackages.${system};
 #        modules = [ ./home.nix ];
-    };
+#    };
   };
 }
