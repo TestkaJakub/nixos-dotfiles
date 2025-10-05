@@ -55,6 +55,7 @@
 	};
 	decoration = {
           rounding = 2;
+	  rounding_power = 2.0;
 	};
         "$mod" = "SUPER";
         bind = [
