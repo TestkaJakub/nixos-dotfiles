@@ -59,7 +59,7 @@
 	  inactive_opacity = "0.7";
 	  blur = {
             enabled = true;
-	    size = 2;
+	    size = 4;
 	  };
 	};
         "$mod" = "SUPER";
