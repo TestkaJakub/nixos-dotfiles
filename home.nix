@@ -47,7 +47,7 @@
       portalPackage = null;
       settings = {
         general = {
-          border_size = 10;
+          border_size = 1;
         };
         decoration = {
           shadow_offset = "0.1";
