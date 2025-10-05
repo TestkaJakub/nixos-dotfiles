@@ -49,7 +49,7 @@
         general = {
           border_size = 1;
 	  gaps_in = 2;
-	  gaps_out = 2;
+	  gaps_out = 4;
 	};
         "$mod" = "SUPER";
         bind = [
