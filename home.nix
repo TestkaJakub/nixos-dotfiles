@@ -25,7 +25,9 @@
     settings = {
       main = {
         modules-right = ["battery" "clock"];
+	
       };
+      style = ./waybar/style.css;
     };
   };
 
