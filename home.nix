@@ -19,6 +19,7 @@
       kitty
       fuzzel
       obsidian
+      hyprsunset
     ];
   };
 
@@ -135,22 +136,27 @@
         ];
 	exec-once = [
           "sleep 1 && hyprpaper"
+          "sleep 1 && hyprsunset"
 	  "waybar"
 	];
       };
     };
   };
 
- xdg.configFile."hypr/hyprpaper.conf".text = ''
-   preload = ~/Wallpapers/toradora.png
-   wallpaper = , ~/Wallpapers/toradora.png
- '';
-
- home.file.".config/bat/config".text = ''
-    --theme="Nord"
-    --style="numbers,changes,grid"
-    --paging=auto
+  xdg.configFile."hypr/hyprsunset.conf".text = ''
+    max-gamma = 70
   '';
+
+  xdg.configFile."hypr/hyprpaper.conf".text = ''
+    preload = ~/Wallpapers/toradora.png
+    wallpaper = , ~/Wallpapers/toradora.png
+  '';
+
+  home.file.".config/bat/config".text = ''
+     --theme="Nord"
+     --style="numbers,changes,grid"
+     --paging=auto
+   '';
 
   home.file.".config/qtile".source = ./qtile;
 }
