@@ -1,5 +1,5 @@
 { config, lib, pkgs, ... }:
-let
+xlet
   tokyo-night-sddm = pkgs.libsForQt5.callPackage ./tokyo-night-sddm/default.nix { };
 in
 {
@@ -41,7 +41,7 @@ in
     defaultLocale = "en_US.UTF-8/UTF-8";
 
     extraLocales = [
-      "pl_PL.UTF-8/UTF-8/UTF-8"
+      "pl_PL.UTF-8"
     ];
   };
 
