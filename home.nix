@@ -11,7 +11,7 @@
       arduino-core
       arduino-cli
       fastfetch
-      #hyprpaper
+      hyprpaper
     ];
   };
   #services.hyprpaper.enable = true;
@@ -94,6 +94,9 @@
 	  "$mod, mouse:273, resizewindow"
 	  "$mod ALT, mouse:272, resizewindow"
         ];
+	exec-once = [
+          "hyprpaper";
+	];
       };
     };
   };
