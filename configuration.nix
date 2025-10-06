@@ -57,11 +57,6 @@ in
 	};
       };
     };
-    #picom = {
-    #  enable = true;
-    #  backend = "glx";
-    #  fade = true;
-    #};
     udev.extraRules = ''
     ACTION=="add", SUBSYSTEM=="leds", KERNEL=="tpacpi::kbd_backlight", \
       RUN+="${pkgs.coreutils}/bin/chmod 0666 /sys/class/leds/tpacpi::kbd_backlight/brightness"
@@ -82,23 +77,11 @@ in
     withUWSM = true;
     xwayland.enable = true;
   };
-  
-  #programs.sway.enable = true;
 
   hardware.graphics.enable = true;
 
   environment.systemPackages = with pkgs; [
-    #vim
-    #wget
-    #alacritty
-    #btop
-    #xwallpaper
-    #pcmanfm
-    #pfetch-rs
-    #kitty
-    #hyprlock
     tokyo-night-sddm
-    #git
     (writeShellScriptBin "kbm" ''
       path="/sys/class/leds/tpacpi::kbd_backlight/brightness"
       max_path="/sys/class/leds/tpacpi::kbd_backlight/max_brightness"
@@ -139,16 +122,6 @@ in
   fonts.packages = with pkgs; [
     jetbrains-mono
   ];
-
-#  systemd.services."set-kbd-backlight" = {
-#    description = "Set ThinkPad keyboard backlight";
-#    wantedBy = [ "multi-user.target" ];
-#    after = [ "sysinit.target" ];
-#    serviceConfig = {
-#      Type = "oneshot";
-#      ExecStart = "${pkgs.bash}/bin/bash -c 'echo 2 > /sys/class/leds/tpacpi::kbd_backlight/brightness'";
-#    };
-#  };
 
   system.stateVersion = "25.05"; 
 }

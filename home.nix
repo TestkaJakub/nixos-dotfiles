@@ -1,6 +1,5 @@
 { config, pkgs, ... }:
 {
-#  home-manager.backupFileExtension = "backup";
   home = {
     username = "jakub";
     stateVersion = "25.05";
@@ -17,12 +16,10 @@
       wget
       pfetch-rs
       kitty
-      # app launchers
       fuzzel
-      wofi
+      obsidian
     ];
   };
-  #services.hyprpaper.enable = true;
 
   imports = [
     ./bash.nix
@@ -85,12 +82,10 @@
     enable = true;
     defaultEditor = true;
     plugins = with pkgs.vimPlugins; [
-      #gruvbox-material # theme
       solarized # theme ? 
       syntastic # syntax highlighting for many languages
       emmet-vim # :tag tag creation
       tabular # :tab tag for aligning stuff
-      
     ];
   };
 
@@ -152,7 +147,5 @@
   '';
 
   home.file.".config/qtile".source = ./qtile;
-
-  #home.file.".config/walker".source = ./walker;
 }
 
