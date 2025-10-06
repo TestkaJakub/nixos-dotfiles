@@ -95,7 +95,7 @@
 	  "$mod ALT, mouse:272, resizewindow"
         ];
 	exec-once = [
-          "hyprpaper";
+          "hyprpaper"
 	];
       };
     };
