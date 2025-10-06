@@ -55,6 +55,13 @@
     };
   };
 
+  programs.obsidian = {
+    enable = true;
+    vaults = [
+     ~/Obsidian/test
+    ];
+  };
+
   programs.home-manager = { 
     enable = true;
   };
