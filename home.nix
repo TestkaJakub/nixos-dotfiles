@@ -20,8 +20,8 @@
     hyprpaper = {
       enable = true;
       settings = {
-        preload = "~/Wallpapers/toradora.png";
-	wallpaper = ",~/Wallpaper/toradora.png";
+        preload = [ "~/Wallpapers/toradora.png" ];
+	wallpaper = [ ",~/Wallpaper/toradora.png" ];
       };
     };
   };
