@@ -20,7 +20,10 @@
     hyprpaper = {
       enable = true;
       settings = {
-        preload = [ "~/Wallpapers/toradora.png" ];
+        ipc = "on";
+	splash = false;
+	splash_offset = 2.0;
+	preload = [ "~/Wallpapers/toradora.png" ];
 	wallpaper = [ ",~/Wallpaper/toradora.png" ];
       };
     };
