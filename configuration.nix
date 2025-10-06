@@ -38,7 +38,7 @@ in
   };
 
   i18n = {
-    defaultLocale = "pl_PL.UTF-8";
+    defaultLocale = "en_US.UTF-8/UTF-8";
 
     supportedLocales = [
       "en_US.UTF-8/UTF-8"
