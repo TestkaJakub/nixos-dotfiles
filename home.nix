@@ -1,7 +1,5 @@
 { config, pkgs, ... }:
 {
-  allowUnfree = true;
-
   home = {
     username = "jakub";
     stateVersion = "25.05";

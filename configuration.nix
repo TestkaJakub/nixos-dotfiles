@@ -15,6 +15,8 @@ in
     users.jakub = import ./home.nix;
   };
 
+  nixpkgs.config.allowUnfree = true;
+
   boot.loader = {
     systemd-boot.enable = true;
     efi.canTouchEfiVariables = true;
