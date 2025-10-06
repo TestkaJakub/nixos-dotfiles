@@ -22,7 +22,12 @@
 
   programs.waybar = {
     enable = true;
-    style = builtins.readFile ./waybar/style.css;
+    style = ''
+      window#waybar {
+        background-color: blue;
+      }
+    '';
+#    style = builtins.readFile ./waybar/style.css;
     settings = {
       main = {
         modules-right = ["battery" "clock"];
