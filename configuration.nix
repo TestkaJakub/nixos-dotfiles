@@ -51,13 +51,6 @@ in
   time.timeZone = "Europe/Warsaw";
 
   services = {
-    xserver = {
-      enable = true;
-      xkb.layout = "pl";
-      xkb.variant = "";
-      #xkb.layout = "us,pl";
-      #xkb.options = "grp:win_space_toggle";
-    };
     displayManager = {
       enable = true;
       sddm = {

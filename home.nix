@@ -96,6 +96,11 @@
       enable = true;
       package = pkgs.hyprland;
       portalPackage = null;
+      extraConfig = ''
+        input {
+          kb_layout = pl
+	}
+      '';
       settings = {
         general = {
           border_size = 1;
