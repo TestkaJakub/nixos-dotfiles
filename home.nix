@@ -15,7 +15,7 @@
       
       # app launchers
       fuzzel
-      tofi
+      #tofi #crashes
       #rofi
       wofi
       walker
@@ -137,5 +137,7 @@
   '';
 
   home.file.".config/qtile".source = ./qtile;
+
+  home.file.".config/walker".source = ./walker;
 }
 
