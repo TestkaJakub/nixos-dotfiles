@@ -24,10 +24,9 @@
     enable = true;
     style = ''
       window#waybar {
-        background-color: blue;
+        background-color: rgba(ff5fd7ff);
       }
     '';
-#    style = builtins.readFile ./waybar/style.css;
     settings = {
       main = {
         modules-right = ["battery" "clock"];
