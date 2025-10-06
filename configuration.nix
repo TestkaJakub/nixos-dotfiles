@@ -94,7 +94,6 @@ in
     btop
     #xwallpaper
     pcmanfm
-    rofi
     pfetch-rs
     kitty
     hyprlock

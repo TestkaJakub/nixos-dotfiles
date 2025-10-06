@@ -15,11 +15,7 @@
       
       # app launchers
       fuzzel
-      #tofi #crashes
-      #rofi
       wofi
-      walker
-      raffi
     ];
   };
   #services.hyprpaper.enable = true;
@@ -138,6 +134,6 @@
 
   home.file.".config/qtile".source = ./qtile;
 
-  home.file.".config/walker".source = ./walker;
+  #home.file.".config/walker".source = ./walker;
 }
 
