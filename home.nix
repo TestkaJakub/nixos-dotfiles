@@ -43,7 +43,7 @@
     enable = true;
     settings = {
       colors = {
-        background = "#ff5fd7ff";
+        background = "#5f5fffff";
       };
     };
   };
