@@ -21,6 +21,15 @@
     enable = true;
   };
 
+  programs.fastfetch = {
+    enable = true;
+    settings = {
+      logo = {
+        type = "builtin";
+      };
+    };
+  };
+
   programs.alacritty = {
       enable = true;
       settings = {
