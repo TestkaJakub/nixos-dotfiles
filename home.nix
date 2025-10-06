@@ -136,7 +136,7 @@
         ];
 	exec-once = [
           "sleep 1 && hyprpaper"
-          "sleep 1 && hyprsunset"
+          "sleep 1 && hyprsunset --config ~/nixos-dotfiles/hypr/hyprsunset.conf"
 	  "waybar"
 	];
       };
