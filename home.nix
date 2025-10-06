@@ -16,9 +16,7 @@
   imports = [
     ./bash.nix
   ];
-  programs.hyprpaper = {
-    enable = true;
-  };
+
   programs.home-manager = { 
     enable = true;
   };
