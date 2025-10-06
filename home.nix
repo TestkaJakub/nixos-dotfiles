@@ -118,6 +118,7 @@
 	};
         "$mod" = "SUPER";
         bind = [
+	  "$mod, D, exec, fuzzel"
 	  "$mod, L, exec, bash kbm"
           "$mod, B, exec, firefox"
 	  "$mod, Q, exec, alacritty"
