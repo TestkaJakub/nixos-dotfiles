@@ -3,6 +3,7 @@
   home = {
     username = "jakub";
     stateVersion = "25.05";
+    sessionVariables.NIXOS_OZONE_WL = "1";
     packages = with pkgs; [
       bat
       btop
