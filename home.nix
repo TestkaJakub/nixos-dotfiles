@@ -146,7 +146,7 @@
   xdg.configFile."hypr/hyprsunset.conf".text = ''
     profile {
       time = 19:00
-      temperature = 20000
+      temperature = 8000
       gamma = 0.8
     }
 
