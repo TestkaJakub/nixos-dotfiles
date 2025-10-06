@@ -61,7 +61,7 @@
     systemd.target = "wayland-session.target";
     windowManager.hyprland = {
       enable = true;
-      package = null;
+      package = pkgs.hyprland;
       portalPackage = null;
       settings = {
         general = {
