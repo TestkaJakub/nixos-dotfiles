@@ -44,6 +44,7 @@
     settings = {
       colors = {
         background = "#5f5fffff";
+	selection = "#ff5fd7ff";
       };
     };
   };
