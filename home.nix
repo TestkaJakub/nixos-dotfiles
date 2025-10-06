@@ -144,7 +144,16 @@
   };
 
   xdg.configFile."hypr/hyprsunset.conf".text = ''
-    max-gamma = 70
+    profile {
+      time = 19:00
+      temperature = 5500
+      gamma = 0.8
+    }
+
+    profile {
+      time = 7:30
+      identity = true
+    }
   '';
 
   xdg.configFile."hypr/hyprpaper.conf".text = ''
