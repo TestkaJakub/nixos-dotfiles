@@ -136,25 +136,11 @@
         ];
 	exec-once = [
           "sleep 1 && hyprpaper"
-          "sleep 1 && hyprsunset --config ~/nixos-dotfiles/hypr/hyprsunset.conf"
 	  "waybar"
 	];
       };
     };
   };
-
-  xdg.configFile."hypr/hyprsunset.conf".text = ''
-    profile {
-      time = 19:00
-      temperature = 8000
-      gamma = 0.8
-    }
-
-    profile {
-      time = 7:30
-      identity = true
-    }
-  '';
 
   xdg.configFile."hypr/hyprpaper.conf".text = ''
     preload = ~/Wallpapers/toradora.png
