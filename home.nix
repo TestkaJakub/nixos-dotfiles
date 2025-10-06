@@ -13,7 +13,7 @@
       fastfetch
       hyprpaper
       git
-      hyperlock
+      hyprlock
       wget
       pfetch-rs
       kitty
