@@ -61,7 +61,7 @@
       enable = true;
       package = null;
       portalPackage = null;
-      config = {
+      extraConfig = {
         exec-once = [
           "hyprpaper -c ~/nixos-dotfiles/hyprpaper.conf"
 	];
