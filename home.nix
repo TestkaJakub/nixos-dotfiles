@@ -25,7 +25,7 @@
     enable = true;
     settings = {
       logo = {
-        type = "small";
+        type = "file";
       };
     };
   };
