@@ -24,7 +24,7 @@
     enable = true;
     style = ''
       window#waybar {
-        background-color: rgba(ff5fd7ff);
+        background-color: #ff5fd7ff;
       }
     '';
     settings = {
