@@ -11,11 +11,11 @@
       arduino-core
       arduino-cli
       fastfetch
-      # hyprpaper
+      hyprpaper
     ];
   };
 
-  services.hyprpaper.enable = true;
+  #services.hyprpaper.enable = true;
 
   imports = [
     ./bash.nix
