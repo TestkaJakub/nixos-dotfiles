@@ -89,6 +89,7 @@ in
     pfetch-rs
     kitty
     hyprlock
+    hyprpaper
     tokyo-night-sddm
     git
     (writeShellScriptBin "kbm" ''
