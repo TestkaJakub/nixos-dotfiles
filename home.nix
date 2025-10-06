@@ -58,7 +58,7 @@
   programs.obsidian = {
     enable = true;
     vaults = [
-     ~/Obsidian/test
+      ./../Obsidian/test     
     ];
   };
 
