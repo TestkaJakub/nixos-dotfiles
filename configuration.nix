@@ -88,17 +88,17 @@ in
   hardware.graphics.enable = true;
 
   environment.systemPackages = with pkgs; [
-    vim
-    wget
-    alacritty
-    btop
+    #vim
+    #wget
+    #alacritty
+    #btop
     #xwallpaper
-    pcmanfm
-    pfetch-rs
-    kitty
-    hyprlock
+    #pcmanfm
+    #pfetch-rs
+    #kitty
+    #hyprlock
     tokyo-night-sddm
-    git
+    #git
     (writeShellScriptBin "kbm" ''
       path="/sys/class/leds/tpacpi::kbd_backlight/brightness"
       max_path="/sys/class/leds/tpacpi::kbd_backlight/max_brightness"

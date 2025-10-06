@@ -12,7 +12,11 @@
       arduino-cli
       fastfetch
       hyprpaper
-      
+      git
+      hyperlock
+      wget
+      pfetch-rs
+      kitty
       # app launchers
       fuzzel
       wofi
