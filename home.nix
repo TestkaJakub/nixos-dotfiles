@@ -11,10 +11,17 @@
       arduino-core
       arduino-cli
       fastfetch
-      hyprpaper
+      #hyprpaper
+      hyprsunset
     ];
   };
 
+  services.hyprsunset = {
+    enable = true;
+    settings = {
+      max-gamma = 70;
+    };
+  };
   #services.hyprpaper.enable = true;
 
   imports = [
@@ -99,7 +106,7 @@
     };
   };
 
- home.file.".config/hyprpaper".source = ./hyprpaper;
+ #home.file.".config/hyprpaper".source = ./hyprpaper;
 
  home.file.".config/bat/config".text = ''
     --theme="Nord"
