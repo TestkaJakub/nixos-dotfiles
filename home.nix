@@ -12,12 +12,14 @@
       arduino-cli
       fastfetch
       hyprpaper
+      
+      # app launchers
       fuzzel
-      #tofi
+      tofi
       #rofi
-      #wofi
-      #walker
-      #raffi
+      wofi
+      walker
+      raffi
     ];
   };
   #services.hyprpaper.enable = true;
