@@ -99,10 +99,7 @@
     };
   };
 
- home.file.".config/hyprpaper/config".text = ''
-   --preload="~/Wallpaper/toradora.png"
-   --wallpaper="~/Wallpaper/toradora.png"
- '';
+ home.file.".config/hyprpaper".source = ./hyprpaper;
 
  home.file.".config/bat/config".text = ''
     --theme="Nord"
