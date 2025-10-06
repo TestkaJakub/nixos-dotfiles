@@ -20,6 +20,15 @@
     ./bash.nix
   ];
 
+  programs.waybar = {
+    enable = true;
+    settings = {
+      main = {
+        modules-right = ["clock"];
+      };
+    };
+  };
+
   programs.home-manager = { 
     enable = true;
   };
