@@ -1,6 +1,6 @@
 { config, pkgs, ... }:
 {
-  nixpkgs.config.allowUnfree = true;
+  allowUnfree = true;
 
   home = {
     username = "jakub";
