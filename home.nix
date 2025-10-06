@@ -39,6 +39,15 @@
     };
   };
 
+  programs.fuzzel = {
+    enable = true;
+    settings = {
+      main = {
+        colors.background = "ff5fd7";
+      };
+    };
+  };
+
   programs.home-manager = { 
     enable = true;
   };
