@@ -23,7 +23,6 @@
   programs.waybar = {
     enable = true;
     settings = {
-      name = "bar1";
       main = {
         modules-right = ["battery" "clock"];
 	
