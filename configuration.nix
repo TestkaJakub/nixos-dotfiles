@@ -61,7 +61,7 @@ in
       enable = true;
       settings = {
         preload = "~/Wallpapers/toradora.png";
-	wallpaper = ", ~/Wallpaper/toradora.png"
+	wallpaper = ", ~/Wallpaper/toradora.png";
       };
     };
   };
