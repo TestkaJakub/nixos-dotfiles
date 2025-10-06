@@ -57,13 +57,6 @@ in
     ACTION=="add", SUBSYSTEM=="leds", KERNEL=="tpacpi::kbd_backlight", \
       RUN+="${pkgs.coreutils}/bin/chmod 0666 /sys/class/leds/tpacpi::kbd_backlight/brightness"
   '';
-    hyprpaper = {
-      enable = true;
-      settings = {
-        preload = "~/Wallpapers/toradora.png";
-	wallpaper = ", ~/Wallpaper/toradora.png";
-      };
-    };
   };
 
   users.users.jakub = {
@@ -96,7 +89,6 @@ in
     pfetch-rs
     kitty
     hyprlock
-    hyprpaper
     tokyo-night-sddm
     git
     (writeShellScriptBin "kbm" ''

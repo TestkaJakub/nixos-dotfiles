@@ -16,7 +16,15 @@
   imports = [
     ./bash.nix
   ];
-
+  services = [
+    hyprpaper = {
+      enable = true;
+      settings = {
+        preload = "~/Wallpapers/toradora.png";
+	wallpaper = "~/Wallpaper/toradora.png";
+      };
+    };
+  ];
   programs.home-manager = { 
     enable = true;
   };
