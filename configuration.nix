@@ -46,14 +46,16 @@ in
     ];
   };
 
-  console.keyMap = "pl";
+  console.keyMap = "pl2";
 
   time.timeZone = "Europe/Warsaw";
 
   services = {
     xserver = {
-      xkb.layout = "us,pl";
-      xkb.options = "grp:win_space_toggle";
+      enable = true;
+      layout = "pl";
+      #xkb.layout = "us,pl";
+      #xkb.options = "grp:win_space_toggle";
     };
     displayManager = {
       enable = true;
