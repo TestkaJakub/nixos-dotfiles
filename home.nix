@@ -12,15 +12,7 @@
       arduino-cli
       fastfetch
       #hyprpaper
-      hyprsunset
     ];
-  };
-
-  services.hyprsunset = {
-    enable = true;
-    settings = {
-      max-gamma = 70;
-    };
   };
   #services.hyprpaper.enable = true;
 
