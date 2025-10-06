@@ -16,7 +16,7 @@
   imports = [
     ./bash.nix
   ];
-  services = [
+  services = {
     hyprpaper = {
       enable = true;
       settings = {
@@ -24,7 +24,7 @@
 	wallpaper = "~/Wallpaper/toradora.png";
       };
     };
-  ];
+  };
   programs.home-manager = { 
     enable = true;
   };
