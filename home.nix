@@ -11,23 +11,13 @@
       arduino-core
       arduino-cli
       fastfetch
+      hyprpaper
     ];
   };
   imports = [
     ./bash.nix
   ];
-  services = {
-    hyprpaper = {
-      enable = true;
-      settings = {
-        ipc = "on";
-	splash = false;
-	splash_offset = 2.0;
-	preload = [ "~/Wallpapers/toradora.png" ];
-	wallpaper = [ ",~/Wallpaper/toradora.png" ];
-      };
-    };
-  };
+
   programs.home-manager = { 
     enable = true;
   };
@@ -71,6 +61,11 @@
       enable = true;
       package = null;
       portalPackage = null;
+      config = {
+        exec-once = [
+          "hyprpaper -c ~/nixos-dotfiles/hyprpaper.conf"
+	];
+      };
       settings = {
         general = {
           border_size = 1;
