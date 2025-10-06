@@ -1,11 +1,11 @@
 {
   description = "Template: Node.js development environment";
 
-  outputs = { self, nixpkgs }: {
+  outputs = { self, nixpkgs }:
   let
     system = "x86_64-linux";
     pkgs = import nixpkgs { inherit system; };
-  in
+  in {
     templates.default = {
       path = ./.;
       description = "Reusable Node.js development environment template";
@@ -20,6 +20,7 @@
         echo "Welcome to your Node.js dev environment!"
 	echo "Node version $(node -v)"
 	echo "Yarn version $(yarn -v)"
+	export PS1="(node-dev) $PS1"
       '';
     };
   };
