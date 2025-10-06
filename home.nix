@@ -11,11 +11,20 @@
       arduino-core
       arduino-cli
       fastfetch
+      hyprpaper
     ];
   };
   imports = [
     ./bash.nix
   ];
+
+  programs.hyprpaper = {
+    enable = true;
+    settings = {
+      preload = "~/Wallpapers/toradora.png";
+      wallpaper = "monitor, ~/Wallpaper/toradora.png"
+    };
+  };
 
   programs.home-manager = { 
     enable = true;
@@ -23,11 +32,6 @@
 
   programs.fastfetch = {
     enable = true;
-    settings = {
-      logo = {
-        type = "file";
-      };
-    };
   };
 
   programs.alacritty = {
