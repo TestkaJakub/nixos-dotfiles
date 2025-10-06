@@ -35,6 +35,15 @@ in
     networkmanager.enable = true;
   };
 
+  i18n = {
+    defaultLocale = "pl_PL.UTF-8";
+
+    supportedLocales = [
+      "en_US.UTF-8/UTF-8"
+      "pl_PL.UTF-8/UTF-8"
+    ];
+  };
+
   time.timeZone = "Europe/Warsaw";
 
   services = {
