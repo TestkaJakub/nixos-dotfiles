@@ -54,6 +54,7 @@ in
     xserver = {
       enable = true;
       layout = "pl";
+      xkbVariant = "";
       #xkb.layout = "us,pl";
       #xkb.options = "grp:win_space_toggle";
     };
