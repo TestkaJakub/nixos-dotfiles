@@ -42,8 +42,8 @@
   programs.fuzzel = {
     enable = true;
     settings = {
-      main = {
-        "colors.background" = "#ff5fd7ff";
+      colors = {
+        background = "#ff5fd7ff";
       };
     };
   };
