@@ -47,6 +47,8 @@
 	selection = "#ff5fd7ff";
 	text = "#ffffffff";
 	selection-text = "#ffffffff";
+	selection-match = "#ff5fd7ff";
+	match = "#ffffffff";
       };
     };
   };
