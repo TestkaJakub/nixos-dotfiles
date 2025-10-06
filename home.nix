@@ -24,7 +24,7 @@
     enable = true;
     settings = {
       main = {
-        modules-right = ["clock" "battery"];
+        modules-right = ["battery" "clock"];
       };
     };
   };
