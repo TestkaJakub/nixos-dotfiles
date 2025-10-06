@@ -88,9 +88,9 @@
 	    size = 4;
 	  };
 	};
-#	misc = {
-#          disable_hyprland_logo = true;
-#	};
+        misc = {
+          disable_hyprland_logo = true;
+	};
         "$mod" = "SUPER";
         bind = [
 	  "$mod, L, exec, bash kbm"
