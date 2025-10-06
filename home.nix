@@ -11,9 +11,12 @@
       arduino-core
       arduino-cli
       fastfetch
-      hyprpaper
+      # hyprpaper
     ];
   };
+
+  services.hyprpaper.enable = true;
+
   imports = [
     ./bash.nix
   ];
@@ -61,11 +64,6 @@
       enable = true;
       package = null;
       portalPackage = null;
-      extraConfig = {
-        exec-once = [
-          "hyprpaper -c ~/nixos-dotfiles/hyprpaper.conf"
-	];
-      };
       settings = {
         general = {
           border_size = 1;
@@ -100,6 +98,11 @@
       };
     };
   };
+
+ home.file."config/hyprpaper/config".text = ''
+   --preload="~/Wallpaper/toradora.png"
+   --wallpaper="~/Wallpaper/toradora.png"
+ '';
 
  home.file.".config/bat/config".text = ''
     --theme="Nord"
