@@ -53,7 +53,7 @@ in
   services = {
     xserver = {
       xkb.layout = "us,pl";
-      xkbOptions = "grp:win_space_toggle";
+      xkb.options = "grp:win_space_toggle";
     };
     displayManager = {
       enable = true;
