@@ -27,7 +27,7 @@
         modules-right = ["battery" "clock"];
 	
       };
-      style = builtins.radFile ./waybar/style.css;
+      style = builtins.readFile ./waybar/style.css;
     };
   };
 
