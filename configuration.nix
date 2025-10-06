@@ -46,6 +46,8 @@ in
     ];
   };
 
+  console.keyMap = "pl";
+
   time.timeZone = "Europe/Warsaw";
 
   services = {
