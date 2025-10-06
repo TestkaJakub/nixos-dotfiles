@@ -22,7 +22,7 @@
     enable = true;
     settings = {
       preload = "~/Wallpapers/toradora.png";
-      wallpaper = "monitor, ~/Wallpaper/toradora.png"
+      wallpaper = "monitor, ~/Wallpaper/toradora.png";
     };
   };
 
