@@ -21,6 +21,7 @@
       obsidian
       hyprsunset
       scrcpy
+      wl-clipboard
     ];
   };
 
