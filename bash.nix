@@ -5,6 +5,7 @@
       nsc = "sudo nvim ~/nixos-dotfiles/configuration.nix";
       nhc = "sudo nvim ~/nixos-dotfiles/home.nix";
       nfc = "sudo nvim ~/nixos-dotfiles/flake.nix";
+      nbc = "sudo nvim ~/nixos-dotfiles/bash.nix";
     };
 
     initExtra = ''
@@ -63,17 +64,27 @@
       }
     
       nrs() {
-        OLDPDW=$(pwd)
-	cd ~/nixos-dotfiles || return 1
-	git add . || return 1
-	if ! git diff --cached --quiet; then
-	  git commit -m "upgrade $(date '+%Y-%m-%d %H:%M')" || return 1
-	fi
-	git push || return 1
-	sudo nixos-rebuild switch --flake ~/nixos-dotfiles#nixos
-	result=$?
-	cd "$OLDPDW" || return 1
-	return $result
+        OLDPWD=$(pwd)
+        cd ~/nixos-dotfiles || return 1
+
+        # Ensure we're on development branch
+        if ! git rev-parse --verify development &>/dev/null; then
+          echo "Branch 'development' does not exist locally. Creating it..."
+          git checkout -b development || return 1
+        else
+          git checkout development || return 1
+        fi
+
+        git add . || return 1
+        if ! git diff --cached --quiet; then
+          git commit -m "upgrade $(date '+%Y-%m-%d %H:%M')" || return 1
+        fi
+
+        git push -u origin development || return 1
+        sudo nixos-rebuild switch --flake ~/nixos-dotfiles#nixos
+        result=$?
+        cd "$OLDPWD" || return 1
+        return $result
       }
 
       nrsr() {
