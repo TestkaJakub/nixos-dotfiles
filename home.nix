@@ -85,6 +85,7 @@
     enable = true;
     defaultEditor = true;
     plugins = with pkgs.vimPlugins; [
+      nerdtree
       solarized # theme ? 
       syntastic # syntax highlighting for many languages
       emmet-vim # :tag tag creation
