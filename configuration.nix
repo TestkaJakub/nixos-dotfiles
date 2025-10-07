@@ -6,7 +6,7 @@ in
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      ./system/loacle.nix
+      ./system/locale.nix
       ./system/graphics.nix
       ./system/boot.nix
     ];
