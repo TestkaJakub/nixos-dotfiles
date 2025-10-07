@@ -39,11 +39,6 @@
   programs.home-manager.enable = true;
   programs.fastfetch.enable = true;
   programs.firefox.enable = true;
-  programs.hyprland = {
-    enable = true;
-    withUWSM = true;
-    xwayland.enable = true;
-  };
 
   home.file.".config/qtile".source = ./qtile;
 }
