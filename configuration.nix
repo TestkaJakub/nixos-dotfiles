@@ -10,6 +10,10 @@ in
       ./system/graphics.nix
       ./system/boot.nix
       ./services/displayManager.nix
+      ./services/networking.nix
+      ./services/udev.nix
+      ./users/jakub.nix
+      ./environment.nix
     ];
 
   home-manager = {
