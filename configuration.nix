@@ -9,6 +9,7 @@ in
       ./system/locale.nix
       ./system/graphics.nix
       ./system/boot.nix
+      ./services/displayManager.nix
     ];
 
   home-manager = {
