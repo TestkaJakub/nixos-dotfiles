@@ -35,15 +35,15 @@
     ./programs/waybar.nix
     ./wm/hyprland.nix
   ];
-
-  programs.home-manager = { 
+  
+  programs.home-manager.enable = true;
+  programs.fastfetch.enable = true;
+  programs.firefox.enable = true;
+  programs.hyprland {
     enable = true;
-  };
-
-  programs.fastfetch = {
-    enable = true;
+    withUWSM = true;
+    xwayland.enable = true;
   };
 
   home.file.".config/qtile".source = ./qtile;
 }
-

@@ -74,12 +74,12 @@ in
     ];
   };
 
-  programs.firefox.enable = true;
-  programs.hyprland = {
-    enable = true;
-    withUWSM = true;
-    xwayland.enable = true;
-  };
+#  programs.firefox.enable = true;
+#  programs.hyprland = {
+#    enable = true;
+#    withUWSM = true;
+#    xwayland.enable = true;
+#  };
 
   hardware.graphics.enable = true;
 
