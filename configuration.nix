@@ -31,27 +31,7 @@ in
     };
   };
 
-  networking = {
-    hostName = "nixos";
-    networkmanager.enable = true;
-  };
-
   time.timeZone = "Europe/Warsaw";
-
-  services = {
-    udev.extraRules = ''
-    ACTION=="add", SUBSYSTEM=="leds", KERNEL=="tpacpi::kbd_backlight", \
-      RUN+="${pkgs.coreutils}/bin/chmod 0666 /sys/class/leds/tpacpi::kbd_backlight/brightness"
-  '';
-  };
-
-  users.users.jakub = {
-    isNormalUser = true;
-    extraGroups = [ "wheel" "dialout" ]; 
-    packages = with pkgs; [
-      tree
-    ];
-  };
 
 #  programs.firefox.enable = true;
   programs.hyprland = {
@@ -60,43 +40,43 @@ in
     xwayland.enable = true;
   };
 
-  environment.systemPackages = with pkgs; [
-    (writeShellScriptBin "kbm" ''
-      path="/sys/class/leds/tpacpi::kbd_backlight/brightness"
-      max_path="/sys/class/leds/tpacpi::kbd_backlight/max_brightness"
+  # environment.systemPackages = with pkgs; [
+  #  (writeShellScriptBin "kbm" ''
+   #   path="/sys/class/leds/tpacpi::kbd_backlight/brightness"
+    #  max_path="/sys/class/leds/tpacpi::kbd_backlight/max_brightness"
+#
+ #     if [ ! -w "$path" ]; then
+  #      echo "Error: cannot write to $path" >&2
+      #  exit 1
+     # fi
 
-      if [ ! -w "$path" ]; then
-        echo "Error: cannot write to $path" >&2
-        exit 1
-      fi
+     # cur=$(cat "$path" 2>/dev/null || echo 0)
+     # max=$(cat "$max_path" 2>/dev/null || echo 2)
 
-      cur=$(cat "$path" 2>/dev/null || echo 0)
-      max=$(cat "$max_path" 2>/dev/null || echo 2)
+     # if [ "$#" -ge 1 ]; then
+       # val="$1"
+       # if [ "$val" -gt "$max" ]; then
+        #  val="$max"
+       # elif [ "$val" -lt 0 ]; then
+       #   val=0
+      #  fi
+     # else
+       # if ! [[ "$cur" =~ ^[0-9]+$ ]]; then
+        #  cur=0
+       # fi
+      #  val=$(( (cur + 1) % (max + 1) ))
+     # fi
 
-      if [ "$#" -ge 1 ]; then
-        val="$1"
-        if [ "$val" -gt "$max" ]; then
-          val="$max"
-        elif [ "$val" -lt 0 ]; then
-          val=0
-        fi
-      else
-        if ! [[ "$cur" =~ ^[0-9]+$ ]]; then
-          cur=0
-        fi
-        val=$(( (cur + 1) % (max + 1) ))
-      fi
+   #   echo "$val" > "$path"
+    #'')
+  #];
 
-      echo "$val" > "$path"
-    '')
-  ];
+  #environment.variables = {
+  #  PF_INFO = "ascii title os host kernel uptime pkgs memory";
+  #  PF_SOURCE = "";
+  #};
 
-  environment.variables = {
-    PF_INFO = "ascii title os host kernel uptime pkgs memory";
-    PF_SOURCE = "";
-  };
-
-  environment.sessionVariables.NIXOS_OZONE_WL = "1";
+  #environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
   system.stateVersion = "25.05"; 
 }
