@@ -30,23 +30,11 @@
     ./programs/alacritty.nix
     ./programs/fuzzel.nix
     ./programs/neovim.nix
+    ./programs/bat.nix
+    ./programs/hyprpaper.nix
+    ./programs/waybar.nix
     ./wm/hyprland.nix
   ];
-
-  programs.waybar = {
-    enable = true;
-    style = ''
-      window#waybar {
-        background-color: #ff5fd7;
-      }
-    '';
-    settings = {
-      main = {
-        modules-right = ["battery" "clock"];
-	
-      };
-    };
-  };
 
   programs.home-manager = { 
     enable = true;
@@ -55,17 +43,6 @@
   programs.fastfetch = {
     enable = true;
   };
-
-  xdg.configFile."hypr/hyprpaper.conf".text = ''
-    preload = ~/Wallpapers/toradora.png
-    wallpaper = , ~/Wallpapers/toradora.png
-  '';
-
-  home.file.".config/bat/config".text = ''
-     --theme="Nord"
-     --style="numbers,changes,grid"
-     --paging=auto
-   '';
 
   home.file.".config/qtile".source = ./qtile;
 }
