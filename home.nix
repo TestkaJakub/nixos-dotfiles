@@ -20,6 +20,7 @@
       fuzzel
       obsidian
       hyprsunset
+      scrcpy
     ];
   };
 
