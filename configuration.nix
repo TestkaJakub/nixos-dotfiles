@@ -38,16 +38,6 @@ in
   time.timeZone = "Europe/Warsaw";
 
   services = {
-    displayManager = {
-      enable = true;
-      sddm = {
-        enable = true;
-        theme = "tokyo-night-sddm";
-	wayland = {
-	  enable = true;
-	};
-      };
-    };
     udev.extraRules = ''
     ACTION=="add", SUBSYSTEM=="leds", KERNEL=="tpacpi::kbd_backlight", \
       RUN+="${pkgs.coreutils}/bin/chmod 0666 /sys/class/leds/tpacpi::kbd_backlight/brightness"
@@ -70,7 +60,6 @@ in
   };
 
   environment.systemPackages = with pkgs; [
-    tokyo-night-sddm
     (writeShellScriptBin "kbm" ''
       path="/sys/class/leds/tpacpi::kbd_backlight/brightness"
       max_path="/sys/class/leds/tpacpi::kbd_backlight/max_brightness"
