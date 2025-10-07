@@ -6,6 +6,6 @@
     '');
     useUserPackages = true;
     useGlobalPkgs = true;
-    users.jakub = import ../home/home.nix;
+    users.jakub = import ./home.nix;
   };
 }
