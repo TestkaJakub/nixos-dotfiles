@@ -28,6 +28,8 @@
   imports = [
     ./bash.nix
     ./programs/alacritty.nix
+    ./programs/fuzzel.nix
+    ./programs/neovim.nix
   ];
 
   programs.waybar = {
@@ -45,54 +47,12 @@
     };
   };
 
-  programs.fuzzel = {
-    enable = true;
-    settings = {
-      colors = {
-        background = "#5f5fffff";
-	selection = "#ff5fd7ff";
-	text = "#ffffffff";
-	selection-text = "#ffffffff";
-	prompt = "#ffffffff";
-	input = "#ffffffff";
-      };
-    };
-  };
-
   programs.home-manager = { 
     enable = true;
   };
 
   programs.fastfetch = {
     enable = true;
-  };
-
-#  programs.alacritty = {
-#      enable = true;
-#      settings = {
-#      	window = {
-#	  opacity = 0.9;
-#          padding = {
-#            x = 10;
-#	    y = 10;
-#	  };
-#	};
-  #      font.normal = {
-  #        family = "JetBrains Mono";
-  #        style = "Regular";
-  #      };
-  #    };
-  #  };
-  programs.neovim = {
-    enable = true;
-    defaultEditor = true;
-    plugins = with pkgs.vimPlugins; [
-      nerdtree
-      solarized # theme ? 
-      syntastic # syntax highlighting for many languages
-      emmet-vim # :tag tag creation
-      tabular # :tab tag for aligning stuff
-    ];
   };
 
   wayland = {
