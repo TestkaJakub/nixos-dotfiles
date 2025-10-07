@@ -6,6 +6,9 @@ in
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      ./system/loacle.nix
+      ./system/graphics.nix
+      ./system/boot.nix
     ];
 
   home-manager = {
@@ -16,11 +19,6 @@ in
   };
 
   nixpkgs.config.allowUnfree = true;
-
-  boot.loader = {
-    systemd-boot.enable = true;
-    efi.canTouchEfiVariables = true;
-  };
 
   nix = { 
     settings.experimental-features = [ "nix-command" "flakes" ];
@@ -36,16 +34,6 @@ in
     hostName = "nixos";
     networkmanager.enable = true;
   };
-
-  i18n = {
-    defaultLocale = "en_US.UTF-8";
-
-    extraLocales = [
-      "pl_PL.UTF-8/UTF-8"
-    ];
-  };
-
-  console.keyMap = "pl2";
 
   time.timeZone = "Europe/Warsaw";
 
@@ -80,8 +68,6 @@ in
     withUWSM = true;
     xwayland.enable = true;
   };
-
-  hardware.graphics.enable = true;
 
   environment.systemPackages = with pkgs; [
     tokyo-night-sddm
@@ -121,10 +107,6 @@ in
   };
 
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
-
-  fonts.packages = with pkgs; [
-    jetbrains-mono
-  ];
 
   system.stateVersion = "25.05"; 
 }
