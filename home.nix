@@ -27,6 +27,7 @@
 
   imports = [
     ./bash.nix
+    ./programs/alacritty.nix
   ];
 
   programs.waybar = {
@@ -66,22 +67,22 @@
     enable = true;
   };
 
-  programs.alacritty = {
-      enable = true;
-      settings = {
-      	window = {
-	  opacity = 0.9;
-          padding = {
-            x = 10;
-	    y = 10;
-	  };
-	};
-        font.normal = {
-          family = "JetBrains Mono";
-          style = "Regular";
-        };
-      };
-    };
+#  programs.alacritty = {
+#      enable = true;
+#      settings = {
+#      	window = {
+#	  opacity = 0.9;
+#          padding = {
+#            x = 10;
+#	    y = 10;
+#	  };
+#	};
+  #      font.normal = {
+  #        family = "JetBrains Mono";
+  #        style = "Regular";
+  #      };
+  #    };
+  #  };
   programs.neovim = {
     enable = true;
     defaultEditor = true;
