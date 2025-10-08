@@ -31,14 +31,12 @@
 
 	shellHook = ''
           export TMPDIR=/tmp
+          export FONTCONFIG_PATH=/etc/fonts
           export FONTCONFIG_FILE=${pkgs.fontconfig.out}/etc/fonts/fonts.conf
-	  export VK_ICD_FILENAMES=/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json
-          export LD_LIBRARY_PATH=${pkgs.lib.makeLibraryPath [ pkgs.libGL pkgs.vulkan-loader pkgs.glibc ]}
+          export LD_LIBRARY_PATH="/run/opengl-driver/lib:/run/opengl-driver/lib64:${pkgs.lib.makeLibraryPath [ pkgs.vulkan-loader pkgs.glibc ]}"
           export PS1="(steam-env) $PS1"
-          echo "🎮 Welcome to the Nix gaming shell!"
-          vulkaninfo | grep -m1 deviceName || echo "⚠️  Vulkan not detected!"
-          echo "Steam path: $(which steam)"
-          echo "Run: steam"
+          echo "🎮 Steam gaming shell ready (Wayland session: $XDG_SESSION_TYPE)"
+          echo "Run Steam (native Wayland): steam --enable-features=UseOzonePlatform --ozone-platform=wayland"
         '';
       };
     };
