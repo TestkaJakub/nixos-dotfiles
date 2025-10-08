@@ -9,7 +9,10 @@
   outputs = { self, nixpkgs }:
     let
       system = "x86_64-linux";
-      pkgs = import nixpkgs { inherit system; };
+      pkgs = import nixpkgs {
+        inherit system;
+        config.allowUfree = true;
+      };
     in {
       # Template declaration – so it’s importable as #steam
       templates.default = {
