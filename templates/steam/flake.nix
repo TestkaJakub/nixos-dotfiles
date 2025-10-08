@@ -11,7 +11,7 @@
       system = "x86_64-linux";
       pkgs = import nixpkgs {
         inherit system;
-        config.allowUfree = true;
+        config.allowUnfree = true;
       };
     in {
       # Template declaration – so it’s importable as #steam
@@ -29,10 +29,15 @@
           lutris
         ];
 
-        shellHook = ''
+	shellHook = ''
+          export TMPDIR=/tmp
+          export FONTCONFIG_FILE=${pkgs.fontconfig.out}/etc/fonts/fonts.conf
+          export LD_LIBRARY_PATH=${pkgs.lib.makeLibraryPath [ pkgs.libGL pkgs.vulkan-loader pkgs.glibc ]}
+          export PS1="(steam-env) $PS1"
           echo "🎮 Welcome to the Nix gaming shell!"
+          vulkaninfo | grep -m1 deviceName || echo "⚠️  Vulkan not detected!"
           echo "Steam path: $(which steam)"
-          echo "To play: steam"
+          echo "Run: steam"
         '';
       };
     };
