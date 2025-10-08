@@ -32,6 +32,7 @@
 	shellHook = ''
           export TMPDIR=/tmp
           export FONTCONFIG_FILE=${pkgs.fontconfig.out}/etc/fonts/fonts.conf
+	  export VK_ICD_FILENAMES=/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json
           export LD_LIBRARY_PATH=${pkgs.lib.makeLibraryPath [ pkgs.libGL pkgs.vulkan-loader pkgs.glibc ]}
           export PS1="(steam-env) $PS1"
           echo "🎮 Welcome to the Nix gaming shell!"
