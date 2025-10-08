@@ -29,6 +29,10 @@
           lutris
         ];
 
+        services.xserver.enable = true;
+        services.xserver.displayManager.startx.enable = false; # you only need the Xwayland pieces
+        hardware.opengl.driSupport32Bit = true;
+
 	shellHook = ''
           export TMPDIR=/tmp
           export FONTCONFIG_PATH=/etc/fonts
