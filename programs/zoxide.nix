@@ -3,8 +3,7 @@
   programs.zoxide = {
     enable = true;
     enableBashIntegration = true;
-    flags = [
-      "--cmd cd"
-    ];
   };
+
+  programs.bash.shellAliases.cd = "z";
 }
