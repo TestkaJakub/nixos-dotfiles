@@ -33,12 +33,13 @@
     ./programs/bat.nix
     ./programs/hyprpaper.nix
     ./programs/waybar.nix
+    ./programs/zoxide.nix
+    ./programs/fastfetch.nix
+    ./programs/firefox.nix
     ./wm/hyprland.nix
   ];
   
   programs.home-manager.enable = true;
-  programs.fastfetch.enable = true;
-  programs.firefox.enable = true;
 
   home.file.".config/qtile".source = ./qtile;
 }
