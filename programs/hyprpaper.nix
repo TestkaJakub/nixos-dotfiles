@@ -1,7 +1,7 @@
 { ... }:
 {
   xdg.configFile."hypr/hyprpaper.conf".text = ''
-    preload = ~/Wallpapers/toradora.png
-    wallpaper = , ~/Wallpapers/toradora.png
+    preload = ~/Wallpapers/makima.gif
+    wallpaper = , ~/Wallpapers/makima.gif
   '';
 }
