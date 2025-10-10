@@ -58,9 +58,9 @@
 	  "$mod SHIFT, 8, movetoworkspace, 8"
 	  "$mod SHIFT, 9, movetoworkspace, 9"
 
-	  "XF86AudioMute, exec, pamixer -t"
-          "XF86AudioLowerVolume, exec, pamixer --allow-boost -d 5"
-          "XF86AudioRaiseVolume, exec, pamixer --allow-boost -i 5"
+	  ",XF86AudioMute, exec, pamixer -t"
+          ",XF86AudioLowerVolume, exec, pamixer --allow-boost -d 5"
+          ",XF86AudioRaiseVolume, exec, pamixer --allow-boost -i 5"
 	];
         bindm = [
           "$mod, mouse:272, movewindow"
