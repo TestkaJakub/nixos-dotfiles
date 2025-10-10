@@ -24,7 +24,7 @@
             if [ "$muted" = "true" ]; then
               text="Muted"
             else
-              text="Vol: ${volume}%"
+              text="Vol: \${volume}%"
             fi
 
             echo "{\"text\": \"$text\", \"tooltip\": \"${text}\"}"
