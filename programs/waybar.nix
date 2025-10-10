@@ -10,8 +10,7 @@
       }
       .module {
         border: 1px solid #555555;
-	margin: 2x;
-	padding: 4px 8px;
+	padding: 0 8px;
       }
     '';
     settings = {
