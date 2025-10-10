@@ -19,10 +19,9 @@
         return-type = "json";
 
         exec = let
-          # Create the pamixer script as a Nix derivation
           pamixerStatus = pkgs.writeShellApplication {
             name = "pamixer-status";
-            runtimeInputs = [ pkgs.pamixer ];
+            runtimeInputs = [ pkgs.pamixer jq ];
             text = ''
               volume=$(pamixer --get-volume)
               muted=$(pamixer --get-mute)
@@ -30,10 +29,10 @@
               if [ "$muted" = "true" ]; then
                 text="Muted"
               else
-                text="Vol: ${volume}%"
+                text="Vol: \${volume}%"
               fi
 
-              echo "{\"text\": \"${text}\", \"tooltip\": \"${text}\"}"
+              echo "{\"text\": \"\${text}\", \"tooltip\": \"\${text}\"}"
             '';
           };
         in "${pamixerStatus}/bin/pamixer-status";
