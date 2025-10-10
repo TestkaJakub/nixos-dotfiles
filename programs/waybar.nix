@@ -8,7 +8,6 @@
 	font-family: "JetBrains Nerd Font", monospace;
 	font-size: 12px;
 	border: 1px solid #555555;
-	padding: -1px;
       }
       .module {
         border: 1px solid #555555;
