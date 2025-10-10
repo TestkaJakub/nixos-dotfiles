@@ -11,6 +11,7 @@
       .module {
         border: 1px solid #555555;
 	padding: 0 8px;
+	margin-right: -1px;
       }
     '';
     settings = {
