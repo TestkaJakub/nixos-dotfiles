@@ -14,25 +14,34 @@
         modules-right = [ "custom/pamixer" "battery" "clock" ];
 
 	"custom/pamixer" = {
-	  interval = 2;
-	  format = "{}";
-	  return-type = "json";
-	  exec = "${pkgs.writeShellScript "pamixer-status.sh" ''
-            volume=$(pamixer --get-volume)
-            muted=$(pamixer --get-mute)
+                  interval = 2;
+        format = "{}";
+        return-type = "json";
 
-            if [ "$muted" = "true" ]; then
-              text="Muted"
-            else
-              text="Vol: \${volume}%"
-            fi
+        exec = let
+          # Create the pamixer script as a Nix derivation
+          pamixerStatus = pkgs.writeShellApplication {
+            name = "pamixer-status";
+            runtimeInputs = [ pkgs.pamixer ];
+            text = ''
+              volume=$(pamixer --get-volume)
+              muted=$(pamixer --get-mute)
 
-            echo "{\"text\": \"$text\", \"tooltip\": \"${text}\"}"
-          ''}";
-	  on-click = "pamixer -t";
-	  on-scroll-up = "pamixer -i 5";
-	  on-scroll-down = "pamixer -d 5";
-	};
+              if [ "$muted" = "true" ]; then
+                text="Muted"
+              else
+                text="Vol: ${volume}%"
+              fi
+
+              echo "{\"text\": \"${text}\", \"tooltip\": \"${text}\"}"
+            '';
+          };
+        in "${pamixerStatus}/bin/pamixer-status";
+
+        on-click = "pamixer -t";
+        on-scroll-up = "pamixer -i 5";
+        on-scroll-down = "pamixer -d 5";
+        };
       };
     };
   };
