@@ -58,9 +58,9 @@
 	  "$mod SHIFT, 8, movetoworkspace, 8"
 	  "$mod SHIFT, 9, movetoworkspace, 9"
 
-	  "$mod, F1, exec, pamixer -t"
-          "$mod, F2, exec, pamixer --allow-boost -d 5"
-          "$mod, F3, exec, pamixer --allow-boost -i 5"
+	  "fn, F1, exec, pamixer -t"
+          "fn, F2, exec, pamixer --allow-boost -d 5"
+          "fn, F3, exec, pamixer --allow-boost -i 5"
 	];
         bindm = [
           "$mod, mouse:272, movewindow"
