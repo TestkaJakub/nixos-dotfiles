@@ -8,6 +8,11 @@
 	font-family: "JetBrains Nerd Font", monospace;
 	font-size: 12px;
       }
+      .module {
+        border: 1px solid #555555;
+	margin: 2x;
+	padding: 4px 8px;
+      }
     '';
     settings = {
       main = {
