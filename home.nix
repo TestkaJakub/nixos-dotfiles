@@ -22,6 +22,7 @@
       hyprsunset
       scrcpy
       wl-clipboard
+      pamixer
     ];
   };
 
