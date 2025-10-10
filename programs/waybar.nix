@@ -19,7 +19,7 @@
         modules-right = [ "custom/pamixer" "battery" "clock" ];
 
         battery = {
-          format = "battery {}";
+          format = "Pow: {}";
 	};
 
 	"custom/pamixer" = {
