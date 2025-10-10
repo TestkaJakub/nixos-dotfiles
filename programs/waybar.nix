@@ -18,21 +18,17 @@
 	  format = "audio {}%";
 	  return-type = "json";
 	  exec = "${pkgs.writeShellScript "pamixer-status.sh" ''
-	    volue=$(pamixer --get-volume)
-	    muted=$(pamixer --get-mute)
+            volume=$(pamixer --get-volume)
+            muted=$(pamixer --get-mute)
 
-	    if [ "$muted" = "true" ]; then
-              icon=""
-            elif [ "$volume" -lt 30 ]; then
-              icon=""
-            elif [ "$volume" -lt 70 ]; then
-              icon=""
-	    else
-              icon=""
+            if [ "$muted" = "true" ]; then
+              text="Muted"
+            else
+              text="Vol: ${volume}%"
             fi
 
-            echo "{\"text\": \"$icon $volume%\", \"tooltip\": \"Volume: $volume%\"}"
-	  ''}";
+            echo "{\"text\": \"$text\", \"tooltip\": \"${text}\"}"
+          ''}";
 	  on-click = "pamixer -t";
 	  on-scroll-up = "pamixer -i 5";
 	  on-scroll-down = "pamixer -d 5";
