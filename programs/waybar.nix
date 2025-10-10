@@ -18,8 +18,12 @@
       main = {
         modules-right = [ "custom/pamixer" "battery" "clock" ];
 
+        battery = {
+          format: "battery {}";
+	};
+
 	"custom/pamixer" = {
-          interval = 2;
+          interval = 1;
           format = "{}";
           return-type = "json";
 
