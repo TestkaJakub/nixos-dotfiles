@@ -15,7 +15,7 @@
 
 	"custom/pamixer" = {
 	  interval = 2;
-	  format = "audio {}%";
+	  format = "{}";
 	  return-type = "json";
 	  exec = "${pkgs.writeShellScript "pamixer-status.sh" ''
             volume=$(pamixer --get-volume)
