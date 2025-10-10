@@ -5,6 +5,8 @@
     style = ''
       window#waybar {
         background-color: #ff5fd7;
+	font-family: "JetBrains Nerd Font", monospace;
+	font-size: 12px;
       }
     '';
     settings = {
@@ -30,7 +32,10 @@
             fi
 
             echo "{\"text\": \"$icon $volume%\", \"tooltip\": \"Volume: $volume%\"}"
-	  ''
+	  ''}";
+	  on-click = "pamixer -t";
+	  on-scroll-up = "pamixer -i 5";
+	  on-scroll-down = "pamixer -d 5";
 	  };
 	};
       };
