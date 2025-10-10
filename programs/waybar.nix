@@ -30,7 +30,7 @@
             fi
 
             echo "{\"text\": \"$icon $volume%\", \"tooltip\": \"Volume: $volume%\"}"
-	  '';
+	  ''
 	  };
 	};
       };
