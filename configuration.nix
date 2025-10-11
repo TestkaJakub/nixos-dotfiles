@@ -28,8 +28,8 @@
   };
 
   systemd.tmpfiles.rules = [
-    # point /lib32/libbz2.so.1.0 at the correct 32‑bit bzip2 inside the Nix store
-    "L /lib32/libbz2.so.1.0 - - - - ${pkgs.pkgsi686Linux.bzip2.out}/lib/libbz2.so.1.0.8"
+    # make libbz2.so.1.0 visible to the 32‑bit loader
+    "L /lib32/libbz2.so.1.0 - - - - ${pkgs.pkgsi686Linux.bzip2.out}/lib/libbz2.so.1.0"
   ];
 
   environment.systemPackages = with pkgs; [
