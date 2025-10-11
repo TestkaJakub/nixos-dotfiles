@@ -14,12 +14,12 @@
       inputs.hyprlang.follows = "hyprland/hyprlang";
     };
   };
-  outputs = { self, nixpkgs, home-manager,  ... }:
+  outputs = { self, unstable, nixpkgs, home-manager,  ... }:
     let
       system = "x86_64-linux";
     in {
       nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-        inherit system;
+        specialArgs = { inherit system; inherit inputs; };
         modules = [
           ./configuration.nix
           home-manager.nixosModules.home-manager
