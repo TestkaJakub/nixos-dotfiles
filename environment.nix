@@ -2,6 +2,11 @@
 {
   environment = {
     systemPackages = with pkgs; [
+      (pkgsi686Linux.gtk2)
+  (pkgsi686Linux.pipewire)
+  (pkgsi686Linux.pulseaudio)
+  (pkgsi686Linux.libvdpau)
+  (pkgsi686Linux.bzip2)
       (writeShellScriptBin "kbm" ''
         path="/sys/class/leds/tpacpi::kbd_backlight/brightness"
         max_path="/sys/class/leds/tpacpi::kbd_backlight/max_brightness"
