@@ -29,7 +29,7 @@
       }
 
       #workspaces button.active {
-        background: #ffffff;
+        background: #ff78dd;
         color: #000000;
       }
 
