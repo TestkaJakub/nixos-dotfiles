@@ -23,9 +23,9 @@
     STEAM_NO_OVERLAY = "1";
   };
 
-  programs.steam = {
-    enable = true;
-  };
+  #programs.steam = {
+  #  enable = true;
+  #};
 
   systemd.tmpfiles.rules = [
     # make libbz2.so.1.0 visible to the 32‑bit loader
