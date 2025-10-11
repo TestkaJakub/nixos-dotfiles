@@ -68,7 +68,7 @@
 	  "$mod ALT, mouse:272, resizewindow"
         ];
 	exec-once = [
-          "sleep 1 && swww img /home/jakub/Wallpapers/makima.gif --transition-type grow --transition-step 90"
+          "swww-daemon & sleep 0.5 && swww img /home/jakub/Wallpapers/makima.gif --transition-type grow --transition-step 90"
 	  "waybar"
 	];
       };
