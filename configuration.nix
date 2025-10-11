@@ -29,9 +29,9 @@
 
   environment.systemPackages = with pkgs; [
     (pkgs.runCommand "bzip2-compat-32" { buildInputs = [ pkgsi686Linux.bzip2 ]; } ''
-      mkdir -p $out/lib32
-      target=$(ls ${pkgsi686Linux.bzip2.out}/lib/libbz2.so.1* | head -n1)
-      ln -s "$target" "$out/lib32/libbz2.so.1.0"
+      mkdir -p $out/lib
+      cp ${pkgsi686Linux.bzip2.out}/lib/libbz2.so.1.* $out/lib/
+      ln -s libbz2.so.1.* $out/lib/libbz2.so.1.0
     '')
   ];
 
