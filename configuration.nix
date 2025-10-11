@@ -17,46 +17,6 @@
 
   nixpkgs.config.allowUnfree = true;
 
-  environment.variables = {
-    STEAM_RUNTIME = "0";
-    PRESSURE_VESSEL = "0";
-    STEAM_NO_OVERLAY = "1";
-  };
-
-  programs.steam = {
-    enable = true;
-  };
-
-  systemd.tmpfiles.rules = [
-    # make libbz2.so.1.0 visible to the 32‑bit loader
-    "L /lib32/libbz2.so.1.0 - - - - ${pkgs.pkgsi686Linux.bzip2.out}/lib/libbz2.so.1.0"
-  ];
-
-  environment.systemPackages = with pkgs; [
-    (pkgs.runCommand "bzip2-compat-32" { buildInputs = [ pkgsi686Linux.bzip2 ]; } ''
-      mkdir -p $out/lib
-      cp ${pkgsi686Linux.bzip2.out}/lib/libbz2.so.1.* $out/lib/
-      ln -s libbz2.so.1.* $out/lib/libbz2.so.1.0
-    '')
-  ];
-
-  hardware.graphics = {
-    enable = true;
-    enable32Bit = true;
-    extraPackages = with pkgs; [
-      mesa
-      amdvlk
-    ];
-    extraPackages32 = with pkgs.pkgsi686Linux; [
-      mesa
-      gtk2
-      pipewire
-      pulseaudio
-      libvdpau
-      bzip2
-    ];
-  };
-
   nix = { 
     settings.experimental-features = [ "nix-command" "flakes" ];
 
@@ -68,6 +28,10 @@
   };
 
   time.timeZone = "Europe/Warsaw";
+
+  virtualisation.libvirtd.enable = true;
+  programs.virt-manager.enable = true;
+  users.users.jakub.extraGroups = [ "libvirtd" ];
 
   system.stateVersion = "25.05"; 
 }
