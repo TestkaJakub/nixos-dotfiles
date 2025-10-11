@@ -17,11 +17,18 @@
 
   nixpkgs.config.allowUnfree = true;
 
-  programs.steam.enable = true;
+  programs.steam = {
+    enable = true;
+    extraSessionCommands = ''
+      export STEAM_RUNTIME=0
+      export PRESSURE_VESSEL=0
+      export STEAM_NO_OVERLAY=1
+    '';
+  };
+
   hardware.graphics = {
     enable = true;
     enable32Bit = true;
-    drivers = [ "amdgpu" ];
     extraPackages = with pkgs; [
       mesa
       amdvlk
@@ -35,6 +42,7 @@
       bzip2
     ];
   };
+
   nix = { 
     settings.experimental-features = [ "nix-command" "flakes" ];
 
