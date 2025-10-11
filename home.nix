@@ -23,6 +23,7 @@
       scrcpy
       wl-clipboard
       pamixer
+      pastel
     ];
   };
 
