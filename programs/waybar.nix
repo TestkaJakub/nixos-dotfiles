@@ -17,6 +17,7 @@
     '';
     settings = {
       main = {
+        modules-left = [ "hyprland/workspaces" ];
         modules-right = [ "custom/network" "custom/pamixer" "battery" "clock" ];
 
         battery = {
