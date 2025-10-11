@@ -29,7 +29,7 @@
       mesa
     ];
     package = pkgs.mesa;
-    package32 pkgs.pkgsi686Linux.mesa;
+    package32 = pkgs.pkgsi686Linux.mesa;
   };
   nix = { 
     settings.experimental-features = [ "nix-command" "flakes" ];
