@@ -69,6 +69,7 @@
         ];
 	exec-once = [
 	  "sleep 1 && hyprpaper"
+	  "hyprctl setcursor /home/jakub/Cursor/cursor.ico 100px"
           #"swww-daemon & sleep 0.5 && swww img /home/jakub/Wallpapers/toradora.png --transition-type grow --transition-step 90"
 	  "waybar"
 	];
