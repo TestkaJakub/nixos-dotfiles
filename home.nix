@@ -42,5 +42,7 @@
   
   programs.home-manager.enable = true;
 
+  services.swww.enable = true;
+
   home.file.".config/qtile".source = ./qtile;
 }
