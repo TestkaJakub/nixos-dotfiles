@@ -34,7 +34,7 @@
       }
 
       #workspaces button.urgent {
-        background: #da70d6;
+        background: #ff92e4;
         color: #ffffff;
       }
     '';
