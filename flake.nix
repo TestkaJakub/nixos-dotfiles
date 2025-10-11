@@ -14,7 +14,7 @@
       inputs.hyprlang.follows = "hyprland/hyprlang";
     };
   };
-  outputs = { self, unstable, nixpkgs, home-manager,  ... }:
+  outputs = { self, unstable, nixpkgs, home-manager,  ... } @inputs:
     let
       system = "x86_64-linux";
     in {
