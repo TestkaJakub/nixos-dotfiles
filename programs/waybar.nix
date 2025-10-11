@@ -17,11 +17,33 @@
     '';
     settings = {
       main = {
-        modules-right = [ "custom/pamixer" "battery" "clock" ];
+        modules-right = [ "custom/network" "custom/pamixer" "battery" "clock" ];
 
         battery = {
           format = "Pow: {}%";
 	};
+
+	"custom/network" = {
+          interval = 5; # update every 5 seconds
+          format = "{}";
+          return-type = "json";
+
+          exec = let
+            networkStatus = pkgs.writeShellApplication {
+              name = "network-status";
+              runtimeInputs = [ pkgs.iw pkgs.iwgetid pkgs.gnugrep ];
+              checkPhase = "";
+              text = ''
+                ssid=$(iwgetid -r)
+                if [ -z "$ssid" ]; then
+                  ssid="No WiFi"
+                fi
+
+                echo "{\"text\": \"Net: $ssid\", \"tooltip\": \"Connected network: $ssid\"}"
+              '';
+            };
+          in "${networkStatus}/bin/network-status";
+        };
 
 	"custom/pamixer" = {
           interval = 1;
