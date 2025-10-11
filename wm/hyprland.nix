@@ -68,7 +68,7 @@
 	  "$mod ALT, mouse:272, resizewindow"
         ];
 	exec-once = [
-          "sleep 1 && hyprpaper"
+          "sleep 1 && swww"
 	  "waybar"
 	];
       };
