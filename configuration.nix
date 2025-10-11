@@ -27,6 +27,11 @@
     enable = true;
   };
 
+  systemd.tmpfiles.rules = [
+    # point /lib32/libbz2.so.1.0 at the correct 32‑bit bzip2 inside the Nix store
+    "L /lib32/libbz2.so.1.0 - - - - ${pkgs.pkgsi686Linux.bzip2.out}/lib/libbz2.so.1.0.8"
+  ];
+
   environment.systemPackages = with pkgs; [
     (pkgs.runCommand "bzip2-compat-32" { buildInputs = [ pkgsi686Linux.bzip2 ]; } ''
       mkdir -p $out/lib
