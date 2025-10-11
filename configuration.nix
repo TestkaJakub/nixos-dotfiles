@@ -20,9 +20,15 @@
   programs.steam.enable = true;
   hardware.graphics = {
     enable = true;
-    enable32Bit = true;
+    enable32Bit = true;  # critical for 32‑bit games like Binding of Isaac
+    extraPackages = with pkgs; [
+      mesa.drivers     # OpenGL / Vulkan drivers
+      amdvlk           # AMD Vulkan driver (RADV will also be used automatically)
+    ];
+    extraPackages32 = with pkgs.pkgsi686Linux; [
+      mesa.drivers
+    ];
   };
-
   nix = { 
     settings.experimental-features = [ "nix-command" "flakes" ];
 
