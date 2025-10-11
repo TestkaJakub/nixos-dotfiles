@@ -17,13 +17,14 @@
 
   nixpkgs.config.allowUnfree = true;
 
+  environment.variables = {
+    STEAM_RUNTIME = "0";
+    PRESSURE_VESSEL = "0";
+    STEAM_NO_OVERLAY = "1";
+  };
+
   programs.steam = {
     enable = true;
-    extraSessionCommands = ''
-      export STEAM_RUNTIME=0
-      export PRESSURE_VESSEL=0
-      export STEAM_NO_OVERLAY=1
-    '';
   };
 
   hardware.graphics = {
