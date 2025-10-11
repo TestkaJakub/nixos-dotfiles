@@ -68,7 +68,7 @@
 	  "$mod ALT, mouse:272, resizewindow"
         ];
 	exec-once = [
-	  "sleep 1 && hyprpaper /home/jakub/Wallpapers/toradora.png"
+	  "sleep 1 && hyprpaper"
           #"swww-daemon & sleep 0.5 && swww img /home/jakub/Wallpapers/toradora.png --transition-type grow --transition-step 90"
 	  "waybar"
 	];
