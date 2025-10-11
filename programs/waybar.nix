@@ -31,7 +31,7 @@
           exec = let
             networkStatus = pkgs.writeShellApplication {
             name = "network-status";
-            runtimeInputs = [ pkgs.iw pkgs.wireless-tools pkgs.gnugrep ];
+            runtimeInputs = [ pkgs.iw pkgs.wirelesstools pkgs.gnugrep ];
             checkPhase = "";
             text = ''
               ssid=$(iwgetid -r)
