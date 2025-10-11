@@ -14,6 +14,29 @@
 	padding: 0 8px;
 	margin-right: -1px;
       }
+      #workspaces {
+	padding: 0;
+        margin: 0;
+      }
+
+      #workspaces button {
+        padding: 0 5px;
+        margin: 0 1px;
+        border-radius: 4px;
+        background: transparent;
+        min-height: 0;
+        min-width: 0;
+      }
+
+      #workspaces button.active {
+        background: #ffffff;
+        color: #000000;
+      }
+
+      #workspaces button.urgent {
+        background: #ff0000;
+        color: #ffffff;
+      }
     '';
     settings = {
       main = {
