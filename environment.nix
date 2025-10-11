@@ -10,8 +10,9 @@
         val=$(( (cur + 1) % (max + 1) ))
         echo "$val" > "$path"
       '')
-    ];
 
+      inputs.rose-pine-hyprcursor.packages.${pkgs.system}.default
+    ];
     variables = {
       PF_INFO = "ascii title os host kernel uptime pkgs memory";
       PF_SOURCE = "";
