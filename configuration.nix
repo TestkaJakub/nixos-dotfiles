@@ -41,6 +41,13 @@
       pulseaudio
       libvdpau
       bzip2
+
+      
+      # Small wrapper that adds the expected SONAME link
+      (pkgs.runCommand "bzip2-compat-32" { buildInputs = [ pkgsi686Linux.bzip2 ]; } ''
+        mkdir -p $out/lib
+        ln -s ${pkgsi686Linux.bzip2.out}/lib/libbz2.so.1.* $out/lib/libbz2.so.1.0
+      '')
     ];
   };
 
