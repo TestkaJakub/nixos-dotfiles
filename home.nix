@@ -37,12 +37,11 @@
     ./programs/zoxide.nix
     ./programs/fastfetch.nix
     ./programs/firefox.nix
+    ./services/swww.nix
     ./wm/hyprland.nix
   ];
   
   programs.home-manager.enable = true;
-
-  services.swww.enable = true;
 
   home.file.".config/qtile".source = ./qtile;
 }
