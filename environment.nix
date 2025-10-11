@@ -12,6 +12,8 @@
       '')
 
       inputs.rose-pine-hyprcursor.packages.${pkgs.system}.default
+      vulkan-tools
+      mangohud
     ];
     variables = {
       PF_INFO = "ascii title os host kernel uptime pkgs memory";

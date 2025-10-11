@@ -17,6 +17,9 @@
 
   nixpkgs.config.allowUnfree = true;
 
+  programs.steam.enable = true;
+  hardware.opengl.enable = true;
+
   nix = { 
     settings.experimental-features = [ "nix-command" "flakes" ];
 
