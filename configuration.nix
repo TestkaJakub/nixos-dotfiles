@@ -17,6 +17,8 @@
 
   nixpkgs.config.allowUnfree = true;
 
+  environment.systemPackages = [ pkgs.android-studio ];
+
   nix = { 
     settings.experimental-features = [ "nix-command" "flakes" ];
 
