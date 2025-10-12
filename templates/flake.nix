@@ -8,9 +8,9 @@
         description = "Node.js development environment";
       };
 
-      steam = {
-        path = ./steam;
-        description = "Steam + Gaming environment";
+      android-studio = {
+        path = ./android-studio;
+        description = "Android development environment";
       };
     };
   };
