@@ -9,7 +9,7 @@
       syntastic # syntax highlighting for many languages
       emmet-vim # :tag tag creation
       tabular # :tab tag for aligning stuff
-      nvim-svelte
+      vim-svelte
     ];
   };
 }
