@@ -9,7 +9,7 @@
       };
       android-dev = {
         path = ./android-dev;
-	description = "SaladinAyyub's solution for android development"
+	description = "SaladinAyyub's solution for android development";
       };
     };
   };
