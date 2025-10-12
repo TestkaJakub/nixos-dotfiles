@@ -8,6 +8,9 @@
       inherit system;
       config = {
         allowUnfree = true;
+	permittedInsecurePackages = [
+          "python-2.7.18.8" # Or whatever the exact version string is from the error
+        ];
       };
     };
   in {
