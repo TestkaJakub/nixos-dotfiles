@@ -2,11 +2,7 @@
 {
   environment = {
     systemPackages = with pkgs; [
-      (pkgsi686Linux.gtk2)
-  (pkgsi686Linux.pipewire)
-  (pkgsi686Linux.pulseaudio)
-  (pkgsi686Linux.libvdpau)
-  (pkgsi686Linux.bzip2)
+      discord
       (writeShellScriptBin "kbm" ''
         path="/sys/class/leds/tpacpi::kbd_backlight/brightness"
         max_path="/sys/class/leds/tpacpi::kbd_backlight/max_brightness"
@@ -17,8 +13,6 @@
       '')
 
       inputs.rose-pine-hyprcursor.packages.${pkgs.system}.default
-      vulkan-tools
-      mangohud
     ];
     variables = {
       PF_INFO = "ascii title os host kernel uptime pkgs memory";
