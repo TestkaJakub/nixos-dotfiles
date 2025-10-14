@@ -37,7 +37,6 @@
 
   networking.firewall = {
     enable = true;
-    interfaces."eth0".allowedTCPPorts = [ 5173 ];
   };
 
   system.stateVersion = "25.05"; 
