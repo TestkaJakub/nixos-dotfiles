@@ -12,7 +12,10 @@
   };
   options.wayland.windowManager.mango.autostart_sh = lib.mkOption {
     type = lib.types.lines;
-    default = "";
+    default = ''
+      sleep 1 && hyprpaper
+      waybar
+    '';
     description = "Autostart script for Mango WM.";
   };
 

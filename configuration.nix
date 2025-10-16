@@ -19,15 +19,6 @@
 
   nixpkgs.config.allowUnfree = true;
 
-  environment.systemPackages = with pkgs; [ 
-    unzip 
-    foot
-    wmenu
-    wl-clipboard
-    grim
-    swaybg
-  ];
-
   nix = { 
     settings.experimental-features = [ "nix-command" "flakes" ];
 
