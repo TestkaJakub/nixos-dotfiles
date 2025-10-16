@@ -5,7 +5,9 @@
   options.wayland.windowManager.mango.enable = lib.mkEnableOption "Mango WM for Wayland";
   options.wayland.windowManager.mango.settings = lib.mkOption {
     type = lib.types.lines;
-    default = "";
+    default = ''
+      bind=SUPER, d, spawn firefox
+    '';
     description = "Configuration for Mango WM.";
   };
   options.wayland.windowManager.mango.autostart_sh = lib.mkOption {
