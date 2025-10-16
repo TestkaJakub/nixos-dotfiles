@@ -3,6 +3,10 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
     unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    mangowc = {
+      url = "github:DreamMaoMao/mangowc";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     hyprland.url = "github:hyprwm/hyprland?ref=v0.36.0";
     home-manager = {
       url = "github:nix-community/home-manager/release-25.05";
@@ -14,7 +18,7 @@
       inputs.hyprlang.follows = "hyprland/hyprlang";
     };
   };
-  outputs = { self, unstable, nixpkgs, home-manager,  ... } @inputs:
+  outputs = { self, unstable, nixpkgs, home-manager, mangowc,  ... } @inputs:
     let
       system = "x86_64-linux";
     in {
@@ -24,6 +28,7 @@
 	  inherit inputs;
 	};
         modules = [
+	  mangowc.nixos.default
           ./configuration.nix
           home-manager.nixosModules.home-manager
         ];
