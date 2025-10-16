@@ -28,7 +28,7 @@
 	  inherit inputs;
 	};
         modules = [
-	  mangowc.nixosModules.hm-modules
+	  mangowc.nixosModules.default
           ./configuration.nix
           home-manager.nixosModules.home-manager
         ];
