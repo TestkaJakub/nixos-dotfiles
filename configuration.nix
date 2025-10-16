@@ -15,7 +15,7 @@
       ./programs/hyprland.nix
     ];
   
-  programs.mangowc.enable = true;
+  programs.mango.enable = true;
 
   nixpkgs.config.allowUnfree = true;
 
