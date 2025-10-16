@@ -1,15 +1,37 @@
-{ config, pkgs, ... }:
+# in modules/mango-home.nix
+{ lib, config, pkgs, ... }:
+
 {
-    wayland = {
-    systemd.target = "wayland-session.target";
-    windowManager.mango = {
-      enable = true;
-      settings = ''
-      
-      '';
-      autostart_sh = ''
-      '';
-    };
+  options.wayland.windowManager.mango.enable = lib.mkEnableOption "Mango WM for Wayland";
+  options.wayland.windowManager.mango.settings = lib.mkOption {
+    type = lib.types.lines;
+    default = "";
+    description = "Configuration for Mango WM.";
+  };
+  options.wayland.windowManager.mango.autostart_sh = lib.mkOption {
+    type = lib.types.lines;
+    default = "";
+    description = "Autostart script for Mango WM.";
+  };
+
+  config = lib.mkIf config.wayland.windowManager.mango.enable {
+    home.packages = [ pkgs.mangowc ]; # or the actual package name
+    xdg.configFile."mango/config".text = config.wayland.windowManager.mango.settings;
+    xdg.configFile."mango/autostart.sh".text = config.wayland.windowManager.mango.autostart_sh;
+  };
+}
+#{ config, pkgs, ... }:
+#{
+#    wayland = {
+#    systemd.target = "wayland-session.target";
+#    windowManager.mango = {
+#      enable = true;
+#      settings = ''
+#      
+#      '';
+#      autostart_sh = ''
+#      '';
+#    };
    #windowManager.hyprland = {
     #  enable = true;
     #  package = pkgs.hyprland;
@@ -83,5 +105,5 @@
 #	];
  #     };
   #  };
-  };
-}
+ # };
+#}
