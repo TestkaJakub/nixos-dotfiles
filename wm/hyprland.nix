@@ -6,7 +6,7 @@
   options.wayland.windowManager.mango.settings = lib.mkOption {
     type = lib.types.lines;
     default = ''
-      bind=SUPER, d, spawn firefox
+      bind=SUPER, b, spawn firefox 
     '';
     description = "Configuration for Mango WM.";
   };
