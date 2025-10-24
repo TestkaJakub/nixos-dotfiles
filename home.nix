@@ -4,6 +4,7 @@
 let
   confDir = ./home-config;
   moduleFiles = [
+    "bash.nix"
     "alacritty.nix"
     "fuzzel.nix"
     "neovim.nix"

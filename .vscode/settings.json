@@ -1,0 +1,26 @@
+{
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true
+  },
+  "hide-files.files": [],
+  "cSpell.words": [
+    "btop",
+    "fastfetch",
+    "fuzzel",
+    "hyprpaper",
+    "libvirtd",
+    "mangowc",
+    "pamixer",
+    "pfetch",
+    "qtile",
+    "scrcpy",
+    "swww",
+    "virt",
+    "virtualisation",
+    "waybar"
+  ]
+}
