@@ -12,8 +12,10 @@
       ./users/jakub.nix
       ./environment.nix
       ./home-manager.nix
-      ./programs/hyprland.nix
+#      ./programs/hyprland.nix
     ];
+  
+  programs.mango.enable = true;
 
   nixpkgs.config.allowUnfree = true;
 
@@ -28,6 +30,14 @@
   };
 
   time.timeZone = "Europe/Warsaw";
+
+  virtualisation.libvirtd.enable = true;
+  programs.virt-manager.enable = true;
+  users.users.jakub.extraGroups = [ "libvirtd" ];
+
+  networking.firewall = {
+    enable = true;
+  };
 
   system.stateVersion = "25.05"; 
 }

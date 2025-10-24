@@ -1,9 +1,32 @@
-{ config, pkgs, ... }:
+# home.nix
+{ config, pkgs, lib, ... }:
+
+let
+  confDir = ./home-config;
+  moduleFiles = [
+    "alacritty.nix"
+    "fuzzel.nix"
+    "neovim.nix"
+    "bat.nix"
+    "hyprpaper.nix"
+    "waybar.nix"
+    "zoxide.nix"
+    "fastfetch.nix"
+    "firefox.nix"
+    "swww.nix"
+    "mango.nix"
+  ];
+
+  modules = map (file: confDir + ("/" + file)) moduleFiles;
+in
 {
+  imports = modules;
+
   home = {
     username = "jakub";
     stateVersion = "25.05";
     sessionVariables.NIXOS_OZONE_WL = "1";
+
     packages = with pkgs; [
       bat
       btop
@@ -11,34 +34,21 @@
       arduino-core
       arduino-cli
       fastfetch
-      hyprpaper
-      git
-      hyprlock
       wget
       pfetch-rs
       kitty
       fuzzel
       obsidian
-      hyprsunset
       scrcpy
       wl-clipboard
+      pamixer
+      pastel
     ];
   };
 
-  imports = [
-    ./bash.nix
-    ./programs/alacritty.nix
-    ./programs/fuzzel.nix
-    ./programs/neovim.nix
-    ./programs/bat.nix
-    ./programs/hyprpaper.nix
-    ./programs/waybar.nix
-    ./wm/hyprland.nix
-  ];
-  
   programs.home-manager.enable = true;
-  programs.fastfetch.enable = true;
-  programs.firefox.enable = true;
 
-  home.file.".config/qtile".source = ./qtile;
+  wayland.windowManager.mango.enable = true;
+
+  home.file.".config/qtile".source = confDir + "/qtile";
 }
