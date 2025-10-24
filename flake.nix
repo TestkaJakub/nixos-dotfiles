@@ -28,12 +28,8 @@
         modules = [
           ./main.nix
           home-manager.nixosModules.home-manager
-
           {
-            home-manager.users.${user} =
-              import ./home.nix {
-                inherit pkgs system inputs user;
-              };
+            home-manager.users.${user} = import ./home.nix;
           }
 
           mangowc.nixosModules.mango
