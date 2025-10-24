@@ -32,7 +32,6 @@ in
 
   virtualisation.libvirtd.enable = true;
   programs.virt-manager.enable = true;
-  users.users.jakub.extraGroups = [ "libvirtd" ];
 
   environment.systemPackages = [ tokyo-night-sddm ];
 }
