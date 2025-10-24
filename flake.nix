@@ -18,7 +18,7 @@
     in {
       nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
         inherit system;
-        specialArgs = { inherit system version user; };
+        specialArgs = { inherit system version user inputs; };
         modules = [
           ./main.nix
           home-manager.nixosModules.home-manager
