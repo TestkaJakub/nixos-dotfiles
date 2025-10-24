@@ -12,29 +12,27 @@
 
   outputs = { self, nixpkgs, home-manager, mangowc, ... } @ inputs:
     let
+      version = "25.05";
       system  = "x86_64-linux";
       user    = "jakub";
-      version = "25.05";
       pkgs = import nixpkgs { inherit system; config.allowUnfree = true; };
     in {
-      nixosConfigurations.${system} =
-        nixpkgs.lib.nixosSystem {
-          inherit system;
+      # 👇 must be nixosConfigurations.nixos (the hostname you’ll use)
+      nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
+        inherit system;
 
-          # Global arguments – visible to every NixOS module (incl. home-manager)
-          specialArgs = { inherit system version user inputs; };
+        specialArgs = { inherit system version user inputs; };
 
-          modules = [
-            ./main.nix
-            home-manager.nixosModules.home-manager
-            {
-              # 👇 repeat specialArgs for Home‑Manager itself
-              home-manager.extraSpecialArgs = { inherit system version user inputs pkgs; };
-
-              home-manager.users.${user} = import ./home.nix;
-            }
-            mangowc.nixosModules.mango
-          ];
-        };
+        modules = [
+          ./main.nix
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.extraSpecialArgs =
+              { inherit system version user inputs pkgs; };
+            home-manager.users.${user} = import ./home.nix;
+          }
+          mangowc.nixosModules.mango
+        ];
+      };
     };
 }
