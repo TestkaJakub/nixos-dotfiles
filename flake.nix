@@ -10,7 +10,7 @@
     mangowc.url = "github:DreamMaoMao/mangowc";
   };
 
-  outputs = { self, nixpkgs, home-manager, mangowc, ... }:
+  outputs = { self, nixpkgs, home-manager, mangowc, ... } @ inputs:
     let
       version = "25.05";
       system = "x86_64-linux";
