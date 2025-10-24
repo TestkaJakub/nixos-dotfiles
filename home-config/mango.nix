@@ -18,9 +18,9 @@ in
     configFile = lib.mkOption {
       type = lib.types.lines;
       default = ''
-        bind = "SUPER,b,spawn,firefox"
-        bind = "SUPER,t,spawn,alacritty"
-        exec-once = "~/.config/mango/autostart.sh"
+        bind=SUPER,b,spawn,firefox
+        bind=SUPER,q,spawn,alacritty
+        exec-once = ~/.config/mango/autostart.sh
       '';
       description = "Main Mango configuration file.";
     };
