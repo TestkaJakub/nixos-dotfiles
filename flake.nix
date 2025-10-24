@@ -15,6 +15,11 @@
       version = "25.05";
       system = "x86_64-linux";
       user = "jakub";
+
+      pkgs = import nixpkgs {
+        inherit system;
+        config.allowUnfree = true;
+      };
     in {
       nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
         inherit system;
