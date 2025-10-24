@@ -12,7 +12,7 @@
       ./users/jakub.nix
       ./environment.nix
       ./home-manager.nix
-      ./programs/hyprland.nix
+#      ./programs/hyprland.nix
     ];
   
   programs.mango.enable = true;
