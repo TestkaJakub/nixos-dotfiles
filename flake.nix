@@ -1,37 +1,30 @@
 {
-  description = "My system configuration";
+  description = "Welcome to my NixOs configuration";
+
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
-    unstable.url = "github:nixos/nixpkgs/nixos-unstable";
-    mangowc = {
-      url = "github:DreamMaoMao/mangowc";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    hyprland.url = "github:hyprwm/hyprland?ref=v0.36.0";
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.05";
+      url = "github:nix-community/home-manager/release-${version}";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    rose-pine-hyprcursor = {
-      url = "github:ndom91/rose-pine-hyprcursor";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.hyprlang.follows = "hyprland/hyprlang";
-    };
+    mangowc.url = "github:DreamMaoMao/mangowc";
   };
-  outputs = { self, unstable, nixpkgs, home-manager, mangowc,  ... } @inputs:
+
+  outputs = { self, nixpkgs, home-manager, mangowc, ... }:
     let
+      version = "25.05";
       system = "x86_64-linux";
+      user = "jakub";
     in {
       nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-        specialArgs = {
-	  inherit system;
-	  inherit inputs;
-	};
+        inherit system;
+        specialArgs = { inherit system version user; };
         modules = [
-	  mangowc.nixosModules.mango
-          ./configuration.nix
+          ./main.nix
           home-manager.nixosModules.home-manager
+          { home-manager.users.${user} = import ./home.nix; }
+          mangowc.nixosModules.mango
         ];
       };
-  };
+    };
 }
