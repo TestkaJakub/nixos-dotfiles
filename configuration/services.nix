@@ -1,4 +1,4 @@
-{ pkgs, lib, config, ... }:
+{ pkgs, lib, config, user, ... }:
 
 let
   tokyo-night-sddm =
@@ -14,7 +14,16 @@ in
     };
   };
 
-  programs.mango.enable = true;
+
+  users.users.jakub = {
+    isNormalUser = true;
+    group = user;
+    extraGroups = [ "wheel" "dialout" "libvirtd" ];
+    shell = pkgs.bashInteractive;
+  };
+
+  users.groups.jakub = {};
+    programs.mango.enable = true;
 
   services.udev.extraRules = ''
     ACTION=="add", SUBSYSTEM=="leds", KERNEL=="tpacpi::kbd_backlight", \
