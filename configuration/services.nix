@@ -33,5 +33,5 @@
   virtualisation.libvirtd.enable = true;
   programs.virt-manager.enable = true;
 
-  environment.systemPackages = [ tokyo-night-sddm ];
+  # environment.systemPackages = [ tokyo-night-sddm ];
 }
