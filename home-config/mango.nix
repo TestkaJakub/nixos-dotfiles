@@ -1,31 +1,63 @@
 { lib, config, pkgs, inputs, ... }:
 
+let
+  # Simplify references
+  cfg = config.wayland.windowManager.mango;
+
+in
 {
-  options.wayland.windowManager.mango.enable =
-    lib.mkEnableOption "Enable Mango window manager for Wayland";
+  options.wayland.windowManager.mango = {
+    enable = lib.mkEnableOption "Enable Mango window manager for Wayland";
 
-  options.wayland.windowManager.mango.settings = lib.mkOption {
-    type = lib.types.lines;
-    default = ''
-      bind=SUPER, b, spawn firefox
-      bind=SUPER, t, spawn alacritty
-    '';
-    description = "Configuration for Mango window manager";
+    package = lib.mkOption {
+      type = lib.types.package;
+      default = inputs.mangowc.packages.${pkgs.system}.default;
+      description = "The MangoWC compositor package to use.";
+    };
+
+    configFile = lib.mkOption {
+      type = lib.types.lines;
+      default = ''
+        bind = "SUPER,b,spawn,firefox"
+        bind = "SUPER,t,spawn,alacritty"
+        exec-once = "~/.config/mango/autostart.sh"
+      '';
+      description = "Main Mango configuration file.";
+    };
+
+    autostartScript = lib.mkOption {
+      type = lib.types.lines;
+      default = ''
+        #!/usr/bin/env bash
+        sleep 1
+        hyprpaper &
+        waybar &
+      '';
+      description = "Autostart script for Mango window manager.";
+    };
   };
 
-  options.wayland.windowManager.mango.autostart_sh = lib.mkOption {
-    type = lib.types.lines;
-    default = ''
-      sleep 1 && hyprpaper
-      waybar
-    '';
-    description = "Autostart script for Mango window manager.";
-  };
+  config = lib.mkIf cfg.enable {
+    # Install MangoWC
+    home.packages = [ cfg.package ];
 
-  config = lib.mkIf config.wayland.windowManager.mango.enable {
-    home.packages = [ inputs.mangowc.packages.${pkgs.system}.default ];
-    xdg.configFile."mango/config".text = config.wayland.windowManager.mango.settings;
-    xdg.configFile."mango/autostart.sh".text =
-      config.wayland.windowManager.mango.autostart_sh;
+    # Mango config file
+    xdg.configFile."mango/config.toml".text = cfg.configFile;
+
+    # Executable autostart script
+    xdg.configFile."mango/autostart.sh" = {
+      text = cfg.autostartScript;
+      executable = true;
+    };
+
+    # Desktop session entry so SDDM can launch Mango
+    xdg.dataFile."wayland-sessions/mangowc.desktop".text = ''
+      [Desktop Entry]
+      Name=MangoWC
+      Comment=Mango window manager
+      Exec=mangowc --config ~/.config/mango/config.toml
+      Type=Application
+      DesktopNames=MangoWC
+    '';
   };
 }
