@@ -1,4 +1,4 @@
-{ lib, config, pkgs, ... }:
+{ lib, config, pkgs, inputs, ... }:
 
 {
   options.wayland.windowManager.mango.enable =
@@ -19,12 +19,13 @@
       sleep 1 && hyprpaper
       waybar
     '';
-    description = "Autostart script for Mango window manager";
+    description = "Autostart script for Mango window manager.";
   };
 
   config = lib.mkIf config.wayland.windowManager.mango.enable {
-    home.packages = [ pkgs.mangowc ];
+    home.packages = [ inputs.mangowc.packages.${pkgs.system}.default ];
     xdg.configFile."mango/config".text = config.wayland.windowManager.mango.settings;
-    xdg.configFile."mango/autostart.sh".text = config.wayland.windowManager.mango.autostart_sh;
+    xdg.configFile."mango/autostart.sh".text =
+      config.wayland.windowManager.mango.autostart_sh;
   };
 }
