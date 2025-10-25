@@ -61,6 +61,9 @@ in
 	bordercolor=0x5f5fffff
 
 	unfocused_opacity=0.5
+
+	fadein_begin_opacity=0.5
+	fadeout_begin_opacity=0.8
       '';
       description = "Main Mango configuration file.";
     };
