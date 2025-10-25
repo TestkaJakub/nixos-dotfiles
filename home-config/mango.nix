@@ -58,13 +58,7 @@ in
 	bind=alt,l,exchange_client,right
 
         focuscolor=0xff5fd7ff
-	bordercolor=0x5f5fffff
-
-	unfocused_opacity=0.5
-	focused_opacity=0.8
-
-	fadein_begin_opacity=0.5
-	fadeout_begin_opacity=0.8
+	bordercolor=0x5f5ffff
       '';
       description = "Main Mango configuration file.";
     };
