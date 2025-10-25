@@ -17,7 +17,7 @@ in
 
     configFile = lib.mkOption {
       type = lib.types.lines;
-      default = ''
+      binds = ''
         # reload config
         bind=ALT,r,reload_config
         # menu and terminal
