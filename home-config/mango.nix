@@ -42,7 +42,7 @@ in
     home.packages = [ cfg.package ];
 
     # Mango config file
-    xdg.configFile."mango/config.toml".text = cfg.configFile;
+    xdg.configFile."mango/config.conf".text = cfg.configFile;
 
     # Executable autostart script
     xdg.configFile."mango/autostart.sh" = {
@@ -55,7 +55,7 @@ in
       [Desktop Entry]
       Name=MangoWC
       Comment=Mango window manager
-      Exec=mangowc --config ~/.config/mango/config.toml
+      Exec=mangowc --config ~/.config/mango/config.conf
       Type=Application
       DesktopNames=MangoWC
     '';
