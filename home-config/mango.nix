@@ -21,13 +21,24 @@ in
         bind=super,r,reload_config
         bind=super,q,spawn,alacritty
         bind=super,b,spawn,firefox
-	bind=super,d,spawn,fuzzel
-	bind=super,w,killclient
+	bind=super,f,spawn,fuzzel
+	bind=super,e,killclient
+
 	bind=super,Tab,focusstack,next
+	
 	bind=super,Left,focusdir,left
+	bind=super,a,focusdir,left
+	
 	bind=super,Right,focusdir,right
+	bind=super,d,focusdir,right
+	
 	bind=super,Up,focusdir,up
-	bind=super,Down,docusdir,dowm
+	bind=super,w,focusdir,up
+
+	bind=super,Down,focusdir,dowm
+	bind=super,s,focusdir,down
+
+	bind=super,v,togglemaxmizescreen
       '';
       description = "Main Mango configuration file.";
     };
