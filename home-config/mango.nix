@@ -25,17 +25,10 @@ in
 	bind=super,e,killclient
 
 	bind=super,Tab,focusstack,next
-	
-	bind=super,Left,focusdir,left
-	bind=super,a,focusdir,left
-	
-	bind=super,Right,focusdir,right
-	bind=super,d,focusdir,right
-	
-	bind=super,Up,focusdir,up
-	bind=super,w,focusdir,up
 
-	bind=super,Down,focusdir,dowm
+	bind=super,a,focusdir,left
+	bind=super,d,focusdir,right
+	bind=super,w,focusdir,up
 	bind=super,s,focusdir,down
 
         bind=super,x,togglefullscreen
@@ -58,11 +51,6 @@ in
 	bind=super,i,setlayout,scroller
 	bind=super,o,switch_layout
 	bind=super,p,togglegaps
-
-	bind=super,k,smartmovewin,up
-	bind=super,j,smartmovewin,down
-	bind=super,h,smartmovewin,left
-	bind=super,l,smartmovewin,right
 
 	bind=alt,k,exchange_client,up
 	bind=alt,j,exchange_client,down
