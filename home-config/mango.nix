@@ -18,10 +18,11 @@ in
     configFile = lib.mkOption {
       type = lib.types.lines;
       default = ''
-        bind=ALT,r,reload_config
-        bind=ALT,q,spawn,alacritty
-        bind=ALT,b,spawn,firefox
+        bind=super,r,reload_config
+        bind=super,q,spawn,alacritty
+        bind=super,b,spawn,firefox
 	bind=super,d,spawn,fuzzel
+	bind=super,w,quit
       '';
       description = "Main Mango configuration file.";
     };
