@@ -22,7 +22,7 @@ in
         bind=super,q,spawn,alacritty
         bind=super,b,spawn,firefox
 	bind=super,d,spawn,fuzzel
-	bind=super,w,quit
+	bind=super,w,killclient
       '';
       description = "Main Mango configuration file.";
     };
