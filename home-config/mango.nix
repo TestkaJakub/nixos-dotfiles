@@ -58,7 +58,7 @@ in
 	bind=alt,l,exchange_client,right
 
         focuscolor=0xff5fd7ff
-	bordercolor=0xff5fdff
+	bordercolor=0x5f5fffff
       '';
       description = "Main Mango configuration file.";
     };
