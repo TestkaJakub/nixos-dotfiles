@@ -23,6 +23,11 @@ in
         bind=super,b,spawn,firefox
 	bind=super,d,spawn,fuzzel
 	bind=super,w,killclient
+	bind=super,Tab,focusstack,next
+	bind=super,Left,focusdir,left
+	bind=super,Right,focusdir,right
+	bind=super,Up,focusdir,up
+	bind=super,Down,docusdir,dowm
       '';
       description = "Main Mango configuration file.";
     };
