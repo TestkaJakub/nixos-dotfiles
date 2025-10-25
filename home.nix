@@ -9,7 +9,6 @@ let
     "fuzzel.nix"
     "neovim.nix"
     "bat.nix"
-    "hyprpaper.nix"
     "waybar.nix"
     "zoxide.nix"
     "fastfetch.nix"
@@ -44,6 +43,7 @@ in
       wl-clipboard
       pamixer
       pastel
+      hyprpaper
     ];
   };
 

@@ -30,7 +30,7 @@ in
       default = ''
         #!/usr/bin/env bash
         sleep 1
-        hyprpaper &
+        hyprpaper --config ~/nixos-dotfiles/home-config/hyprpaper.conf &
         waybar &
       '';
       description = "Autostart script for Mango window manager.";
@@ -42,7 +42,7 @@ in
     home.packages = [ cfg.package ];
 
     # Mango config file
-    xdg.configFile."mango/config.toml".text = cfg.configFile;
+    xdg.configFile."mango/config.conf".text = cfg.configFile;
 
     # Executable autostart script
     xdg.configFile."mango/autostart.sh" = {
@@ -55,7 +55,7 @@ in
       [Desktop Entry]
       Name=MangoWC
       Comment=Mango window manager
-      Exec=mangowc --config ~/.config/mango/config.toml
+      Exec=mangowc --config ~/.config/mango/config.conf
       Type=Application
       DesktopNames=MangoWC
     '';
