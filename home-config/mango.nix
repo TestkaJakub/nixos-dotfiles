@@ -38,7 +38,7 @@ in
 	bind=super,Down,focusdir,dowm
 	bind=super,s,focusdir,down
 
-        bind=super+alt,v,togglefullscreen
+        bind=super,x,togglefullscreen
 	bind=super,v,togglemaxmizescreen
 	bind=super,c,togglefloating
       '';
