@@ -38,7 +38,7 @@ in
 	bind=super,Down,focusdir,dowm
 	bind=super,s,focusdir,down
 
-	bind=super,v,togglefullscreen
+	bind=super,v,togglemaxmizescreen
 	bind=super,c,togglefloating
       '';
       description = "Main Mango configuration file.";
