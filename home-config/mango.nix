@@ -21,7 +21,7 @@ in
         bind=ALT,r,reload_config
         bind=ALT,q,spawn,alacritty
         bind=ALT,b,spawn,firefox
-	bind=super,d,spawn,fuzzle
+	bind=super,d,spawn,fuzzel
       '';
       description = "Main Mango configuration file.";
     };
