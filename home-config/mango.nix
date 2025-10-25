@@ -51,6 +51,9 @@ in
 	bind=super,7,comboview,7
 	bind=super,8,comboview,8
 	bind=super,9,comboview,9
+
+	bind=super,i,incnmaster,+1
+	bind=super,p,incnmaster,-1
       '';
       description = "Main Mango configuration file.";
     };
