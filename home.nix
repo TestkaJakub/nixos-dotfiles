@@ -43,6 +43,7 @@ in
       wl-clipboard
       pamixer
       pastel
+      hyprpaper
     ];
   };
 
