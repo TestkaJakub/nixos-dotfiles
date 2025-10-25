@@ -52,8 +52,12 @@ in
 	bind=super,8,comboview,8
 	bind=super,9,comboview,9
 
-	bind=super,i,incnmaster,+1
-	bind=super,p,incnmaster,-1
+	bind=super,t,setlayout,tile
+	bind=super,y,setlayout,vertical_grid
+	bind=super,u,setlayout,spiral
+	bind=super,i,setlayout,scroller
+	bind=super,o,switch_layout
+	bind=super,p,togglegaps
       '';
       description = "Main Mango configuration file.";
     };
