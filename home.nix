@@ -1,9 +1,10 @@
 # home.nix
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, inputs, system, ... }:
 
 let
   confDir = ./home-config;
   moduleFiles = [
+    "bash.nix"
     "alacritty.nix"
     "fuzzel.nix"
     "neovim.nix"

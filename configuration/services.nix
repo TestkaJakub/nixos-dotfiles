@@ -1,15 +1,15 @@
 { pkgs, lib, config, user, ... }:
 
-let
-  tokyo-night-sddm =
-    pkgs.libsForQt5.callPackage ../tokyo-night-sddm/default.nix { };
-in
+#let
+#  tokyo-night-sddm =
+#    pkgs.libsForQt5.callPackage ../tokyo-night-sddm/default.nix { };
+#in
 {
   services.displayManager = {
     enable = true;
     sddm = {
       enable = true;
-      theme = "tokyo-night-sddm";
+      #theme = "tokyo-night-sddm";
       wayland.enable = true;
     };
   };
@@ -32,7 +32,6 @@ in
 
   virtualisation.libvirtd.enable = true;
   programs.virt-manager.enable = true;
-  users.users.jakub.extraGroups = [ "libvirtd" ];
 
-  environment.systemPackages = [ tokyo-night-sddm ];
+  # environment.systemPackages = [ tokyo-night-sddm ];
 }
