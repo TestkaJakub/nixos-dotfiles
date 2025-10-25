@@ -58,6 +58,16 @@ in
 	bind=super,i,setlayout,scroller
 	bind=super,o,switch_layout
 	bind=super,p,togglegaps
+
+	bind=super,k,smartmovewin,up
+	bind=super,j,smartmovewin,down
+	bind=super,h,smartmovewin,left
+	bind=super,l,smartmovewin,right
+
+	bind=alt,k,exchange_client,up
+	bind=alt,j,exchange_client,down
+	bind=alt,h,exchange_client,left
+	bind=alt,l,exchange_client,right
       '';
       description = "Main Mango configuration file.";
     };
