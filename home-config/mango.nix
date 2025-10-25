@@ -41,6 +41,16 @@ in
         bind=super,x,togglefullscreen
 	bind=super,v,togglemaxmizescreen
 	bind=super,c,togglefloating
+
+	bind=super,1,comboview,1
+	bind=super,2,comboview,2
+	bind=super,3,comboview,3
+	bind=super,4,comboview,4
+	bind=super,5,comboview,5
+	bind=super,6,comboview,6
+	bind=super,7,comboview,7
+	bind=super,8,comboview,8
+	bind=super,9,comboview,9
       '';
       description = "Main Mango configuration file.";
     };
