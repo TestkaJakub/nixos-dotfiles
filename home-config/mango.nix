@@ -30,7 +30,7 @@ in
       default = ''
         #!/usr/bin/env bash
         sleep 1
-        hyprpaper &
+        hyprpaper --config ~/nixos-dotfiles/home-config/hyprpaper.conf &
         waybar &
       '';
       description = "Autostart script for Mango window manager.";
