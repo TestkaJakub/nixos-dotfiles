@@ -19,6 +19,7 @@
         SDL2
         openal
         faudio
+	gamemode
       ];
     };
   };
