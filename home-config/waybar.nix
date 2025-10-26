@@ -96,11 +96,11 @@
               devices=$($cmd | awk '{$1=""; print substr($0,2)}')
 
               if [ -z "$devices" ]; then
-                echo '{"text": " none", "tooltip": "No Bluetooth devices connected"}'
+                echo '{"text": "none", "tooltip": "No Bluetooth devices connected"}'
               else
                 tooltip="Connected Bluetooth devices:\n$devices"
                 first_device=$(echo "$devices" | head -n1)
-                echo "{\"text\": \" $first_device\", \"tooltip\": \"$tooltip\"}"
+                echo "{\"text\": \"$first_device\", \"tooltip\": \"$tooltip\"}"
               fi
             '';
     	  };
