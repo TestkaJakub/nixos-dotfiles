@@ -46,7 +46,7 @@
         battery = {
           interval = 5;
 	  format = "Pow: {}%";
-	  format-charging = "Pow: {}% | charging";
+	  format-charging = "Pow: {}% charging";
 	};
 
         "custom/network" = {
