@@ -96,7 +96,7 @@
 
                 # If no devices connected
                 if [ -z "$devices_raw" ]; then
-                  echo '{"text": " none", "tooltip": "No Bluetooth devices connected"}'
+                  echo '{"text": "BT none", "tooltip": "No Bluetooth devices connected"}'
                   exit 0
                 fi
 
@@ -134,7 +134,7 @@
                 # Fallback if parsing failed
                 [ -z "$display_text" ] && display_text="unknown"
 
-                echo "{\"text\": \" $display_text\", \"tooltip\": \"$tooltip\"}"
+                echo "{\"text\": \"BT $display_text\", \"tooltip\": \"$tooltip\"}"
               '';
             };
           in "${btStatus}/bin/bt-status";
