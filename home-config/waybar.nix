@@ -77,37 +77,58 @@
           in "${networkStatus}/bin/network-status";
         };
 	"custom/bluetooth" = {
-          interval = 5;
-          format = "{}";
-          return-type = "json";
-          exec = let
-          btStatus = pkgs.writeShellApplication {
-            name = "bt-status";
-            runtimeInputs = [ pkgs.bluez pkgs.gnugrep pkgs.gawk pkgs.coreutils ];
-            checkPhase = "";
-            text = ''
-              # Pick the right command for this BlueZ version
-              if bluetoothctl --help | grep -q "connected-devices"; then
-                cmd="bluetoothctl connected-devices"
-              else
-                cmd="bluetoothctl devices Connected"
-              fi
+  	  interval = 8;
+  	  format = "{}";
+  	  return-type = "json";
 
-              devices=$($cmd | awk '{$1=""; print substr($0,2)}')
+            exec = let
+    	      btStatus = pkgs.writeShellApplication {
+      		name = "bt-status";
+      		runtimeInputs = [ pkgs.bluez pkgs.gnugrep pkgs.gawk pkgs.coreutils ];
+      		checkPhase = "";
+		text = ''
+        	  # Use compatible detection command
+        	  if bluetoothctl --help | grep -q "connected-devices"; then
+          	    devices_raw=$(bluetoothctl connected-devices)
+        	  else
+          	    devices_raw=$(bluetoothctl devices Connected)
+        	  fi
 
-              if [ -z "$devices" ]; then
-                echo '{"text": "none", "tooltip": "No Bluetooth devices connected"}'
-              else
-                tooltip="Connected Bluetooth devices:\n$devices"
-                first_device=$(echo "$devices" | head -n1)
-                echo "{\"text\": \"$first_device\", \"tooltip\": \"$tooltip\"}"
-              fi
-            '';
-    	  };
-  	  in "${btStatus}/bin/bt-status";
+        	  if [ -z "$devices_raw" ]; then
+          	    echo '{"text": " none", "tooltip": "No Bluetooth devices connected"}'
+          	    exit 0
+        	  fi
 
-  	  on-click = "blueman-manager";
-	};
+        	  display_text=""
+        	  tooltip="Connected Bluetooth devices:\n"
+
+        	  echo "$devices_raw" | while read -r _ mac name_rest; do
+          	  [ -z "$mac" ] && continue
+
+                  name=$(echo "$name_rest" | sed 's/^[[:space:]]*//')
+                  battery=$(bluetoothctl info "$mac" | grep "Battery Percentage" | grep -o "[0-9]\\+%" || true)
+
+                  if [ -n "$battery" ]; then
+                    entry="$name ($battery)"
+                  else
+                    entry="$name"
+                  fi
+
+                  tooltip="$tooltip$entry\n"
+                  if [ -z "$display_text" ]; then
+                    display_text="$entry"
+                  else
+                    display_text="$display_text, $entry"
+                  fi
+                done
+
+                echo "{\"text\": \" $display_text\", \"tooltip\": \"$tooltip\"}"
+              '';
+            };
+          in "${btStatus}/bin/bt-status";
+
+          on-click = "blueman-manager";
+        };
 	"custom/pamixer" = {
           interval = 1;
           format = "{}";
