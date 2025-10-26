@@ -92,7 +92,7 @@
           in "${networkStatus}/bin/network-status";
 
           # Open nmtui when clicked (change 'foot' to your preferred terminal)
-          on-click = "foot -e nmtui";
+          on-click = "alacritty -e nmtui";
         };
 	"custom/bluetooth" = {
           interval = 8;
