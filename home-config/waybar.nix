@@ -41,7 +41,7 @@
     settings = {
       main = {
         modules-left = [ "ext/workspaces" ];
-        modules-right = [ "custom/network" "custom/pamixer" "battery" "clock" ];
+        modules-right = [ "custom/bluetooth" "custom/network" "custom/pamixer" "battery" "clock" ];
 
         battery = {
           interval = 5;
@@ -75,6 +75,30 @@
             '';
           };
           in "${networkStatus}/bin/network-status";
+        };
+	"custom/bluetooth" = {
+          interval = 5;
+          format = "{}";
+          return-type = "json";
+          exec = let
+            btStatus = pkgs.writeShellApplication {
+              name = "bt-status";
+              runtimeInputs = [ pkgs.bluez pkgs.gawk pkgs.coreutils ];
+              checkPhase = "";
+              text = ''
+                devices=$(bluetoothctl connected-devices | awk -F' ' '{print $2 " " $3}')
+                if [ -z "$devices" ]; then
+                  echo '{"text": "BT: none", "tooltip": "No Bluetooth devices connected"}'
+                else
+                  tooltip="Connected Bluetooth devices:\n$devices"
+                  echo "{\"text\": \"BT: $(echo $devices | head -n1)\", \"tooltip\": \"$tooltip\"}"
+                fi
+              '';
+            };
+          in "${btStatus}/bin/bt-status";
+  
+          # Optional interactivity
+          on-click = "blueman-manager";
         };
 	"custom/pamixer" = {
           interval = 1;
