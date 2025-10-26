@@ -76,37 +76,43 @@
           };
           in "${networkStatus}/bin/network-status";
         };
-	"custom/bluetooth" = {
-  	  interval = 8;
-  	  format = "{}";
-  	  return-type = "json";
+        "custom/bluetooth" = {
+          interval = 8;
+          format = "{}";
+          return-type = "json";
 
-            exec = let
-    	      btStatus = pkgs.writeShellApplication {
-      		name = "bt-status";
-      		runtimeInputs = [ pkgs.bluez pkgs.gnugrep pkgs.gawk pkgs.coreutils ];
-      		checkPhase = "";
-		text = ''
-        	  # Use compatible detection command
-        	  if bluetoothctl --help | grep -q "connected-devices"; then
-          	    devices_raw=$(bluetoothctl connected-devices)
-        	  else
-          	    devices_raw=$(bluetoothctl devices Connected)
-        	  fi
+          exec = let
+            btStatus = pkgs.writeShellApplication {
+              name = "bt-status";
+              runtimeInputs = [ pkgs.bluez pkgs.gnugrep pkgs.gawk pkgs.coreutils ];
+              checkPhase = "";
+              text = ''
+                # Pick working command
+                if bluetoothctl --help | grep -q "connected-devices"; then
+                  devices_raw=$(bluetoothctl connected-devices)
+                else
+                  devices_raw=$(bluetoothctl devices Connected)
+                fi
 
-        	  if [ -z "$devices_raw" ]; then
-          	    echo '{"text": "BT none", "tooltip": "No Bluetooth devices connected"}'
-          	    exit 0
-        	  fi
+                # If no devices connected
+                if [ -z "$devices_raw" ]; then
+                  echo '{"text": " none", "tooltip": "No Bluetooth devices connected"}'
+                  exit 0
+                fi
 
-        	  display_text=""
-        	  tooltip="Connected Bluetooth devices:\n"
+                display_text=""
+                tooltip="Connected Bluetooth devices:\n"
 
-        	  echo "$devices_raw" | while read -r _ mac name_rest; do
-          	  [ -z "$mac" ] && continue
+                # Use a temporary file to loop without losing scope
+                tmpfile=$(mktemp)
+                echo "$devices_raw" > "$tmpfile"
 
-                  name=$(echo "$name_rest" | sed 's/^[[:space:]]*//')
-                  battery=$(bluetoothctl info "$mac" | grep "Battery Percentage" | grep -o "[0-9]\\+%" || true)
+                while read -r _ mac rest; do
+                  [ -z "$mac" ] && continue
+                  name=$(echo "$rest" | sed 's/^[[:space:]]*//')
+
+                  # Try to read the battery percentage
+                  battery=$(bluetoothctl info "$mac" 2>/dev/null | grep "Battery Percentage" | grep -o "[0-9]\\+%" || true)
 
                   if [ -n "$battery" ]; then
                     entry="$name ($battery)"
@@ -115,21 +121,27 @@
                   fi
 
                   tooltip="$tooltip$entry\n"
+
                   if [ -z "$display_text" ]; then
                     display_text="$entry"
                   else
                     display_text="$display_text, $entry"
                   fi
-                done
+                done < "$tmpfile"
 
-                echo "{\"text\": \"BT $display_text\", \"tooltip\": \"$tooltip\"}"
+                rm -f "$tmpfile"
+
+                # Fallback if parsing failed
+                [ -z "$display_text" ] && display_text="unknown"
+
+                echo "{\"text\": \" $display_text\", \"tooltip\": \"$tooltip\"}"
               '';
             };
           in "${btStatus}/bin/bt-status";
 
           on-click = "blueman-manager";
         };
-	"custom/pamixer" = {
+        "custom/pamixer" = {
           interval = 1;
           format = "{}";
           return-type = "json";
