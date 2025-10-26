@@ -48,12 +48,12 @@
 	  format = "Pow: {}%";
 	  format-charging = "Pow: {}% charging";
 	};
-	"ext/workspaces": {
-    	  "format": "{icon}",
-    	  "ignore-hidden": true,
-    	  "on-click": "activate",
-    	  "on-click-right": "deactivate",
-    	  "sort-by-id": true,
+	"ext/workspaces" = {
+    	  format = "{icon}",
+    	  "ignore-hidden" = true,
+    	  "on-click" = "activate",
+    	  "on-click-right" = "deactivate",
+    	  "sort-by-id" = true,
   	},
         "custom/network" = {
           interval = 5;
