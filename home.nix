@@ -44,6 +44,7 @@ in
       pamixer
       pastel
       hyprpaper
+      anki-bin
     ];
   };
 
