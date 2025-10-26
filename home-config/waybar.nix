@@ -40,7 +40,7 @@
     '';
     settings = {
       main = {
-        modules-left = [ "wlr/workspaces" ];
+        modules-left = [ "ext/workspaces" ];
         modules-right = [ "custom/network" "custom/pamixer" "battery" "clock" ];
 
         battery = {
@@ -48,7 +48,13 @@
 	  format = "Pow: {}%";
 	  format-charging = "Pow: {}% charging";
 	};
-
+	"ext/workspaces": {
+    	  "format": "{icon}",
+    	  "ignore-hidden": true,
+    	  "on-click": "activate",
+    	  "on-click-right": "deactivate",
+    	  "sort-by-id": true,
+  	},
         "custom/network" = {
           interval = 5;
           format = "{}";
