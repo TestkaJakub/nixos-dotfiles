@@ -28,6 +28,7 @@ in
     sessionVariables.NIXOS_OZONE_WL = "1";
 
     packages = with pkgs; [
+      android-studio
       bat
       btop
       git
