@@ -8,6 +8,7 @@ let
     "networking.nix"
     "services.nix"
     "environment.nix"
+    "gaming.nix"
   ];
 
   modules = map (file: confDir + ("/" + file)) moduleFiles;
