@@ -52,10 +52,10 @@ in
 	bind=super,o,switch_layout
 	bind=super,p,togglegaps
 
-	bind=alt,k,exchange_client,up
-	bind=alt,j,exchange_client,down
-	bind=alt,h,exchange_client,left
-	bind=alt,l,exchange_client,right
+	bind=super,k,exchange_client,up
+	bind=super,j,exchange_client,down
+	bind=super,h,exchange_client,left
+	bind=super,l,exchange_client,right
 
         focuscolor=0xff5fd7ff
 	bordercolor=0x5f5fffff
