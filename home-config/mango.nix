@@ -57,9 +57,11 @@ in
 	bind=super,h,exchange_client,left
 	bind=super,l,exchange_client,right
 
-        bind=,XF86AudioMute,spawn,pamixer -t
-        bind=,XF86AudioLowerVolume,spawn,pamixer --allow-boost -d 5
-        bind=,XF86AudioRaiseVolume,spawn,pamixer --allow-boost -i 5
+	bind=super,g,spawn,bash kbm
+
+        bind=none,XF86AudioMute,spawn,pamixer -t
+        bind=none,XF86AudioLowerVolume,spawn,pamixer --allow-boost -d 5
+        bind=none,XF86AudioRaiseVolume,spawn,pamixer --allow-boost -i 5
 
         focuscolor=0xff5fd7ff
 	bordercolor=0x5f5fffff
