@@ -13,7 +13,8 @@
       wayland.enable = true;
     };
   };
-
+  
+  services.blueman.enable = true;
 
   users.users.jakub = {
     isNormalUser = true;
