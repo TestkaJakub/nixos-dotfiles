@@ -16,7 +16,7 @@
       extraPkgs = pkgs: with pkgs; [
         mesa
         libdrm
-        sdl2
+        SDL2
         openal
         faudio
       ];
