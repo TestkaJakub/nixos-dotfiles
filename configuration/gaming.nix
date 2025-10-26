@@ -16,13 +16,10 @@
       extraPkgs = pkgs: with pkgs; [
         mesa
         libdrm
+        sdl2
+        openal
+        faudio
       ];
     };
   };
-
-  # Optional but helps FHS sandbox compatibility
-  environment.systemPackages = with pkgs; [
-    vulkan-tools       # provides vulkaninfo
-    glxinfo            # from mesa-demos
-  ];
 }
