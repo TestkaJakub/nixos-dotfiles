@@ -81,25 +81,33 @@
           format = "{}";
           return-type = "json";
           exec = let
-            btStatus = pkgs.writeShellApplication {
-              name = "bt-status";
-              runtimeInputs = [ pkgs.bluez pkgs.gawk pkgs.coreutils ];
-              checkPhase = "";
-              text = ''
-                devices=$(bluetoothctl connected-devices | awk -F' ' '{print $2 " " $3}')
-                if [ -z "$devices" ]; then
-                  echo '{"text": "BT: none", "tooltip": "No Bluetooth devices connected"}'
-                else
-                  tooltip="Connected Bluetooth devices:\n$devices"
-                  echo "{\"text\": \"BT: $(echo $devices | head -n1)\", \"tooltip\": \"$tooltip\"}"
-                fi
-              '';
-            };
-          in "${btStatus}/bin/bt-status";
-  
-          # Optional interactivity
-          on-click = "blueman-manager";
-        };
+          btStatus = pkgs.writeShellApplication {
+            name = "bt-status";
+            runtimeInputs = [ pkgs.bluez pkgs.gnugrep pkgs.gawk pkgs.coreutils ];
+            checkPhase = "";
+            text = ''
+              # Pick the right command for this BlueZ version
+              if bluetoothctl --help | grep -q "connected-devices"; then
+                cmd="bluetoothctl connected-devices"
+              else
+                cmd="bluetoothctl devices Connected"
+              fi
+
+              devices=$($cmd | awk '{$1=""; print substr($0,2)}')
+
+              if [ -z "$devices" ]; then
+                echo '{"text": " none", "tooltip": "No Bluetooth devices connected"}'
+              else
+                tooltip="Connected Bluetooth devices:\n$devices"
+                first_device=$(echo "$devices" | head -n1)
+                echo "{\"text\": \" $first_device\", \"tooltip\": \"$tooltip\"}"
+              fi
+            '';
+    	  };
+  	  in "${btStatus}/bin/bt-status";
+
+  	  on-click = "blueman-manager";
+	};
 	"custom/pamixer" = {
           interval = 1;
           format = "{}";
