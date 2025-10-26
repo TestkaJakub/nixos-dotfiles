@@ -42,7 +42,11 @@
       main = {
         modules-left = [ "ext/workspaces" ];
         modules-right = [ "custom/bluetooth" "custom/network" "custom/pamixer" "battery" "clock" ];
-
+	clock = {
+	  interval = 1;
+	  format = "{:%d.%m.%Y %H:%M}";
+	  tooltip-format = "{:%A, %d %B %Y %H:%M:%S}";
+	};
         battery = {
           interval = 5;
 	  format = "Pow: {}%";
