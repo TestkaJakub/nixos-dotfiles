@@ -55,7 +55,7 @@
     	  on-click-right = "deactivate";
     	  sort-by-id = true;
   	};
-        "custom/network" = {
+	"custom/network" = {
           interval = 5;
           format = "{}";
           return-type = "json";
@@ -67,8 +67,8 @@
                 pkgs.iw
                 pkgs.wirelesstools
                 pkgs.gnugrep
-                pkgs.gnutools
                 pkgs.iproute2
+                pkgs.coreutils
               ];
               checkPhase = "";
               text = ''
