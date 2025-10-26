@@ -44,7 +44,8 @@
         modules-right = [ "custom/network" "custom/pamixer" "battery" "clock" ];
 
         battery = {
-          format = "Pow: {}%";
+          interval = 5;
+	  format = "Pow: {}%";
 	  format-charging = "Pow: {}% | charging";
 	};
 
