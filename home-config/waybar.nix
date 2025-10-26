@@ -62,21 +62,39 @@
 
           exec = let
             networkStatus = pkgs.writeShellApplication {
-            name = "network-status";
-            runtimeInputs = [ pkgs.iw pkgs.wirelesstools pkgs.gnugrep ];
-            checkPhase = "";
-            text = ''
-              ssid=$(iwgetid -r)
-              if [ -z "$ssid" ]; then
-                ssid="No WiFi"
-              fi
+              name = "network-status";
+              runtimeInputs = [
+                pkgs.iw
+                pkgs.wirelesstools
+                pkgs.gnugrep
+                pkgs.gnutools
+                pkgs.iproute2
+              ];
+              checkPhase = "";
+              text = ''
+                # Get SSID (if Wi-Fi)
+                ssid=$(iwgetid -r)
+                # Check Internet connectivity
+                if ping -c1 -W1 8.8.8.8 >/dev/null 2>&1; then
+                  if [ -z "$ssid" ]; then
+                    ssid="Ethernet"
+                  fi
+                  text="Net: $ssid"
+                  tooltip="Connected network: $ssid"
+                else
+                  text="No connection"
+                  tooltip="No internet connection"
+                fi
 
-              echo "{\"text\": \"Net: $ssid\", \"tooltip\": \"Connected network: $ssid\"}"
-            '';
-          };
+                echo "{\"text\": \"$text\", \"tooltip\": \"$tooltip\"}"
+              '';
+            };
           in "${networkStatus}/bin/network-status";
+
+          # Open nmtui when clicked (change 'foot' to your preferred terminal)
+          on-click = "foot -e nmtui";
         };
-        "custom/bluetooth" = {
+	"custom/bluetooth" = {
           interval = 8;
           format = "{}";
           return-type = "json";
