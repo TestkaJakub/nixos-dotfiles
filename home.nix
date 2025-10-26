@@ -46,6 +46,7 @@ in
       pastel
       hyprpaper
       anki-bin
+      lspci
     ];
   };
 
