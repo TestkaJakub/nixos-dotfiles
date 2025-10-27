@@ -10,13 +10,6 @@
     };
 
     initExtra = ''
-      cpc() {
-        echo "Copying .nix configs to clipboard..."
-        find ~/nixos-dotfiles -type f -name '*.nix' \
-        -exec echo "===== {} =====" \; -exec cat {} \; | wl-copy
-        echo "Done."
-      }
-
       #kbm() {
       #  echo "$1" > /sys/class/leds/tpacpi::kbd_backlight/brightness
       #}
