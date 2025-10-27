@@ -11,6 +11,13 @@
       echo "$val" > "$path"
     '')
 
+    (writeShellScriptBin "cpc" ''
+      echo "Copying .nix configs to clipboard..."
+      find ~/nixos-dotfiles -type f -name '*.nix' \
+        -exec echo "===== {} =====" \; -exec cat {} \; | wl-copy
+      notify-send "✅ Config copied to clipboard"
+    '')
+
     #inputs.rose-pine-hyprcursor.packages.${pkgs.system}.default
   ];
 
