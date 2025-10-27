@@ -1,8 +1,8 @@
-{ config, lib, ... }:
+{ config, lib, host, ... }:
 
 {
   networking = {
-    hostName = "nixos";
+    hostName = ${host};
     networkmanager.enable = true;
     useDHCP = lib.mkDefault true;
     firewall.enable = true;
