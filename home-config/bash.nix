@@ -2,18 +2,13 @@
   programs.bash = {
     enable = true;
     shellAliases = {
-      nsc = "sudo nvim ~/nixos-dotfiles/configuration.nix";
+      nmc = "sudo nvim ~/nixos-dotfiles/main.nix";
       nhc = "sudo nvim ~/nixos-dotfiles/home.nix";
       nfc = "sudo nvim ~/nixos-dotfiles/flake.nix";
-      nbc = "sudo nvim ~/nixos-dotfiles/bash.nix";
       #cpc = "find ~/nixos-dotfiles -type f -name '*.nix' -exec echo '===== {} =====' \\; -exec cat {} \\; | wl-copy";
     };
 
     initExtra = ''
-      #kbm() {
-      #  echo "$1" > /sys/class/leds/tpacpi::kbd_backlight/brightness
-      #}
-
       ard() {
         if [ -z "$1" ]; then
           echo "Usage: ard <SketchDir>"
