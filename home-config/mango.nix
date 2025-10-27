@@ -58,7 +58,7 @@ in
 	bind=super,l,exchange_client,right
 
 	bind=super,g,spawn,bash kbm
-	bind=super,m,spawn,bash,cpc
+	bind=super,m,spawn,bash,~/nixos-dotfiles/scripts/cpc.sh
 
         bind=none,XF86AudioMute,spawn,pamixer -t
         bind=none,XF86AudioLowerVolume,spawn,pamixer --allow-boost -d 5
