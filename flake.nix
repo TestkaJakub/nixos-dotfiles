@@ -29,7 +29,7 @@
           {
             home-manager.extraSpecialArgs =
               { inherit (globals) system version user; inherit inputs pkgs; };
-            home-manager.users.${globals.user} = import globals.config.homePath;
+            home-manager.users.${globals.user} = import globals.configs.homePath;
           }
           mangowc.nixosModules.mango
         ];
