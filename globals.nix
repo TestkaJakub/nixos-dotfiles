@@ -4,5 +4,5 @@
   user = "jakub";
   host = "nixos";
   
-  configs = import ./globals/configs.nix
+  configs = import ./globals/configs.nix;
 }
