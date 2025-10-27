@@ -77,6 +77,7 @@ in
         sleep 1
         hyprpaper --config ~/nixos-dotfiles/home-config/hyprpaper.conf &
         waybar &
+	systemctl --urser restart gammastep.service &
       '';
       description = "Autostart script for Mango window manager.";
     };
