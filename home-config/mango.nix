@@ -66,6 +66,8 @@ in
 
         focuscolor=0xff5fd7ff
 	bordercolor=0x5f5fffff
+
+	xkb_rules_layout=pl
       '';
       description = "Main Mango configuration file.";
     };
