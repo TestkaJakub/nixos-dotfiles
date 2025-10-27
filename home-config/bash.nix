@@ -11,7 +11,10 @@
 
     initExtra = ''
       cpc() {
-        find ~/nixos-dotfiles -type f -name '*.nix' \ -exec echo '===== {} =====' \; -exec cat {} \; | wl-copy
+        echo "Copying .nix configs to clipboard..."
+        find ~/nixos-dotfiles -type f -name '*.nix' \
+        -exec echo "===== {} =====" \; -exec cat {} \; | wl-copy
+        echo "Done."
       }
 
       #kbm() {
