@@ -6,10 +6,14 @@
       nhc = "sudo nvim ~/nixos-dotfiles/home.nix";
       nfc = "sudo nvim ~/nixos-dotfiles/flake.nix";
       nbc = "sudo nvim ~/nixos-dotfiles/bash.nix";
-      cpc = "find ~/nixos-dotfiles -type f -name '*.nix' -exec echo '===== {} =====' \\; -exec cat {} \\; | wl-copy";
+      #cpc = "find ~/nixos-dotfiles -type f -name '*.nix' -exec echo '===== {} =====' \\; -exec cat {} \\; | wl-copy";
     };
 
     initExtra = ''
+      cpc() {
+        find ~/nixos-dotfiles -type f -name '*.nix' -exec echo '==== {} ====' \\; -exec cat {} \\; | wl-copy
+      }
+
       #kbm() {
       #  echo "$1" > /sys/class/leds/tpacpi::kbd_backlight/brightness
       #}
