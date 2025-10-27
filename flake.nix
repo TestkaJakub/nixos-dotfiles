@@ -19,7 +19,7 @@
         system = globals.system;
 
         specialArgs = { 
-	  inherit (globals) system version user;
+	  inherit (globals) system version user host timezone;
 	  inherit (globals.configs) configurationModulesPath;
 	  inherit inputs globals;
 	};

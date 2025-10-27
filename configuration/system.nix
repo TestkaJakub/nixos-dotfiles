@@ -1,4 +1,4 @@
-{ config, pkgs, lib, version, ... }:
+{ config, pkgs, lib, version, timezone, ... }:
 
 {
   i18n = {
@@ -26,6 +26,6 @@
     };
   };
 
-  time.timeZone = "Europe/Warsaw";
+  time.timeZone = timezone;
   system.stateVersion = version;
 }
