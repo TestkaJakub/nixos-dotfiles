@@ -15,21 +15,21 @@
       globals = import ./globals.nix;
       #version = "25.05";
       #system  = "x86_64-linux";
-      user    = "jakub";
+      #user    = "jakub";
       pkgs = import nixpkgs { inherit (globals) system; config.allowUnfree = true; };
     in {
-      nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
+      nixosConfigurations.${globals.host} = nixpkgs.lib.nixosSystem {
         system = globals.system;
 
-        specialArgs = { inherit (globals) system version; inherit user inputs; };
+        specialArgs = { inherit (globals) system version user; inherit inputs; };
 
         modules = [
-          ./main.nix
+          globals.configs.configurationPath
           home-manager.nixosModules.home-manager
           {
             home-manager.extraSpecialArgs =
-              { inherit (globals) system version; inherit user inputs pkgs; };
-            home-manager.users.${user} = import ./home.nix;
+              { inherit (globals) system version user; inherit inputs pkgs; };
+            home-manager.users.${globals.user} = import globals.config.homePath;
           }
           mangowc.nixosModules.mango
         ];
