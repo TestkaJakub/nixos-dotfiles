@@ -11,7 +11,7 @@
 
     initExtra = ''
       cpc() {
-        find ~/nixos-dotfiles -type f -name '*.nix' -exec echo '==== {} ====' \\; -exec cat {} \\; | wl-copy
+        find ~/nixos-dotfiles -type f -name '*.nix' \ -exec echo '===== {} =====' \; -exec cat {} \; | wl-copy
       }
 
       #kbm() {
