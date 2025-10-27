@@ -15,7 +15,6 @@ let
     "firefox.nix"
     "swww.nix"
     "mango.nix"
-    "gammastep.nix"
   ];
 
   modules = map (file: confDir + ("/" + file)) moduleFiles;
@@ -48,6 +47,7 @@ in
       hyprpaper
       anki-bin
       mpv
+      gammastep
     ];
   };
 
