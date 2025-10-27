@@ -77,6 +77,7 @@ in
         sleep 1
         hyprpaper --config ~/nixos-dotfiles/home-config/hyprpaper.conf &
         waybar &
+	gammastep -l 52.4:17.0 -t 6000:3700 &
       '';
       description = "Autostart script for Mango window manager.";
     };
