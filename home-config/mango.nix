@@ -1,4 +1,4 @@
-{ lib, config, pkgs, inputs, kayboardLayout, latitude, longitude, ... }:
+{ lib, config, pkgs, inputs, keyboardLayout, latitude, longitude, ... }:
 
 let
   cfg = config.wayland.windowManager.mango;
