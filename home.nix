@@ -1,5 +1,4 @@
-# home.nix
-{ config, pkgs, lib, inputs, system, homeConfigurationPath, user, version ... }:
+{ config, pkgs, lib, inputs, system, homeConfigurationPath, user, version, ... }:
 
 let
   moduleFiles = [
