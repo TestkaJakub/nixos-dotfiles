@@ -1,9 +1,7 @@
-{ lib, config, pkgs, inputs, ... }:
+{ lib, config, pkgs, inputs, kayboardLayout, latitude, longitude, ... }:
 
 let
-  # Simplify references
   cfg = config.wayland.windowManager.mango;
-
 in
 {
   options.wayland.windowManager.mango = {
@@ -67,7 +65,7 @@ in
         focuscolor=0xff5fd7ff
 	bordercolor=0x5f5fffff
 
-	xkb_rules_layout=pl
+	xkb_rules_layout=${keyboardLayout}
       '';
       description = "Main Mango configuration file.";
     };
@@ -79,14 +77,13 @@ in
         sleep 1
         hyprpaper --config ~/nixos-dotfiles/home-config/hyprpaper.conf &
         waybar &
-	gammastep -l 52.4:17.0 -t 6000:3700 &
+	gammastep -l ${latitude}:${longitude} -t 6000:3700 &
       '';
       description = "Autostart script for Mango window manager.";
     };
   };
 
   config = lib.mkIf cfg.enable {
-    # Install MangoWC
     home.packages = [ cfg.package ];
 
     # Mango config file
