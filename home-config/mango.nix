@@ -71,15 +71,14 @@ in
     };
 
     autostartScript = lib.mkOption {
-      type = lib.types.lines;
+    type = lib.types.lines;
       default = ''
         #!/usr/bin/env bash
-        sleep 1
+        sleep 2
         hyprpaper --config ~/nixos-dotfiles/home-config/hyprpaper.conf &
         waybar &
-	gammastep -l ${latitude}:${longitude} -t 6000:3700 &
+        gammastep -m wayland -l ${toString latitude}:${toString longitude} -t 6000:3700 &
       '';
-      description = "Autostart script for Mango window manager.";
     };
   };
 
