@@ -1,8 +1,7 @@
 # home.nix
-{ config, pkgs, lib, inputs, system, ... }:
+{ config, pkgs, lib, inputs, system, homeConfigurationPath, user, version ... }:
 
 let
-  confDir = ./home-config;
   moduleFiles = [
     "bash.nix"
     "alacritty.nix"
@@ -18,14 +17,14 @@ let
     "gammastep.nix"
   ];
 
-  modules = map (file: confDir + ("/" + file)) moduleFiles;
+  modules = map (file: homeConfigurationPath + ("/" + file)) moduleFiles;
 in
 {
   imports = modules;
 
   home = {
-    username = "jakub";
-    stateVersion = "25.05";
+    username = user;
+    stateVersion = version;
     sessionVariables.NIXOS_OZONE_WL = "1";
 
     packages = with pkgs; [
@@ -55,5 +54,5 @@ in
 
   wayland.windowManager.mango.enable = true;
 
-  home.file.".config/qtile".source = confDir + "/qtile";
+  # home.file.".config/qtile".source = homeConfigurationPath + "/qtile";
 }

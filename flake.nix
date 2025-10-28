@@ -20,7 +20,7 @@
 
         specialArgs = { 
 	  inherit (globals) system version user host timezone;
-	  inherit (globals.configs) configurationModulesPath;
+	  inherit (globals.configs) configurationModulesPath homeConfigurationPath;
 	  inherit inputs globals;
 	};
 
