@@ -6,5 +6,5 @@
   timezone = "Europe/Warsaw";
   
   configs = import ./globals/configs.nix;
-  locales = import ./globals/localisation.nix;
+  localisation = import ./globals/localisation.nix;
 }
