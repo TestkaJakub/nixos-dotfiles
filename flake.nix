@@ -20,7 +20,7 @@
 
         specialArgs = { 
 	  inherit (globals) system version user host timezone;
-	  inherit (globals.configs) configurationModulesPath homeConfigurationPath;
+	  inherit (globals.configs) configurationModulesPath;
 	  inherit inputs globals;
 	};
 
@@ -28,8 +28,11 @@
           globals.configs.configurationPath
           home-manager.nixosModules.home-manager
           {
-            home-manager.extraSpecialArgs =
-              { inherit (globals) system version user; inherit inputs pkgs; };
+            home-manager.extraSpecialArgs = {
+	      inherit (globals) system version user;
+	      inherit (globals.configs) homeConfigurationPath;
+	      inherit inputs pkgs; 
+	    };
             home-manager.users.${globals.user} = import globals.configs.homePath;
           }
           mangowc.nixosModules.mango
