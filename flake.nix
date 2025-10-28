@@ -31,7 +31,7 @@
             home-manager.extraSpecialArgs = {
 	      inherit (globals) system version user;
 	      inherit (globals.configs) homeConfigurationPath;
-	      inherit (globals.localisation) latitude longitude;
+	      inherit (globals.localisation) latitude longitude keyboardLayout;
 	      inherit inputs pkgs; 
 	    };
             home-manager.users.${globals.user} = import globals.configs.homePath;
