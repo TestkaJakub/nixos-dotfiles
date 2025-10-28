@@ -45,6 +45,7 @@ in
       hyprpaper
       anki-bin
       mpv
+      gammastep
     ];
   };
 
