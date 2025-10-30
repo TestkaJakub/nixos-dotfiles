@@ -12,7 +12,7 @@
   services.openssh = {
     enable = true;
     settings = {
-      PermitRootLogin = "yed";
+      PermitRootLogin = "yes";
     };
   };
   
