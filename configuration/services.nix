@@ -8,6 +8,13 @@
       wayland.enable = true;
     };
   };
+
+  services.openssh = {
+    enable = true;
+    settings = {
+      PermitRootLogin = "yed";
+    };
+  };
   
   services.blueman.enable = true;
 
