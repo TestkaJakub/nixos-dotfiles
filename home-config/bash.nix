@@ -5,6 +5,7 @@
       nmc = "sudo nvim ~/nixos-dotfiles/main.nix";
       nhc = "sudo nvim ~/nixos-dotfiles/home.nix";
       nfc = "sudo nvim ~/nixos-dotfiles/flake.nix";
+      vnc = "wayvnc 192.168.0.16 5900";
       #cpc = "find ~/nixos-dotfiles -type f -name '*.nix' -exec echo '===== {} =====' \\; -exec cat {} \\; | wl-copy";
     };
 
