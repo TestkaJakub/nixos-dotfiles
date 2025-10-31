@@ -15,6 +15,12 @@
       PermitRootLogin = "yes";
     };
   };
+
+  services.x11vnc = {
+    enable = true;
+    display = ":0";
+    password = "mysecret";  # Or use passwordFile for more security
+  };
   
   services.blueman.enable = true;
   services.devmon.enable = true;
