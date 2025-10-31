@@ -1,28 +1,34 @@
 { pkgs, lib, config, user, ... }:
 
-#let
-#  tokyo-night-sddm =
-#    pkgs.libsForQt5.callPackage ../tokyo-night-sddm/default.nix { };
-#in
 {
   services.displayManager = {
     enable = true;
     sddm = {
       enable = true;
-      #theme = "tokyo-night-sddm";
       wayland.enable = true;
     };
   };
 
+  services.openssh = {
+    enable = true;
+    settings = {
+      PermitRootLogin = "yes";
+    };
+  };
+  
+  services.blueman.enable = true;
+  services.devmon.enable = true;
+  services.gvfs.enable = true;
+  services.udisks2.enable = true;
 
-  users.users.jakub = {
+  users.users.${user} = {
     isNormalUser = true;
     group = user;
     extraGroups = [ "wheel" "dialout" "libvirtd" ];
     shell = pkgs.bashInteractive;
   };
 
-  users.groups.jakub = {};
+  users.groups.${user} = {};
     programs.mango.enable = true;
 
   services.udev.extraRules = ''
@@ -32,6 +38,4 @@
 
   virtualisation.libvirtd.enable = true;
   programs.virt-manager.enable = true;
-
-  # environment.systemPackages = [ tokyo-night-sddm ];
 }

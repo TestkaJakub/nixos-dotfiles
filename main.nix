@@ -1,7 +1,7 @@
-{ config, pkgs, lib, system, user, version, ... }:
+{ config, pkgs, lib, system, user, version, configurationModulesPath, ... }:
 
 let
-  confDir = ./configuration;
+  confDir = configurationModulesPath;
   moduleFiles = [
     "hardware.nix"
     "system.nix"

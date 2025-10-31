@@ -1,7 +1,15 @@
-{ pkgs, inputs, ... }:
+{ pkgs, inputs, user, ... }:
 
 {
   environment.systemPackages = with pkgs; [
+    wayvnc
+    exfatprogs
+    parted
+    gvfs
+    polkit
+    xfce.thunar
+    xfce.thunar-volman
+    xfce.tumbler
     (writeShellScriptBin "kbm" ''
       path="/sys/class/leds/tpacpi::kbd_backlight/brightness"
       max_path="/sys/class/leds/tpacpi::kbd_backlight/max_brightness"
@@ -9,6 +17,13 @@
       max=$(cat "$max_path" 2>/dev/null || echo 2)
       val=$(( (cur + 1) % (max + 1) ))
       echo "$val" > "$path"
+    '')
+
+    (writeShellScriptBin "cpc" ''
+      echo "Copying .nix configs to clipboard..."
+      find ~/nixos-dotfiles -type f -name '*.nix' \
+        -exec echo "===== {} =====" \; -exec cat {} \; | wl-copy
+      notify-send "✅ Config copied to clipboard"
     '')
 
     #inputs.rose-pine-hyprcursor.packages.${pkgs.system}.default

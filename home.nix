@@ -1,8 +1,6 @@
-# home.nix
-{ config, pkgs, lib, inputs, system, ... }:
+{ config, pkgs, lib, inputs, system, homeConfigurationPath, user, version, ... }:
 
 let
-  confDir = ./home-config;
   moduleFiles = [
     "bash.nix"
     "alacritty.nix"
@@ -17,17 +15,18 @@ let
     "mango.nix"
   ];
 
-  modules = map (file: confDir + ("/" + file)) moduleFiles;
+  modules = map (file: homeConfigurationPath + ("/" + file)) moduleFiles;
 in
 {
   imports = modules;
 
   home = {
-    username = "jakub";
-    stateVersion = "25.05";
+    username = user;
+    stateVersion = version;
     sessionVariables.NIXOS_OZONE_WL = "1";
 
     packages = with pkgs; [
+      android-studio
       bat
       btop
       git
@@ -44,6 +43,9 @@ in
       pamixer
       pastel
       hyprpaper
+      anki-bin
+      mpv
+      gammastep
     ];
   };
 
@@ -51,5 +53,5 @@ in
 
   wayland.windowManager.mango.enable = true;
 
-  home.file.".config/qtile".source = confDir + "/qtile";
+  # home.file.".config/qtile".source = homeConfigurationPath + "/qtile";
 }
