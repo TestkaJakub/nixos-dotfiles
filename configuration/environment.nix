@@ -2,6 +2,7 @@
 
 {
   environment.systemPackages = with pkgs; [
+    parted
     gvfs
     polkit
     xfce.thunar
