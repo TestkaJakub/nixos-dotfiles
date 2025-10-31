@@ -4,7 +4,6 @@
   environment.systemPackages = with pkgs; [
     gvfs
     polkit
-    udisk2
     xfce.thunar
     xfce.thunar-volman
     xfce.tumbler
