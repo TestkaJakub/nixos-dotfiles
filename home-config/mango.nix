@@ -57,7 +57,7 @@ in
 
 	bind=super,g,spawn,bash kbm
 	bind=super,m,spawn,bash cpc
-	bind=super+ALT,m,spawn,bash vnc
+	bind=ALT,m,spawn,bash vnc
 
         bind=none,XF86AudioMute,spawn,pamixer -t
         bind=none,XF86AudioLowerVolume,spawn,pamixer --allow-boost -d 5
