@@ -6,7 +6,7 @@
     networkmanager.enable = true;
     useDHCP = lib.mkDefault true;
     firewall = {
-      enable = ture;
+      enable = true;
       allowedTCPPorts = [];
       allowedTCPPortRanges = [
         { from = 5900; to = 5900; }
