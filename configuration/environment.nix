@@ -3,6 +3,7 @@
 {
   environment.systemPackages = with pkgs; [
     xfce.thunar
+    xfce.tumbler
     (writeShellScriptBin "kbm" ''
       path="/sys/class/leds/tpacpi::kbd_backlight/brightness"
       max_path="/sys/class/leds/tpacpi::kbd_backlight/max_brightness"
