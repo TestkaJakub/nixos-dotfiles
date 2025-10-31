@@ -2,7 +2,12 @@
 
 {
   environment.systemPackages = with pkgs; [
+    gvfs
+    polkit
     xfce.thunar
+    xfce.thumar.plugins = with pkgs.xfce; [
+      thunar-volman
+    ];
     xfce.tumbler
     (writeShellScriptBin "kbm" ''
       path="/sys/class/leds/tpacpi::kbd_backlight/brightness"
