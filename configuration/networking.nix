@@ -5,7 +5,7 @@
     hostName = host;
     networkmanager.enable = true;
     useDHCP = lib.mkDefault true;
-    firewall {
+    firewall = {
       enable = ture;
       allowedTCPPorts = [];
       allowedTCPPortRanges = [
