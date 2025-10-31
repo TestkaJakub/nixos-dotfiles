@@ -2,7 +2,7 @@
 
 {
   environment.systemPackages = with pkgs; [
-    x11vnc
+    wayvnc
     exfatprogs
     parted
     gvfs
