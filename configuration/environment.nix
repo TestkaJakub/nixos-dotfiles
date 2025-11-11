@@ -10,6 +10,7 @@
     xfce.thunar
     xfce.thunar-volman
     xfce.tumbler
+    vscodium
     (writeShellScriptBin "kbm" ''
       path="/sys/class/leds/tpacpi::kbd_backlight/brightness"
       max_path="/sys/class/leds/tpacpi::kbd_backlight/max_brightness"
