@@ -13,7 +13,6 @@ let
     "firefox.nix"
     "swww.nix"
     "mango.nix"
-    "vscodium.nix"
   ];
 
   modules = map (file: homeConfigurationPath + ("/" + file)) moduleFiles;
