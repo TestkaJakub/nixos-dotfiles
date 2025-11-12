@@ -29,6 +29,6 @@ in
 {
   imports = modules;
    environment.systemPackages = with pkgs; wraps ++ [
-
+    godotPackages_4_5.godot
   ];
 }
