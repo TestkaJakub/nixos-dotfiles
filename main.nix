@@ -20,5 +20,5 @@ let
   wraps = map (file: wrapsDir + ("/" + file)) wrapsFiles;
 in
 {
-  imports = { modules, wraps };
+  imports = modules ++ wraps;
 }
