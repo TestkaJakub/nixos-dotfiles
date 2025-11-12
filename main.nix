@@ -1,4 +1,4 @@
-{ config, pkgs, lib, system, user, version, configurationModulesPath, ... }:
+{ config, pkgs, lib, system, user, version, configurationModulesPath, wrapsPath, ... }:
 
 let
   confDir = configurationModulesPath;
@@ -11,7 +11,14 @@ let
   ];
 
   modules = map (file: confDir + ("/" + file)) moduleFiles;
+
+  wrapsDir = wrapsPath;
+  wrapsFiles = [
+    "fuzzel.nix"
+  ];
+
+  wraps = map (file: wrapsDir + ("/" + file)) wrapsFiles;
 in
 {
-  imports = modules;
+  imports = { modules, wraps };
 }
