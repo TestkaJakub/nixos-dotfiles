@@ -17,7 +17,7 @@ let
     "fuzzel.nix"
   ];
 
-  wraps = map (file: import (wrapsDir + ("/" + file)) {inherit pkgs wrappers}) wrapsFiles;
+  wraps = map (file: import (wrapsDir + ("/" + file)) {inherit pkgs wrappers; }) wrapsFiles;
 in
 {
   imports = modules;
