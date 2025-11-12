@@ -36,7 +36,7 @@ in
       wget
       pfetch-rs
       kitty
-      fuzzel
+#      fuzzel
       obsidian
       scrcpy
       wl-clipboard
