@@ -4,7 +4,7 @@ let
   moduleFiles = [
     "bash.nix"
     "alacritty.nix"
-    "fuzzel.nix"
+#    "fuzzel.nix"
     "neovim.nix"
     "bat.nix"
     "waybar.nix"
