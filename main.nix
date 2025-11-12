@@ -1,4 +1,4 @@
-{ config, pkgs, lib, system, user, version, configurationModulesPath, wrapsPath, ... }:
+{ config, pkgs, lib, system, user, version, configurationModulesPath, wrapsPath, wrappers, ... }:
 
 let
   confDir = configurationModulesPath;
@@ -17,8 +17,11 @@ let
     "fuzzel.nix"
   ];
 
-  wraps = map (file: wrapsDir + ("/" + file)) wrapsFiles;
+  wraps = map (file: import (wrapsDir + ("/" + file)) {inherit pkgs wrappers}); wrapsFiles;
 in
 {
-  imports = modules ++ wraps;
+  imports = modules;
+   environment.systemPackages = with pkgs; wraps ++ [
+
+  ]
 }
