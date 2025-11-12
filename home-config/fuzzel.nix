@@ -15,7 +15,9 @@
 #  };
 #}
 
-(wrappers.wrapperModules.fuzzel.apply
+{ wrappers, ...}:
+{
+  (wrappers.wrapperModules.fuzzel.apply
   {
     inherit pkgs;
     settings = {
@@ -29,4 +31,6 @@
       };
     };
   }
-).wrapper
+  ).wrapper
+}
+
