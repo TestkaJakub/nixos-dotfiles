@@ -15,7 +15,7 @@
 #  };
 #}
 
-{ wrappers, pkgs, ...}:
+{ wrappers, ...}:
 (wrappers.wrapperModules.fuzzel.apply
 {
   inherit pkgs;
