@@ -3,7 +3,7 @@
 let
   moduleFiles = [
     "bash.nix"
-    "alacritty.nix"
+#    "alacritty.nix"
 #    "fuzzel.nix"
     "neovim.nix"
     "bat.nix"
