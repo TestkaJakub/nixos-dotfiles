@@ -3,8 +3,6 @@
 let
   moduleFiles = [
     "bash.nix"
-#    "alacritty.nix"
-#    "fuzzel.nix"
     "neovim.nix"
     "bat.nix"
     "waybar.nix"
@@ -28,15 +26,12 @@ in
     packages = with pkgs; [
       android-studio
       bat
-      btop
       git
       arduino-core
       arduino-cli
       fastfetch
       wget
       pfetch-rs
-      kitty
-#      fuzzel
       obsidian
       scrcpy
       wl-clipboard
