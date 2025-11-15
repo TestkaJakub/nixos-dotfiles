@@ -15,6 +15,7 @@ let
   wrapsDir = wrapsPath;
   wrapsFiles = [
     "fuzzel.nix"
+    "alaritty.nix"
   ];
 
   wraps = map (file:
