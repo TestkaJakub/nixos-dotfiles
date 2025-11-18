@@ -1,7 +1,8 @@
 { config, pkgs, theme, ... }:
 let
   lightenedPrimary = theme.functions.lighten theme.palette.primary 0.1;
-  waybarText = theme.functions.textcolor lightenedPrimary;
+  waybarFocusedText = theme.functions.textcolor lightenedPrimary;
+  waybarText = theme.functions.textcolor theme.palette.primary;
 in
 {
   programs.waybar = {
@@ -17,6 +18,7 @@ in
         border: 1px solid ${theme.palette.border};
 	padding: 0 8px;
 	margin-right: -1px;
+	color: ${theme.palette.waybarText};
       }
       #workspaces {
 	padding: 0;
@@ -34,12 +36,12 @@ in
 
       #workspaces button.active {
         background: ${lightenedPrimary};
-        color: ${waybarText};
+        color: ${waybarFocusedText};
       }
 
       #workspaces button.urgent {
-        background: ${theme.palette.waybarUrgent};
-        color: ${theme.palette.waybarUrgentText};
+        background: ${waybarFocuesText};
+        color: ${waybarFocuesdText};
       }
     '';
     settings = {
