@@ -1,16 +1,16 @@
-{ config, pkgs, ... }:
+{ config, pkgs, theme, ... }:
 {
   programs.waybar = {
     enable = true;
     style = ''
       window#waybar {
-        background-color: #ff5fd7;
+        background-color: ${theme.palette.primary};
 	font-family: "JetBrains Nerd Font", monospace;
 	font-size: 12px;
-	border: 1px solid #555555;
+	border: 1px solid ${theme.palette.border};
       }
       .module {
-        border: 1px solid #555555;
+        border: 1px solid ${theme.palette.border};
 	padding: 0 8px;
 	margin-right: -1px;
       }
@@ -29,13 +29,13 @@
       }
 
       #workspaces button.active {
-        background: #ff78dd;
-        color: #000000;
+        background: ${theme.palette.waybarActive};
+        color: ${theme.palette.waybarText};
       }
 
       #workspaces button.urgent {
-        background: #ff92e4;
-        color: #ffffff;
+        background: ${theme.palette.waybarUrgent};
+        color: ${theme.palette.waybarUrgentText};
       }
     '';
     settings = {

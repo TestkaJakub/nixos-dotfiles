@@ -1,4 +1,4 @@
-{ config, pkgs, lib, inputs, system, homeConfigurationPath, user, version, ... }:
+{ config, pkgs, lib, inputs, system, homeConfigurationPath, user, version, theme, ... }:
 
 let
   moduleFiles = [
@@ -36,7 +36,7 @@ in
       scrcpy
       wl-clipboard
       pamixer
-      pastel
+      #pastel
       hyprpaper
       anki-bin
       mpv
