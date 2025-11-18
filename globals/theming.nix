@@ -56,7 +56,7 @@ in
         # Fuzzel
         fuzzelBackground = "#5f5fff";
         fuzzelSelection = "#ff5fd7";
-        fuzzelText = "#ffffffff";
+        fuzzelText = "#ffffff";
       };
 
       # --- COLOR CONVERSION FUNCTIONS ---
