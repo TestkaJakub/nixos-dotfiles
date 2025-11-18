@@ -41,10 +41,6 @@ in
         waybarUrgent = "#ff92e4";
         waybarText = "#000000";
         waybarUrgentText = "#ffffff";
-
-        fuzzelBackground = "#5f5fff";
-        fuzzelSelection = "#ff5fd7";
-        fuzzelText = "#ffffff";
       };
 
       functions = {
