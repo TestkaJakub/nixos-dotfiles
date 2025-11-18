@@ -1,7 +1,7 @@
 { config, pkgs, theme, ... }:
 let
   lightenedPrimary = theme.functions.lighten theme.palette.primary 0.1;
-  waybarText = theme.functions.complement theme.palette.primary;
+  waybarText = theme.functions.textcolor theme.palette.primary;
 in
 {
   programs.waybar = {
