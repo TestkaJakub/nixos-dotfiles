@@ -7,7 +7,7 @@
       background = theme.functions.toFuzzel theme.palette.secondary;
       selection = theme.functions.toFuzzel theme.palette.primary;
       #text = theme.functions.toFuzzel (theme.functions.darken theme.palette.text 0.01);
-      text = theme.functions.tuFuzzel (theme.functions.darken "#ffffff" 0.01);
+      text = theme.functions.toFuzzel (theme.functions.darken "#ffffff" 0.01);
       selection-text = theme.functions.toFuzzel theme.palette.text;
       prompt = theme.functions.toFuzzel theme.palette.text;
       input = theme.functions.toFuzzel theme.palette.text;
