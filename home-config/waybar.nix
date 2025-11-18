@@ -18,7 +18,7 @@ in
         border: 1px solid ${theme.palette.border};
 	padding: 0 8px;
 	margin-right: -1px;
-	color: ${theme.palette.waybarText};
+	color: ${waybarText};
       }
       #workspaces {
 	padding: 0;
