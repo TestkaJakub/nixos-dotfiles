@@ -24,7 +24,7 @@
 	  inherit (globals.configs) configurationModulesPath wrapsPath;
 	  inherit inputs globals wrappers;
 	} // {
-          theme = (import ./globals/theming.nix {inherit pkgs; lib = nixpkgs.lib; }).config.theme
+          theme = (import ./globals/theming.nix {inherit pkgs; lib = nixpkgs.lib; }).config.theme;
 	};
 
         modules = [
