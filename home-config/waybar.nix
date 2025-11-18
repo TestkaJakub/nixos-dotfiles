@@ -32,7 +32,7 @@ in
       }
 
       #workspaces button.active {
-        background: ${lightenedPriary};
+        background: ${lightenedPrimary};
         color: ${theme.palette.waybarText};
       }
 
