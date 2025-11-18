@@ -31,7 +31,6 @@ in
     theme = {
       palette = {
         primary = "#ff5fd7";
-	#primary = "#ff0000";
         secondary = "#5f5fff";
         border = "#555555";
         background = "#2e3440";
@@ -49,6 +48,7 @@ in
         # Converts #RRGGBB -> #RRGGBBAA for Fuzzel
         toFuzzel = hex: hex + "ff";
         
+	complement = hex: runPastel "complement '${hex}' | pastel format hex";
         lighten = hex: amount: runPastel "lighten ${toString amount} '${hex}' | pastel format hex";
         darken = hex: amount: runPastel "darken ${toString amount} '${hex}' | pastel format hex";
         saturate = hex: amount: runPastel "saturate ${toString amount} '${hex}' | pastel format hex";
