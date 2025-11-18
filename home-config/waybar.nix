@@ -40,8 +40,8 @@ in
       }
 
       #workspaces button.urgent {
-        background: ${waybarFocuesText};
-        color: ${waybarFocuesdText};
+        background: ${waybarFocusedText};
+        color: ${waybarFocusedText};
       }
     '';
     settings = {
