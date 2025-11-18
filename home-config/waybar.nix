@@ -1,4 +1,7 @@
 { config, pkgs, theme, ... }:
+let
+  lightenedPrimary = theme.functions.lighten theme.palette.primary 0.1;
+in
 {
   programs.waybar = {
     enable = true;
@@ -29,7 +32,7 @@
       }
 
       #workspaces button.active {
-        background: ${theme.palette.waybarActive};
+        background: ${lightenedPriary};
         color: ${theme.palette.waybarText};
       }
 
