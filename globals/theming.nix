@@ -35,11 +35,6 @@ in
         border = "#555555";
         background = "#2e3440";
 	text = "#eceff4";
-
-        waybarActive = "#ff78dd";
-        waybarUrgent = "#ff92e4";
-        waybarText = "#000000";
-        waybarUrgentText = "#ffffff";
       };
 
       functions = {
