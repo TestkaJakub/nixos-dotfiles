@@ -1,18 +1,24 @@
-{ config, pkgs, ... }:
+{ config, pkgs, theme, ... }:
+let
+  lightenedPrimary = theme.functions.lighten theme.palette.primary 0.1;
+  waybarFocusedText = theme.functions.textcolor lightenedPrimary;
+  waybarText = theme.functions.textcolor theme.palette.primary;
+in
 {
   programs.waybar = {
     enable = true;
     style = ''
       window#waybar {
-        background-color: #ff5fd7;
+        background-color: ${theme.palette.primary};
 	font-family: "JetBrains Nerd Font", monospace;
 	font-size: 12px;
-	border: 1px solid #555555;
+	border: 1px solid ${theme.palette.border};
       }
       .module {
-        border: 1px solid #555555;
+        border: 1px solid ${theme.palette.border};
 	padding: 0 8px;
 	margin-right: -1px;
+	color: ${waybarText};
       }
       #workspaces {
 	padding: 0;
@@ -29,13 +35,13 @@
       }
 
       #workspaces button.active {
-        background: #ff78dd;
-        color: #000000;
+        background: ${lightenedPrimary};
+        color: ${waybarFocusedText};
       }
 
       #workspaces button.urgent {
-        background: #ff92e4;
-        color: #ffffff;
+        background: ${waybarFocusedText};
+        color: ${waybarFocusedText};
       }
     '';
     settings = {

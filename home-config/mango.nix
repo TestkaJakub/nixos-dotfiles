@@ -1,4 +1,4 @@
-{ lib, config, pkgs, inputs, keyboardLayout, latitude, longitude, ... }:
+{ lib, config, pkgs, inputs, keyboardLayout, latitude, longitude, theme, ... }:
 
 let
   cfg = config.wayland.windowManager.mango;
@@ -57,14 +57,14 @@ in
 
 	bind=super,g,spawn,bash kbm
 	bind=super,m,spawn,bash cpc
-	bind=ALT,m,spawn,${pkgs.wayvnc}/bin/wayvnc 192.168.0.16 5900
+	bind=ALT,m,spawn,${pkgs.wayvnc}/bin/wayvnc 0.0.0.0 5900
 
         bind=none,XF86AudioMute,spawn,pamixer -t
         bind=none,XF86AudioLowerVolume,spawn,pamixer --allow-boost -d 5
         bind=none,XF86AudioRaiseVolume,spawn,pamixer --allow-boost -i 5
 
-        focuscolor=0xff5fd7ff
-	bordercolor=0x5f5fffff
+        focuscolor=${theme.functions.toMango theme.palette.primary}
+	bordercolor=${theme.functions.toMango theme.palette.secondary}
 
 	xkb_rules_layout=${keyboardLayout}
       '';
