@@ -1,6 +1,7 @@
 { config, pkgs, theme, ... }:
 let
   lightenedPrimary = theme.functions.lighten theme.palette.primary 0.1;
+  waybarText = theme.functions.complement theme.pastel.text;
 in
 {
   programs.waybar = {
@@ -33,7 +34,7 @@ in
 
       #workspaces button.active {
         background: ${lightenedPrimary};
-        color: ${theme.palette.waybarText};
+        color: ${waybarText};
       }
 
       #workspaces button.urgent {
