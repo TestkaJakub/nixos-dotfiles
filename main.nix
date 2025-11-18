@@ -1,4 +1,4 @@
-{ config, pkgs, lib, system, user, version, configurationModulesPath, wrapsPath, wrappers, ... }:
+{ config, pkgs, lib, system, user, version, configurationModulesPath, wrapsPath, wrappers, theme, ... }:
 
 let
   confDir = configurationModulesPath;
@@ -20,7 +20,7 @@ let
 
   wraps = map (file:
     import (wrapsDir + ("/" + file)) {
-      inherit wrappers;
+      inherit wrappers theme;
       pkgs = pkgs // { lndir = pkgs.xorg.lndir; }; # temporary shim for wrappers expecting pkgs.lndir
     }
   )
