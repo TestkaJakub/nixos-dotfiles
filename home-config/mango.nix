@@ -1,4 +1,4 @@
-{ lib, config, pkgs, inputs, keyboardLayout, latitude, longitude, ... }:
+{ lib, config, pkgs, inputs, keyboardLayout, latitude, longitude, theme, ... }:
 
 let
   cfg = config.wayland.windowManager.mango;
@@ -63,8 +63,8 @@ in
         bind=none,XF86AudioLowerVolume,spawn,pamixer --allow-boost -d 5
         bind=none,XF86AudioRaiseVolume,spawn,pamixer --allow-boost -i 5
 
-        focuscolor=0xff5fd7ff
-	bordercolor=0x5f5fffff
+        focuscolor=${theme.function.toMango theme.palette.primary}
+	bordercolor=${theme.function.toMango theme.palette.secondaryy}
 
 	xkb_rules_layout=${keyboardLayout}
       '';
