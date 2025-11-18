@@ -63,8 +63,8 @@ in
         bind=none,XF86AudioLowerVolume,spawn,pamixer --allow-boost -d 5
         bind=none,XF86AudioRaiseVolume,spawn,pamixer --allow-boost -i 5
 
-        focuscolor=${theme.function.toMango theme.palette.primary}
-	bordercolor=${theme.function.toMango theme.palette.secondaryy}
+        focuscolor=${theme.functions.toMango theme.palette.primary}
+	bordercolor=${theme.functions.toMango theme.palette.secondaryy}
 
 	xkb_rules_layout=${keyboardLayout}
       '';
