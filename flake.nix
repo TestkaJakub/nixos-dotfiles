@@ -23,9 +23,12 @@
 	  inherit (globals) system version user host timezone;
 	  inherit (globals.configs) configurationModulesPath wrapsPath;
 	  inherit inputs globals wrappers;
+	} // {
+          theme = (import ./globals/theming.nix {inherit pkgs; lib = nixpkgs.lib; }).config.theme
 	};
 
         modules = [
+	  ./globals/theming.nix
           globals.configs.configurationPath
           home-manager.nixosModules.home-manager
           {
@@ -33,7 +36,8 @@
 	      inherit (globals) system version user;
 	      inherit (globals.configs) homeConfigurationPath;
 	      inherit (globals.localisation) latitude longitude keyboardLayout;
-	      inherit inputs pkgs wrappers; 
+	      inherit inputs pkgs wrappers;
+	      theme = (import ./globals/theming.nix { inherit pkgs; lib = nixpkgs.lib; }).config.theme; 
 	    };
             home-manager.users.${globals.user} = import globals.configs.homePath;
           }

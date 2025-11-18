@@ -5,6 +5,7 @@
   host = "nixos";
   timezone = "Europe/Warsaw";
   
+  #theming = import ./globals/theming.nix;
   configs = import ./globals/configs.nix;
   localisation = import ./globals/localisation.nix;
 }
