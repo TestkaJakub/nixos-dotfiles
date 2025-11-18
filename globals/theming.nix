@@ -41,7 +41,8 @@ in
       # This is the single source of truth for all your colors.
       palette = {
         # Core
-        primary = "#ff5fd7";
+        #primary = "#ff5fd7";
+	primary = "#ff0000";
         secondary = "#5f5fff";
         border = "#555555";
         background = "#2e3440"; # Example background, change as needed
