@@ -49,9 +49,9 @@ in
         # Converts #RRGGBB -> #RRGGBBAA for Fuzzel
         toFuzzel = hex: hex + "ff";
         
-        lighten = hex: amount: runPastel "lighten ${toString amount} '${hex}'";
-        darken = hex: amount: runPastel "darken ${toString amount} '${hex}'";
-        saturate = hex: amount: runPastel "saturate ${toString amount} '${hex}'";
+        lighten = hex: amount: runPastel "lighten ${toString amount} '${hex}' | pastel format hex";
+        darken = hex: amount: runPastel "darken ${toString amount} '${hex}' | pastel format hex";
+        saturate = hex: amount: runPastel "saturate ${toString amount} '${hex}' | pastel format hex";
       };
     };
   };
