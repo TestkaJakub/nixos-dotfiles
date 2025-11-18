@@ -47,7 +47,8 @@ in
         toMango = hex: "0x" + (lib.strings.removePrefix "#" hex) + "ff";
         # Converts #RRGGBB -> #RRGGBBAA for Fuzzel
         toFuzzel = hex: hex + "ff";
-        
+       
+        textcolor = hex: runPastel "textcolor '${hex}' | pastel format hex";
 	complement = hex: runPastel "complement '${hex}' | pastel format hex";
         lighten = hex: amount: runPastel "lighten ${toString amount} '${hex}' | pastel format hex";
         darken = hex: amount: runPastel "darken ${toString amount} '${hex}' | pastel format hex";
