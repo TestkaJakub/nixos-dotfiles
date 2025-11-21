@@ -10,6 +10,12 @@
     };
 
     initExtra = ''
+      if [[ $- == *i* ]]; then
+        shopt -s progcomp
+
+        # coloured PS1 with correct time format (%M -> minutes)
+        PS1='\[\e[38;5;206m\]\u\[\e[38;5;63m\]@\[\e[38;5;206m\]\h\[\e[0m\] \D{%d-%m-%Y %H:%M:%S} \w \[\e[38;5;63m\]>\[\e[0m\] '
+      fi
       ard() {
         if [ -z "$1" ]; then
           echo "Usage: ard <SketchDir>"
@@ -93,7 +99,7 @@
 	fi
       }
 
-      PS1='\[\e[38;5;206m\]\u\[\e[38;5;63m\]@\[\e[38;5;206m\]\h\[\e[0m\] \D{%d-%m-%Y %H:%m:%S} \w \[\e[38;5;63m\]>\[\e[0m\] '
+      #PS1='\[\e[38;5;206m\]\u\[\e[38;5;63m\]@\[\e[38;5;206m\]\h\[\e[0m\] \D{%d-%m-%Y %H:%m:%S} \w \[\e[38;5;63m\]>\[\e[0m\] '
     '';
   };
 }
