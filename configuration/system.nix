@@ -5,7 +5,13 @@
     defaultLocale = "en_US.UTF-8";
     extraLocales = [ "pl_PL.UTF-8/UTF-8" ];
   };
+
   console.keyMap = "pl2";
+
+  services.xserver.xkb = {
+    layout = "pl";
+    variant = "";
+  }
 
   boot.loader = {
     systemd-boot.enable = true;
