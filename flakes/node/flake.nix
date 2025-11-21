@@ -18,8 +18,8 @@
           # Automatically open VSCode/VSCodium in current dir
           shellHook = ''
             echo "🚀 Starting Node.js dev environment..."
-            echo "📂 Opening ${PWD} in VSCode"
-            codium "${PWD}" >/dev/null 2>&1 &
+            echo "📂 Opening $PWD in VSCode"
+            codium "$PWD" >/dev/null 2>&1 &
           '';
         };
       });
