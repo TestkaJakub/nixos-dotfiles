@@ -11,7 +11,7 @@
   services.xserver.xkb = {
     layout = "pl";
     variant = "";
-  }
+  };
 
   boot.loader = {
     systemd-boot.enable = true;
