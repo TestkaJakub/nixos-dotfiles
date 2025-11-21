@@ -1,6 +1,7 @@
 {
   programs.bash = {
     enable = true;
+    enableCompletion = false;
     shellAliases = {
       nmc = "sudo nvim ~/nixos-dotfiles/main.nix";
       nhc = "sudo nvim ~/nixos-dotfiles/home.nix";
