@@ -17,7 +17,7 @@
 
           shellHook = ''
             export PS1="(node-env) $PS1"
-            codium "$PWD" >/dev/null 2>&1 &
+            codium "$PWD" &
           '';
         };
       });
