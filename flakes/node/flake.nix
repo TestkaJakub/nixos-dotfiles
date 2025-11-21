@@ -15,10 +15,8 @@
           name = "node-dev-env";
           packages = with pkgs; [ nodejs_22 vscodium ];
 
-          # Automatically open VSCode/VSCodium in current dir
           shellHook = ''
-            echo "🚀 Starting Node.js dev environment..."
-            echo "📂 Opening $PWD in VSCode"
+            export PS1="(node-env) $PS1"
             codium "$PWD" >/dev/null 2>&1 &
           '';
         };
