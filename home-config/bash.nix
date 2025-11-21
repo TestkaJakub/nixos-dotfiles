@@ -13,7 +13,7 @@
     initExtra = ''
       ( shopt -s progcomp ) &>/dev/null || true
       if [[ $- == *i* ]] && [ -t 0 ]; then
-        PS1='\[\e[38;5;206m\]\u\[\e[38;5;63m\]@\[\e[38;5;206m\]\h\[\e[0m\] \D{%d-%m-%Y %H:%M:%S} \w \[\e[38;5;63m\]>\[\e[0m\] '
+	PS1="\[\033[38;5;206m\]\u\[\033[38;5;63m\]@\[\033[38;5;206m\]\h\[\033[0m\] \D{%d-%m-%Y %H:%M:%S} \w \[\033[38;5;63m\]>\[\033[0m\] "
 	export PS1
       fi
       #if [[ $- == *i* ]] && [[ "$(type -t complete)" == "builtin" ]]; then
