@@ -67,6 +67,7 @@ in
 	bordercolor=${theme.functions.toMango theme.palette.secondary}
 
 	xkb_rules_layout=${keyboardLayout}
+	xkb_layout=${keyboardLayout}
       '';
       description = "Main Mango configuration file.";
     };
