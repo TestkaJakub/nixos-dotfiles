@@ -1,5 +1,5 @@
 {
-  description = "JS/TS development environment with VSCode and Node.js";
+  description = "Node.js + VSCode development environment";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
@@ -12,16 +12,14 @@
         pkgs = import nixpkgs { inherit system; };
       in {
         devShells.default = pkgs.mkShell {
-          name = "node-dev-shell";
-          packages = with pkgs; [
-            nodejs_22  # Node.js + npm
-            vscodium   # or vscode
-          ];
+          name = "node-dev-env";
+          packages = with pkgs; [ nodejs_22 vscodium ];
 
+          # Automatically open VSCode/VSCodium in current dir
           shellHook = ''
-            echo "🚀 Node.js development environment ready"
-            node --version
-            npm --version
+            echo "🚀 Starting Node.js dev environment..."
+            echo "📂 Opening ${PWD} in VSCode"
+            codium "${PWD}" >/dev/null 2>&1 &
           '';
         };
       });
