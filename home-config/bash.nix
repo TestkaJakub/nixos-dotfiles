@@ -10,10 +10,14 @@
       #cpc = "find ~/nixos-dotfiles -type f -name '*.nix' -exec echo '===== {} =====' \\; -exec cat {} \\; | wl-copy";
     };
 
+    PS1 = ''
+      \[\033[38;5;206m\]\u\[\033[38;5;63m\]@\[\033[38;5;206m\]\h\[\033[0m\] \D{%d-%m-%Y %H:%M:%S} \w \[\033[38;5;63m\]>\[\033[0m\]
+    '';
+
     initExtra = ''
       ( shopt -s progcomp ) &>/dev/null || true
       if [[ $- == *i* ]] && [ -t 0 ]; then
-	PS1="\[\033[38;5;206m\]\u\[\033[38;5;63m\]@\[\033[38;5;206m\]\h\[\033[0m\] \D{%d-%m-%Y %H:%M:%S} \w \[\033[38;5;63m\]>\[\033[0m\] "
+	PS1=${PS1}
 	export PS1
       fi
       #if [[ $- == *i* ]] && [[ "$(type -t complete)" == "builtin" ]]; then
