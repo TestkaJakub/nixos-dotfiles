@@ -12,7 +12,11 @@
 
     initExtra = ''
       if [[ $- == *i* ]]; then
-        PS1="\033[38;5;206m\u\033[38;5;63m@\033[38;5;206m\h\033[0m \
+    	# Force override of any inherited PS1 from VSCode
+    	unset PS1
+
+    	# Direct ANSI‑color PS1 (no \[ \] markers)
+    	PS1="\033[38;5;206m\u\033[38;5;63m@\033[38;5;206m\h\033[0m \
 \D{%d-%m-%Y %H:%M:%S} \w \033[38;5;63m>\033[0m "
         export PS1
       fi
