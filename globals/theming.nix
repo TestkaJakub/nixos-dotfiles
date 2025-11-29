@@ -30,8 +30,8 @@ in
 
     theme = {
       palette = {
-        primary = "#1f1f1f";
-        secondary = "#f1f1f1";
+        primary = "#f1f1f1";
+        secondary = "#1f1f1f";
         border = "#1f1f1f";
         background = "#f1f1f1";
 	text = "#f1f1f1";
