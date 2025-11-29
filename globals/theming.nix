@@ -30,11 +30,11 @@ in
 
     theme = {
       palette = {
-        primary = "#f1f1f1";
+        primary = "#d1d1d1";
         secondary = "#1f1f1f";
         border = "#1f1f1f";
-        background = "#f1f1f1";
-	text = "#f1f1f1";
+        background = "#d1d1d1";
+	text = "#d1d1d1";
       };
 
       functions = {
