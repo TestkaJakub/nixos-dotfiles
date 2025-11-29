@@ -32,8 +32,8 @@ in
       palette = {
         primary = "#1f1f1f";
         secondary = "#f1f1f1";
-        border = "#f1f1f1";
-        background = "#1f1f1f";
+        border = "#1f1f1f";
+        background = "#f1f1f1";
 	text = "#f1f1f1";
       };
 
