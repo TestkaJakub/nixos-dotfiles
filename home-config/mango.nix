@@ -77,6 +77,10 @@ in
       default = ''
         #!/usr/bin/env bash
         sleep 2
+	if mangowcctl list-outputs | grep -q "HDMI"; then
+	  mangowcctl set-output HDMI-A-1 1920x1080@60 1920x0
+	  mangowcctl set-output eDP-1 1920x1080@60 0x0
+	fi
         hyprpaper --config ~/nixos-dotfiles/home-config/hyprpaper.conf &
         waybar &
         gammastep -m wayland -l ${toString latitude}:${toString longitude} -t 6000:3700 &
