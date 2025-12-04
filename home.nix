@@ -25,7 +25,7 @@ in
 
     packages = with pkgs; [
       android-studio
-      #androidsdk
+      androidsdk
       android-tools
       jdk
       gradle
