@@ -58,6 +58,9 @@ in
 	bind=super,h,exchange_client,left
 	bind=super,l,exchange_client,right
 
+	bind=super+alt,h,tagmon,left,1
+	bind=super+alt,l,tagmon,right,1
+
 	bind=super,g,spawn,bash kbm
 	bind=super,m,spawn,bash cpc
 	bind=ALT,m,spawn,${pkgs.wayvnc}/bin/wayvnc 0.0.0.0 5900
