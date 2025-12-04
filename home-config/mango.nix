@@ -16,6 +16,9 @@ in
     configFile = lib.mkOption {
       type = lib.types.lines;
       default = ''
+        monitorrule=eDP-1,0.55,1,title,0,1,0,0,1920,1080,60
+	monitorrule=HDMI-A-1,0.55,1,title,0,1,1925,0,1920,1080,60
+
         bind=super,r,reload_config
         bind=super,q,spawn,alacritty
         bind=super,b,spawn,firefox
@@ -77,10 +80,6 @@ in
       default = ''
         #!/usr/bin/env bash
         sleep 2
-	if mangowcctl list-outputs | grep -q "HDMI"; then
-	  mangowcctl set-output HDMI-A-1 1920x1080@60 1920x0
-	  mangowcctl set-output eDP-1 1920x1080@60 0x0
-	fi
         hyprpaper --config ~/nixos-dotfiles/home-config/hyprpaper.conf &
         waybar &
         gammastep -m wayland -l ${toString latitude}:${toString longitude} -t 6000:3700 &
