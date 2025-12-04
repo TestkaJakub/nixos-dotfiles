@@ -48,8 +48,6 @@ in
     ];
   };
 
-  nixpkgs.config.android_sdk.accept_license = true;
-
   programs.home-manager.enable = true;
 
   wayland.windowManager.mango.enable = true;
