@@ -34,7 +34,6 @@
   environment.variables = {
     PF_INFO = "ascii title os host kernel uptime pkgs memory";
     PF_SOURCE = "";
-    NIXPKGS_ACCEPT_ANDROID_SDK_LICENSE = 1;
 };
 
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
