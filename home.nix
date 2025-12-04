@@ -25,7 +25,7 @@ in
 
     packages = with pkgs; [
       android-studio
-      androidsdk
+      #androidsdk
       android-tools
       jdk
       gradle
@@ -47,6 +47,8 @@ in
       gammastep
     ];
   };
+
+  nixpkgs.config.android_sdk.accept_license = true;
 
   programs.home-manager.enable = true;
 
