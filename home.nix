@@ -25,8 +25,8 @@ in
 
     packages = with pkgs; [
       android-studio
-      androidsdk
-      #android-tools
+      #androidsdk
+      android-tools
       jdk
       gradle
       bat
