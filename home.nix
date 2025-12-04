@@ -25,6 +25,10 @@ in
 
     packages = with pkgs; [
       android-studio
+      androidsdk
+      android-tools
+      jdk
+      gradle
       bat
       git
       arduino-core
