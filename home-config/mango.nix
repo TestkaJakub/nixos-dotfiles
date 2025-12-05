@@ -23,7 +23,7 @@ in
         bind=super,q,spawn,alacritty
         bind=super,b,spawn,firefox
 	bind=super,f,spawn,fuzzel
-	bind=alt,print,spawn_shell,'mkdir -p ~/Pictures/screenshots && grim -g "$(slurp)" ~/Pictures/screenshots/$(date +%Y-%m-%d_%H-%M-%S).png | wl-copy"
+	bind=alt,print,spawn_shell,screenshot-region"
 	bind=super,e,killclient
 
 	bind=super,Tab,focusstack,next

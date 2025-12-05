@@ -47,6 +47,16 @@ in
       anki-bin
       mpv
       gammastep
+      (writeShellScriptBin "screenshot-region" ''
+        mkdir -p ~/Pictures/screenshots
+        grim -g "$(slurp)" ~/Pictures/screenshots/$(date +%Y-%m-%d_%H-%M-%S).png | wl-copy
+        notify-send "✅ Screenshot copied to clipboard"
+      '')
+      (writeShellScriptBin "screenshot-full" ''
+        mkdir -p ~/Pictures/screenshots
+        grim ~/Pictures/screenshots/$(date +%Y-%m-%d_%H-%M-%S).png
+        notify-send "✅ Fullscreen screenshot saved"
+      '')
     ];
   };
 
