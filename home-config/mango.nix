@@ -23,7 +23,7 @@ in
         bind=super,q,spawn,alacritty
         bind=super,b,spawn,firefox
 	bind=super,f,spawn,fuzzel
-	bind=super,code:107,spawn,/home/jakub/.nix-profile/bin/screenshot-region"
+	bind=super,code:107,spawn,/home/jakub/.nix-profile/bin/screenshot-region
 	bind=super,e,killclient
 
 	bind=super,Tab,focusstack,next
