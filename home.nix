@@ -48,6 +48,10 @@ in
       anki-bin
       mpv
       gammastep
+      steam
+      steam-unwrapped
+      steam-run
+      proton-ge-bin
       (writeShellScriptBin "screenshot-region" ''
         mkdir -p ~/Pictures/screenshots
         grim -g "$(slurp)" ~/Pictures/screenshots/$(date +%Y-%m-%d_%H-%M-%S).png | wl-copy
@@ -59,6 +63,12 @@ in
         notify-send "✅ Fullscreen screenshot saved"
       '')
     ];
+  };
+
+  programs.steam = {
+    enable = true;
+    remotePlay.openFirewall = true;
+    dedicatedServer.openFirewall = true;
   };
 
   programs.home-manager.enable = true;
