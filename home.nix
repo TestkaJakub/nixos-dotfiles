@@ -23,6 +23,9 @@ in
     stateVersion = version;
     sessionVariables.NIXOS_OZONE_WL = "1";
 
+    file.".steam/root/compatibilitytools.d/GE-Proton10-20".source =
+  pkgs.proton-ge-bin.overrideAttrs (old: { });
+
     packages = with pkgs; [
       android-studio
       grim
@@ -50,7 +53,6 @@ in
       gammastep
       steam-unwrapped
       steam-run
-      proton-ge-bin
       (writeShellScriptBin "screenshot-region" ''
         mkdir -p ~/Pictures/screenshots
         grim -g "$(slurp)" ~/Pictures/screenshots/$(date +%Y-%m-%d_%H-%M-%S).png | wl-copy
