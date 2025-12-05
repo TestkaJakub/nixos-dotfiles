@@ -25,6 +25,8 @@ in
 
     packages = with pkgs; [
       android-studio
+      grim
+      slurp
       #androidsdk
       android-tools
       jdk
