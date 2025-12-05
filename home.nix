@@ -27,6 +27,7 @@ in
       android-studio
       grim
       slurp
+      wev
       #androidsdk
       android-tools
       jdk
