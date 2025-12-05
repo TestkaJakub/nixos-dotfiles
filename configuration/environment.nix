@@ -34,7 +34,12 @@
   environment.variables = {
     PF_INFO = "ascii title os host kernel uptime pkgs memory";
     PF_SOURCE = "";
-};
+  };
+
+  programs.steam = {
+    enable = true;
+    dedicatedServer.openFirewall = true;
+  };
 
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
 }

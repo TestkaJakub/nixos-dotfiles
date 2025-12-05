@@ -48,7 +48,6 @@ in
       anki-bin
       mpv
       gammastep
-      steam
       steam-unwrapped
       steam-run
       proton-ge-bin
@@ -63,12 +62,6 @@ in
         notify-send "✅ Fullscreen screenshot saved"
       '')
     ];
-  };
-
-  programs.steam = {
-    enable = true;
-    remotePlay.openFirewall = true;
-    dedicatedServer.openFirewall = true;
   };
 
   programs.home-manager.enable = true;
