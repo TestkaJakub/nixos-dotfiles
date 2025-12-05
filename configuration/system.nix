@@ -21,6 +21,22 @@
   hardware.graphics.enable = true;
   fonts.packages = with pkgs; [ jetbrains-mono ];
 
+  hardware.opengl = {
+    enable = true;
+    driSupport = true;
+    driSupport32Bit = true;
+    extraPackages = with pkgs; [
+      mesa.drivers
+      amdvlk
+      driversi686Linux.mesa
+    ];
+  };
+
+  hardware.graphics = {
+    enable = true;
+    enable32Bit = true;
+  };
+
   nixpkgs.config.allowUnfree = true;
 
   nix = {
