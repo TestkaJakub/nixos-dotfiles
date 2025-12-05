@@ -20,19 +20,14 @@
 
   fonts.packages = with pkgs; [ jetbrains-mono ];
 
-  hardware.opengl = {
-    enable = true;
-    driSupport32Bit = true;
-    extraPackages = with pkgs; [
-      mesa.drivers
-      amdvlk
-      driversi686Linux.mesa
-    ];
-  };
-
   hardware.graphics = {
     enable = true;
     enable32Bit = true;
+    driSupport32Bit = true;
+    extraPackages = with pkgs; [
+      mesa
+      amdvlk
+    ];
   };
 
   nixpkgs.config.allowUnfree = true;
