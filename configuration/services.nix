@@ -24,7 +24,7 @@
   users.users.${user} = {
     isNormalUser = true;
     group = user;
-    extraGroups = [ "wheel" "dialout" "libvirtd", "adbusers" ];
+    extraGroups = [ "wheel" "dialout" "libvirtd" "adbusers" ];
     shell = pkgs.bashInteractive;
   };
 
