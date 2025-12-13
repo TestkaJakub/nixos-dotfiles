@@ -3,7 +3,6 @@
 {
 
   environment.systemPackages = with pkgs; [
-    opentabletdriver
     xf86_input_wacom
     libinput
     discord
@@ -46,4 +45,10 @@
   };
 
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
+
+   hardware.opentabletdriver.enable = true;
+
+  # Required by OpenTabletDriver
+  hardware.uinput.enable = true;
+  boot.kernelModules = [ "uinput" ];
 }
