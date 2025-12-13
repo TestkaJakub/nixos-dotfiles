@@ -3,6 +3,7 @@
 {
 
   environment.systemPackages = with pkgs; [
+    opentabletdriver
     xf86_input_wacom
     libinput
     discord
