@@ -1,10 +1,9 @@
 { pkgs, inputs, user, ... }:
 
 {
-  services.xserver.digimend.enable = true;
 
   environment.systemPackages = with pkgs; [
-    config.boot.kernelPackages.digimend
+    libinput
     discord
     wayvnc
     exfatprogs
