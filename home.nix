@@ -70,7 +70,11 @@ in
 
   wayland.windowManager.mango.enable = true;
 
-  home.sessionVariables.CAPACITOR_ANDROID_STUDIO_PATH = "${pkgs.android-studio}/bin/android-studio";
+  home.sessionVariables = { 
+    CAPACITOR_ANDROID_STUDIO_PATH = "${pkgs.android-studio}/bin/android-studio";
+    ANDROID_HOME = "/home/jakub/Android/Sdk";
+    ANDROID_SDK_ROOT = "/home/jakub/Android/Sdk";
+  };
 
   # home.file.".config/qtile".source = homeConfigurationPath + "/qtile";
 }
