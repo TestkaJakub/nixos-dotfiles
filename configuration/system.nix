@@ -21,7 +21,7 @@
   #fonts.packages = with pkgs; [ jetbrains-mono ];
   fonts = {
     enableDefaultPackages = true;
-    packages = with pkgs; [jetbrains-mono noto-fonts noto-fonts-cjk noto-fonts-emoji];
+    packages = with pkgs; [jetbrains-mono noto-fonts noto-fonts-cjk-sans noto-fonts-emoji];
     fontconfig = {
       antialias = true;
       hinting = { enable = true; style = "slight"; };
