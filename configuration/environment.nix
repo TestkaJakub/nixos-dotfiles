@@ -3,6 +3,7 @@
 {
 
   environment.systemPackages = with pkgs; [
+    prismlauncher
     heroic
     krita
     xf86_input_wacom
