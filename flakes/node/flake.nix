@@ -17,6 +17,9 @@
 
           shellHook = ''
             export PS1="(node-env) $PS1"
+	    export ADB=${pkgs.android-tools}/bin/adb
+	    export ANDROID_HOME=$HOME/Android/Sdk
+	    export ANDROID_SDK_ROOT=$HOME/Android/Sdk
             codium "$PWD" &
           '';
         };
