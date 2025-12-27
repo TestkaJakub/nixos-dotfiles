@@ -26,7 +26,7 @@
 	    export ANDROID_SDK_ROOT=$HOME/Android/Sdk
 	    export PATH=${pkgs.android-tools}/bin:$PATH
 
-	    export REACT_NATIVE_ADB_PATH=${pkgs.android-tools}/bin/ads
+	    export REACT_NATIVE_ADB_PATH=${pkgs.android-tools}/bin/adb
             codium "$PWD" &
           '';
         };
