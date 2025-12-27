@@ -13,7 +13,11 @@
       in {
         devShells.default = pkgs.mkShell {
           name = "node-dev-env";
-          packages = with pkgs; [ nodejs_22 vscodium ];
+          packages = with pkgs; [ 
+	    nodejs_22
+	    vscodium
+	    android-tools
+	  ];
 
           shellHook = ''
             export PS1="(node-env) $PS1"
