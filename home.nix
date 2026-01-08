@@ -23,8 +23,18 @@ in
     stateVersion = version;
     sessionVariables.NIXOS_OZONE_WL = "1";
 
-    xdg.dataFile."Steam/compatibilitytools.d/GE-Proton10-20".source =
-  "${pkgs.proton-ge-bin}/share/steam/compatibilitytools.d/GE-Proton10-20";
+    activation.copyProtonGE = lib.hm.dag.entryAfter ["writeBoundary"] ''
+      PROTON_SRC="${pkgs.proton-ge-bin}/share/steam/compatibilitytools.d/GE-Proton10-20"
+      PROTON_DEST="$HOME/.steam/root/compatibilitytools.d/GE-Proton10-20"
+
+      mkdir -p "$(dirname "$PROTON_DEST")"
+      rm -rf "$PROTON_DEST"
+      cp -rT "$PROTON_SRC" "$PROTON_DEST"
+      echo "✅ Copied Proton GE into Steam compatibilitytools.d"
+    '';
+
+    #xdg.dataFile."Steam/compatibilitytools.d/GE-Proton10-20".source =
+  #"${pkgs.proton-ge-bin}/share/steam/compatibilitytools.d/GE-Proton10-20";
 
     packages = with pkgs; [
       android-studio
