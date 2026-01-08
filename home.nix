@@ -15,7 +15,7 @@ let
 
   modules = map (file: homeConfigurationPath + ("/" + file)) moduleFiles;
   geProton = builtins.fetchTarball {
-    url = "https://github.com/GloriousEggroll/proton-ge-custom/archive/refs/tags/GE-Proton10-28.tar.gz";
+    url = "https://github.com/GloriousEggroll/proton-ge-custom/releases/download/GE-Proton10-28/GE-Proton10-28.tar.gz";
     sha256 = "sha256-TFzEbn8a9T9hDgLGC8lHDbDYLgcrAHI3LvWIqCxN4xY=";
   };
 in
