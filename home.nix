@@ -27,15 +27,15 @@ in
     stateVersion = version;
     sessionVariables.NIXOS_OZONE_WL = "1";
 
-    activation.installProtonGE = lib.hm.dag.entryAfter ["writeBoundary"] ''
-      DEST="$HOME/.local/share/Steam/compatibilitytools.d"
-      mkdir -p "$DEST"
-      rm -rf "$DEST/GE-Proton10-28"
-      echo "📦 Unpacking GE‑Proton10‑28 into Steam compatibilitytools.d"
-      ${pkgs.gnutar}/bin/tar -xzf ${geProton} -C "$DEST" || \
-      ${pkgs.gnutar}/bin/tar -xf ${geProton} -C "$DEST"
-      echo "✅ GE‑Proton10‑28 ready for Steam"
-    '';
+activation.installProtonGE = lib.hm.dag.entryAfter ["writeBoundary"] ''
+  DEST="$HOME/.local/share/Steam/compatibilitytools.d"
+  mkdir -p "$DEST"
+  rm -rf "$DEST/GE-Proton10-28"
+  echo "📦 Unpacking GE‑Proton10‑28 into Steam compatibilitytools.d"
+  ${pkgs.gnutar}/bin/tar --use-compress-program=${pkgs.gzip}/bin/gzip \
+    -x -f ${geProton} -C "$DEST"
+  echo "✅ GE‑Proton10‑28 ready for Steam"
+'';
 
     packages = with pkgs; [
       android-studio
