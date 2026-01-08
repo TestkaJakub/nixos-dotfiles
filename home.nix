@@ -14,10 +14,10 @@ let
   ];
 
   modules = map (file: homeConfigurationPath + ("/" + file)) moduleFiles;
-  #geProton = builtins.fetchTarball {
-  #  url = "https://github.com/GloriousEggroll/proton-ge-custom/releases/download/GE-Proton10-28/GE-Proton10-28.tar.gz";
-  #  sha256 = "1skcwd81v89wp4fdxlx08zgnd8k83bawyfk5x5d9kqrqgwcx5nz8";
-  #};
+  geProton = builtins.fetchTarball {
+    url = "https://github.com/GloriousEggroll/proton-ge-custom/releases/download/GE-Proton10-28/GE-Proton10-28.tar.gz";
+    sha256 = "1skcwd81v89wp4fdxlx08zgnd8k83bawyfk5x5d9kqrqgwcx5nz8";
+  };
 in
 {
   imports = modules;
@@ -27,19 +27,15 @@ in
     stateVersion = version;
     sessionVariables.NIXOS_OZONE_WL = "1";
 
-    #activation.installProtonGE = lib.hm.dag.entryAfter ["writeBoundary"] ''
-    #  DEST="$HOME/.local/share/Steam/compatibilitytools.d"
-
-    #  mkdir -p "$DEST"
-    #  rm -rf "$DEST/GE-Proton10-28"
-
-    #  echo "📦 Unpacking GE‑Proton10‑28 into Steam compatibilitytools.d"
-    #  ${pkgs.gnutar}/bin/tar -xzf ${geProton} -C "$DEST"
-    #  echo "✅  GE‑Proton10‑28 ready for Steam"
-    #'';
-
-    #xdg.dataFile."Steam/compatibilitytools.d/GE-Proton10-20".source =
-  #"${pkgs.proton-ge-bin}/share/steam/compatibilitytools.d/GE-Proton10-20";
+    activation.installProtonGE = lib.hm.dag.entryAfter ["writeBoundary"] ''
+      DEST="$HOME/.local/share/Steam/compatibilitytools.d"
+      mkdir -p "$DEST"
+      rm -rf "$DEST/GE-Proton10-28"
+      echo "📦 Unpacking GE‑Proton10‑28 into Steam compatibilitytools.d"
+      ${pkgs.gnutar}/bin/tar -xzf ${geProton} -C "$DEST" || \
+      ${pkgs.gnutar}/bin/tar -xf ${geProton} -C "$DEST"
+      echo "✅ GE‑Proton10‑28 ready for Steam"
+    '';
 
     packages = with pkgs; [
       android-studio
