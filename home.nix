@@ -24,7 +24,7 @@ in
     sessionVariables.NIXOS_OZONE_WL = "1";
 
     file.".steam/root/compatibilitytools.d/GE-Proton10-20".source =
-  pkgs.proton-ge-bin.overrideAttrs (old: { });
+  "${pkgs.proton-ge-bin}/share/steam/compatibilitytools.d/GE-Proton10-20";
 
     packages = with pkgs; [
       android-studio
