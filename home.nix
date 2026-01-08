@@ -24,7 +24,7 @@ in
     sessionVariables.NIXOS_OZONE_WL = "1";
 
     activation.copyProtonGE = lib.hm.dag.entryAfter ["writeBoundary"] ''
-      PROTON_SRC="${pkgs.proton-ge-bin}/share/steam/compatibilitytools.d/GE-Proton10-20"
+      PROTON_SRC="${pkgs.proton-ge-bin}"
       PROTON_DEST="$HOME/.steam/root/compatibilitytools.d/GE-Proton10-20"
 
       mkdir -p "$(dirname "$PROTON_DEST")"
