@@ -14,10 +14,11 @@ let
   ];
 
   modules = map (file: homeConfigurationPath + ("/" + file)) moduleFiles;
-  geProton = pkgs.fetchurl {
-    url = "https://github.com/GloriousEggroll/proton-ge-custom/releases/download/GE-Proton10-28/GE-Proton10-28.tar.gz";
-    sha256 = "sha256-TFzEbn8a9T9hDgLGC8lHDbDYLgcrAHI3LvWIqCxN4xY=";
-  };
+  geProton = /nix/store/3c8swqgrhm85qsvl6540d8fqjr6mn93m-GE-Proton10-28.tar.gz;
+  #geProton = pkgs.fetchurl {
+  #  url = "https://github.com/GloriousEggroll/proton-ge-custom/releases/download/GE-Proton10-28/GE-Proton10-28.tar.gz";
+  #  sha256 = "sha256-TFzEbn8a9T9hDgLGC8lHDbDYLgcrAHI3LvWIqCxN4xY=";
+  #};
 in
 {
   imports = modules;
