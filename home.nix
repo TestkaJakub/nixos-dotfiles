@@ -25,7 +25,7 @@ in
 
     activation.copyProtonGE = lib.hm.dag.entryAfter ["writeBoundary"] ''
       PROTON_SRC="${pkgs.proton-ge-bin}"
-      PROTON_DEST="$HOME/.steam/root/compatibilitytools.d/GE-Proton10-20"
+      PROTON_DEST="$HOME/.local/share/Steam/compatibilitytools.d/GE-Proton10-20"
 
       mkdir -p "$(dirname "$PROTON_DEST")"
       rm -rf "$PROTON_DEST"
