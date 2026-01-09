@@ -103,7 +103,7 @@ activation.installProtonGE = lib.hm.dag.entryAfter ["writeBoundary"] ''
         notify-send "✅ Fullscreen screenshot saved"
       '')
       (writeShellScriptBin "bambu-studio" ''
-	exec ${bambu-studio-appimage}/bin/AppRun "$@"
+	exec ${bambu-studio-appimage}/bin/bambustudio "$@"
       '')
     ];
   };
