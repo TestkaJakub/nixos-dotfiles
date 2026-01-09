@@ -42,7 +42,7 @@ let
       gst_all_1.gst-plugins-bad
       gst_all_1.gst-plugins-base
       gst_all_1.gst-plugins-good
-      webkitgtk_6_0
+      webkitgtk_4_1
     ];
   };
 in
