@@ -33,8 +33,9 @@ let
     profile = ''
       export SSL_CERT_FILE="${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
       export GIO_MODULE_DIR="${pkgs.glib-networking}/lib/gio/modules/"
-      export LANG=en_US.UTF-8
-      export LC_ALL=en_US.UTF-8
+      export LANGUAGE=en_GB.UTF-8
+      export LANG=en_GB.UTF-8
+      export LC_ALL=en_GB.UTF-8
       export LOCALE_ARCHIVE="${pkgs.glibcLocales}/lib/locale/locale-archive"
     '';
     extraPkgs = pkgs: with pkgs; [
