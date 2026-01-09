@@ -11,20 +11,32 @@ let
     };
 
     extraPkgs = pkgs: with pkgs; [
-      webkitgtk_4_1
-      gtk3
-      glib
-      mesa
-      libGL
-      pango
-      cairo
-      at-spi2-core
-      gsettings-desktop-schemas
-      dbus
-      xorg.libX11
-      xorg.libXext
-      xorg.libxcb
-      (pkgs.stdenv.cc.cc.lib)
+  # WebKitGTK and its direct runtime deps
+  webkitgtk_4_1
+  libsoup_3
+  enchant2
+  gst_all_1.gst-plugins-base
+  gst_all_1.gst-plugins-good
+  gst_all_1.gst-libav
+
+  # Core graphics stack
+  gtk3
+  glib
+  mesa
+  libGL
+  cairo
+  pango
+  at-spi2-core
+  gsettings-desktop-schemas
+  dbus
+
+  # X11 bits
+  xorg.libX11
+  xorg.libXext
+  xorg.libxcb
+
+  # Misc safe additions
+  (stdenv.cc.cc.lib)
     ];
   };
 in {
