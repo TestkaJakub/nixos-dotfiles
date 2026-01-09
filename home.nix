@@ -33,6 +33,9 @@ let
     profile = ''
       export SSL_CERT_FILE="${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
       export GIO_MODULE_DIR="${pkgs.glib-networking}/lib/gio/modules/"
+      export LANG=en_US.UTF-8
+      export LC_ALL=en_US.UTF-8
+      export LOCALE_ARCHIVE="${pkgs.glibcLocales}/lib/locale/locale-archive"
     '';
     extraPkgs = pkgs: with pkgs; [
       cacert
@@ -43,6 +46,7 @@ let
       gst_all_1.gst-plugins-base
       gst_all_1.gst-plugins-good
       webkitgtk_4_0
+      glibcLocales
     ];
   };
 in
