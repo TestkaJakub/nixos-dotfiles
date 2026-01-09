@@ -27,7 +27,7 @@ let
     version = "0${shortversion}.00.70";
     pr = "PR-8834";
     src = pkgs.fetchurl {
-      url = "https://github.com/bambulab/BambuStudio/releases/download/v${version}/Bambu_Studio_ubuntu_2${shortversion}_${pr}.AppImage";
+      url = "https://github.com/bambulab/BambuStudio/releases/download/v${version}/Bambu_Studio_ubuntu-2${shortversion}_${pr}.AppImage";
       sha256 = "sha256-qxV6pn1OVU/IGS2Lv954gm9ud1MtBr8Khdy2tJvkwj8=";
     };
     profile = ''
