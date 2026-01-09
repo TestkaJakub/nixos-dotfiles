@@ -42,7 +42,7 @@ let
       gst_all_1.gst-plugins-bad
       gst_all_1.gst-plugins-base
       gst_all_1.gst-plugins-good
-      webkitgtk
+      webkitgtk_6_0
     ];
   };
 in
@@ -106,6 +106,16 @@ activation.installProtonGE = lib.hm.dag.entryAfter ["writeBoundary"] ''
   };
 
   programs.home-manager.enable = true;
+
+  xdg.desktopEntries.bambu-studio = {
+    name = "Bambu Studio";
+    comment = "3D printing software for Bambu Lab printers";
+    exec = "${bambu-studio-appimage}/bin/BambuStudio";
+    icon = "application-x-executable";
+    categories = [ "Graphics" "Engineering" ];
+    type = "Application";
+    terminal = false;
+  };
 
   wayland.windowManager.mango.enable = true;
 
