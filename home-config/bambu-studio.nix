@@ -13,7 +13,7 @@ let
     extraPkgs = pkgs: with pkgs; [
       glib
       gtk3
-      webkitgtk
+      webkitgtk_4_1
       mesa
       libGL
       zlib
