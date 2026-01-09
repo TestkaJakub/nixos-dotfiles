@@ -47,6 +47,11 @@
     dedicatedServer.openFirewall = true;
   };
 
+  programs.appimage = {
+    enable = true;
+    binfmt = true;
+  };
+
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
    hardware.opentabletdriver.enable = true;

@@ -11,6 +11,7 @@ let
     "firefox.nix"
     "swww.nix"
     "mango.nix"
+    "bambu-studio.nix"
   ];
 
   modules = map (file: homeConfigurationPath + ("/" + file)) moduleFiles;
