@@ -31,10 +31,13 @@ let
       libsoup_3
       enchant2
       harfbuzz
+      icu
       gst_all_1.gstreamer
       gst_all_1.gst-libav
       gst_all_1.gst-plugins-base
       gst_all_1.gst-plugins-good
+      gst_all_1.gst-plugins-bad
+      ffmpeg
 
       # X11 / Wayland / IPC
       xorg.libX11
