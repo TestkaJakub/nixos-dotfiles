@@ -11,7 +11,7 @@ let
     "firefox.nix"
     "swww.nix"
     "mango.nix"
-    "bambu-studio.nix"
+    #"bambu-studio.nix"
   ];
 
   modules = map (file: homeConfigurationPath + ("/" + file)) moduleFiles;
@@ -39,6 +39,7 @@ activation.installProtonGE = lib.hm.dag.entryAfter ["writeBoundary"] ''
 '';
 
     packages = with pkgs; [
+      bambu-studio
       android-studio
       grim
       slurp
