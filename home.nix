@@ -48,6 +48,10 @@ let
       webkitgtk_4_0
       glibcLocales
     ];
+    extraInstallCommands = ''
+      mkdir -p $out/lib/locale
+      ln -sf ${pkgs.glibcLocales}/lib/locale/locale-archive $out/lib/locale/locale-archive
+    '';
   };
 in
 {
