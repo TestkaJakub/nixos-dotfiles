@@ -18,7 +18,7 @@ in {
     comment = "3D printing software for Bambu Lab printers";
     exec = "${bambuStudio}/bin/bambu-studio";
     icon = "${bambuStudio}/share/icons/hicolor/256x256/apps/bambu-studio.png";
-    categories = [ "Graphics" "Engineering" "3DPrinting" ];
+    categories = [ "Graphics" "Engineering" "X-3DPrinting" ];
     type = "Application";
     terminal = false;
   };
