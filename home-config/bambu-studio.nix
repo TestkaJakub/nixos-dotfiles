@@ -11,21 +11,20 @@ let
     };
 
     extraPkgs = pkgs: with pkgs; [
-      glib
-      gtk3
       webkitgtk_4_1
+      gtk3
+      glib
       mesa
       libGL
-      zlib
-      xorg.libX11
-      xorg.libXext
-      xorg.libxcb
-      dbus
-      libdrm
       pango
       cairo
       at-spi2-core
       gsettings-desktop-schemas
+      dbus
+      xorg.libX11
+      xorg.libXext
+      xorg.libxcb
+      (pkgs.stdenv.cc.cc.lib)
     ];
   };
 in {
