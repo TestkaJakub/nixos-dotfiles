@@ -11,32 +11,43 @@ let
     };
 
     extraPkgs = pkgs: with pkgs; [
-  # WebKitGTK and its direct runtime deps
-  webkitgtk_4_1
-  libsoup_3
-  enchant2
-  gst_all_1.gst-plugins-base
-  gst_all_1.gst-plugins-good
-  gst_all_1.gst-libav
+          # Base system libs
+      stdenv.cc.cc.lib
+      zlib
+      fontconfig
+      freetype
 
-  # Core graphics stack
-  gtk3
-  glib
-  mesa
-  libGL
-  cairo
-  pango
-  at-spi2-core
-  gsettings-desktop-schemas
-  dbus
+      # Core graphics
+      mesa
+      libGL
+      cairo
+      pango
+      atk
+      gdk-pixbuf
+      gtk3
 
-  # X11 bits
-  xorg.libX11
-  xorg.libXext
-  xorg.libxcb
+      # WebKit + runtime
+      webkitgtk_4_1
+      libsoup_3
+      enchant2
+      harfbuzz
+      gst_all_1.gstreamer
+      gst_all_1.gst-libav
+      gst_all_1.gst-plugins-base
+      gst_all_1.gst-plugins-good
 
-  # Misc safe additions
-  (stdenv.cc.cc.lib)
+      # X11 / Wayland / IPC
+      xorg.libX11
+      xorg.libXext
+      xorg.libxcb
+      libxkbcommon
+      dbus
+      at-spi2-core
+      wayland
+
+      # Misc runtime utilities
+      glib
+      gsettings-desktop-schemas
     ];
   };
 in {
