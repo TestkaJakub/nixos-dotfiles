@@ -16,7 +16,7 @@ in {
   xdg.desktopEntries.bambu-studio = {
     name = "Bambu Studio";
     comment = "3D printing software for Bambu Lab printers";
-    exec = "${bambuStudio}/bin/bambu-studio";
+    exec = "${bambuStudio}";
     icon = "${bambuStudio}/share/icons/hicolor/256x256/apps/bambu-studio.png";
     categories = [ "Graphics" "Engineering" "X-3DPrinting" ];
     type = "Application";
