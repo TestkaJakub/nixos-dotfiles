@@ -46,6 +46,7 @@ let
       gst_all_1.gst-plugins-bad
       gst_all_1.gst-plugins-base
       gst_all_1.gst-plugins-good
+      webkitgtk_4_1
       webkitgtk_4_0
       glibcLocales
     ];
