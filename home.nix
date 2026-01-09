@@ -17,7 +17,7 @@ let
   modules = map (file: homeConfigurationPath + ("/" + file)) moduleFiles;
   geProton = builtins.fetchurl {
     url = "https://github.com/GloriousEggroll/proton-ge-custom/releases/download/GE-Proton10-28/GE-Proton10-28.tar.gz";
-    sha256 = "05p39lnai27m5qvp401b0wpdic0d8z4hpih21rhkzx8sgxpc8p2c";
+    sha256 = "/xcVD3YPuAr8mNmEGxNMC62kiX1qrzaAi1F6S+0sEbA=";
   };
 
   bambu-studio-appimage = pkgs.appimageTools.wrapType2 rec {
