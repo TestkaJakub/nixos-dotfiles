@@ -102,6 +102,9 @@ activation.installProtonGE = lib.hm.dag.entryAfter ["writeBoundary"] ''
         grim ~/Pictures/screenshots/$(date +%Y-%m-%d_%H-%M-%S).png
         notify-send "✅ Fullscreen screenshot saved"
       '')
+      (writeShellScriptBin "bambu-studio" ''
+	exec ${bambu-studio-appimage}/bin/AppRun "$@"
+      '')
     ];
   };
 
@@ -110,7 +113,7 @@ activation.installProtonGE = lib.hm.dag.entryAfter ["writeBoundary"] ''
   xdg.desktopEntries.bambu-studio = {
     name = "Bambu Studio";
     comment = "3D printing software for Bambu Lab printers";
-    exec = "${bambu-studio-appimage}/bin/BambuStudio";
+    exec = "env QT_QPA_PLATFORM=xcb bambu-studio";
     icon = "application-x-executable";
     categories = [ "Graphics" "Engineering" ];
     type = "Application";
