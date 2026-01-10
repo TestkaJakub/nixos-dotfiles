@@ -49,6 +49,7 @@ let
       webkitgtk_4_1
       webkitgtk_4_0
       glibcLocales
+      podman
     ];
     extraInstallCommands = ''
       mkdir -p $out/lib/locale
