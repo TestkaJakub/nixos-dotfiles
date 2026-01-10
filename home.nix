@@ -49,7 +49,6 @@ let
       webkitgtk_4_1
       webkitgtk_4_0
       glibcLocales
-      podman
     ];
     extraInstallCommands = ''
       mkdir -p $out/lib/locale
@@ -103,6 +102,7 @@ activation.installProtonGE = lib.hm.dag.entryAfter ["writeBoundary"] ''
       steam-unwrapped
       steam-run
       bambu-studio-appimage
+      podman
       (writeShellScriptBin "screenshot-region" ''
         mkdir -p ~/Pictures/screenshots
         grim -g "$(slurp)" ~/Pictures/screenshots/$(date +%Y-%m-%d_%H-%M-%S).png | wl-copy
