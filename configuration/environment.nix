@@ -19,7 +19,6 @@
     xfce.tumbler
     vscodium
     libreoffice-qt-fresh
-    blender-hip
     (writeShellScriptBin "kbm" ''
       path="/sys/class/leds/tpacpi::kbd_backlight/brightness"
       max_path="/sys/class/leds/tpacpi::kbd_backlight/max_brightness"
