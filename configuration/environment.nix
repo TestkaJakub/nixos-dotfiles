@@ -58,7 +58,7 @@
     XDG_CURRENT_DESKTOP = "wlroots";
     MOZ_ENABLE_WAYLAND = "1";
     OZONE_PLATFORM = "wayland";
-  }
+  };
   
   hardware.opentabletdriver.enable = true;
 
