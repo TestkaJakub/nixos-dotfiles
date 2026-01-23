@@ -79,7 +79,7 @@ in
       description = "Main Mango configuration file.";
     };
 
-   autostartScript = lib.mkOption {
+autostartScript = lib.mkOption {
   type = lib.types.lines;
   default = ''
     #!/usr/bin/env bash
@@ -96,7 +96,8 @@ in
     waybar &
     gammastep -m wayland -l ${toString latitude}:${toString longitude} -t 6000:3700 &
   '';
-};  };
+};
+};
 
   config = lib.mkIf cfg.enable {
     home.packages = [ cfg.package ];
