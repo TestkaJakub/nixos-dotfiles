@@ -53,9 +53,14 @@
     binfmt = true;
   };
 
-  environment.sessionVariables.NIXOS_OZONE_WL = "1";
-
-   hardware.opentabletdriver.enable = true;
+  environment.sessionVariables = {
+    NIXOS_OZONE_WL = "1";
+    XDG_CURRENT_DESKTOP = "wlroots";
+    MOZ_ENABLE_WAYLAND = "1";
+    OZONE_PLATFORM = "wayland";
+  }
+  
+  hardware.opentabletdriver.enable = true;
 
   # Required by OpenTabletDriver
   hardware.uinput.enable = true;
