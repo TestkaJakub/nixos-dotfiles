@@ -79,25 +79,24 @@ in
       description = "Main Mango configuration file.";
     };
 
-    autostartScript = lib.mkOption {
-    type = lib.types.lines;
-      default = ''
-      #!/usr/bin/env bash
-      export XDG_SESSION_TYPE=wayland
-      export XDG_CURRENT_DESKTOP=wlroots
-      export XDG_SESSION_DESKTOP=wlroots
-      export WAYLAND_DISPLAY="\${WAYLAND_DISPLAY:-"${"wayland-1"}"}"
-export XDG_RUNTIME_DIR="\${XDG_RUNTIME_DIR:-"${"/run/user/"}\$(id -u)"}"
+   autostartScript = lib.mkOption {
+  type = lib.types.lines;
+  default = ''
+    #!/usr/bin/env bash
+    export XDG_SESSION_TYPE=wayland
+    export XDG_CURRENT_DESKTOP=wlroots
+    export XDG_SESSION_DESKTOP=wlroots
+    export WAYLAND_DISPLAY='${WAYLAND_DISPLAY:-"wayland-1"}'
+    export XDG_RUNTIME_DIR='${XDG_RUNTIME_DIR:-"/run/user/$(id -u)"}'
 
-      ( sleep 2 && systemctl --user start xdg-desktop-portal-wlr.service xdg-desktop-portal.service ) &
-      sleep 2
+    ( sleep 2 && systemctl --user start xdg-desktop-portal-wlr.service xdg-desktop-portal.service ) &
+    sleep 2
 
-      hyprpaper --config ~/nixos-dotfiles/home-config/hyprpaper.conf &
-      waybar &
-      gammastep -m wayland -l ${toString latitude}:${toString longitude} -t 6000:3700 &
-      '';
-    };
-  };
+    hyprpaper --config ~/nixos-dotfiles/home-config/hyprpaper.conf &
+    waybar &
+    gammastep -m wayland -l ${toString latitude}:${toString longitude} -t 6000:3700 &
+  '';
+};  };
 
   config = lib.mkIf cfg.enable {
     home.packages = [ cfg.package ];
