@@ -87,7 +87,7 @@ autostartScript = lib.mkOption {
     export XDG_CURRENT_DESKTOP=wlroots
     export XDG_SESSION_DESKTOP=wlroots
 export WAYLAND_DISPLAY="\${WAYLAND_DISPLAY:-wayland-1}"
-export XDG_RUNTIME_DIR="\${XDG_RUNTIME_DIR:-/run/user/\$(id -u)}"
+export XDG_RUNTIME_DIR="''${XDG_RUNTIME_DIR:-/run/user/\$(id -u)}"
 
     ( sleep 2 && systemctl --user start xdg-desktop-portal-wlr.service xdg-desktop-portal.service ) &
     sleep 2
