@@ -47,11 +47,19 @@
     programs.mango.enable = true;
 
 # Force the Wayland portal service to start
+# Force wlroots portal to start even if WAYLAND_DISPLAY is unset
   systemd.user.services."xdg-desktop-portal-wlr" = {
     enable = true;
     wantedBy = [ "default.target" ];
-    unitConfig.ConditionEnvironment = lib.mkForce { };
-    serviceConfig.Environment = [ "WAYLAND_DISPLAY=wayland-1" ];
+
+    unitConfig = {
+      # Normally "ConditionEnvironment=WAYLAND_DISPLAY" — remove it
+      ConditionEnvironment = lib.mkForce [ ];
+    };
+
+    serviceConfig = {
+      Environment = "WAYLAND_DISPLAY=wayland-1";
+    };
   };
 
     #systemd.user.services."xdg-desktop-portal-wlr".serviceConfig.ConditionEnvironment =
