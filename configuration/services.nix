@@ -46,13 +46,14 @@
   users.groups.${user} = {};
     programs.mango.enable = true;
 
-systemd.user.services."xdg-desktop-portal-wlr" = {
-  wantedBy = [ "default.target" ];
-  serviceConfig = {
-    ConditionEnvironment = lib.mkForce [ ];
-    Environment = [ "WAYLAND_DISPLAY=wayland-1" ];
+# Force the Wayland portal service to start
+  systemd.user.services."xdg-desktop-portal-wlr" = {
+    wantedBy = [ "default.target" ];
+    serviceConfig = {
+      ConditionEnvironment = lib.mkForce [ ];
+      Environment = [ "WAYLAND_DISPLAY=wayland-1" ];
+    };
   };
-};
 
     systemd.user.services."xdg-desktop-portal-wlr".serviceConfig.ConditionEnvironment =
     lib.mkForce [ ];
