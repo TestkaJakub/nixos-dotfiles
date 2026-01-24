@@ -46,10 +46,13 @@
   users.groups.${user} = {};
     programs.mango.enable = true;
 
-  services.udev.extraRules = ''
-    ACTION=="add", SUBSYSTEM=="leds", KERNEL=="tpacpi::kbd_backlight", \
-      RUN+="${pkgs.coreutils}/bin/chmod 0666 /sys/class/leds/tpacpi::kbd_backlight/brightness"
-  '';
+systemd.user.services."xdg-desktop-portal-wlr" = {
+  wantedBy = [ "default.target" ];
+  serviceConfig = {
+    ConditionEnvironment = lib.mkForce [ ];
+    Environment = [ "WAYLAND_DISPLAY=wayland-1" ];
+  };
+};
 
     systemd.user.services."xdg-desktop-portal-wlr".serviceConfig.ConditionEnvironment =
     lib.mkForce [ ];
