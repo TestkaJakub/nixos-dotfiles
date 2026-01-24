@@ -55,8 +55,8 @@
     };
   };
 
-    systemd.user.services."xdg-desktop-portal-wlr".serviceConfig.ConditionEnvironment =
-    lib.mkForce [ ];
+    #systemd.user.services."xdg-desktop-portal-wlr".serviceConfig.ConditionEnvironment =
+    #lib.mkForce [ ];
 
   virtualisation.libvirtd.enable = true;
   programs.virt-manager.enable = true;
