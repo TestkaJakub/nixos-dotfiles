@@ -51,6 +51,9 @@
       RUN+="${pkgs.coreutils}/bin/chmod 0666 /sys/class/leds/tpacpi::kbd_backlight/brightness"
   '';
 
+    systemd.user.services."xdg-desktop-portal-wlr".serviceConfig.ConditionEnvironment =
+    lib.mkForce [ ];
+
   virtualisation.libvirtd.enable = true;
   programs.virt-manager.enable = true;
 }
