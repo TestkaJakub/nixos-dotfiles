@@ -48,11 +48,10 @@
 
 # Force the Wayland portal service to start
   systemd.user.services."xdg-desktop-portal-wlr" = {
+    enable = true;
     wantedBy = [ "default.target" ];
-    serviceConfig = {
-      ConditionEnvironment = lib.mkForce [ ];
-      Environment = [ "WAYLAND_DISPLAY=wayland-1" ];
-    };
+    unitConfig.ConditionEnvironment = lib.mkForce { };
+    serviceConfig.Environment = [ "WAYLAND_DISPLAY=wayland-1" ];
   };
 
     #systemd.user.services."xdg-desktop-portal-wlr".serviceConfig.ConditionEnvironment =
