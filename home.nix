@@ -98,6 +98,7 @@ activation.installProtonGE = lib.hm.dag.entryAfter ["writeBoundary"] ''
       hyprpaper
       anki-bin
       mpv
+      osu-lazer
       gammastep
       steam-unwrapped
       steam-run
