@@ -41,6 +41,7 @@ let
     extraPkgs = pkgs: with pkgs; [
       cacert
       curl
+      vivaldi
       glib
       glib-networking
       gst_all_1.gst-plugins-bad
