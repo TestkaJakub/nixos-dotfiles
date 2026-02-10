@@ -30,7 +30,7 @@
 
   hardware.sane = {
     enable = true;
-    extraBackends = [ pkgs.epsonscan2 ];
+    extraBackends = [ sane-airscan ];
   };
 
   xdg.portal = {
