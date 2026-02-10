@@ -8,10 +8,12 @@
       wayland.enable = true;
     };
   };
+
   services.printing = {
     enable = true;
     drivers = [ pkgs.epson-escpr ];
   };
+
   services.openssh = {
     enable = true;
     settings = {
@@ -24,6 +26,11 @@
     alsa.support32Bit = true;
     pulse.enable = true;
     wireplumber.enable = true;
+  };
+
+  hardware.sane = {
+    enable = true;
+    extraBackends = [ pkgs.epson-escpr2 ];
   };
 
   xdg.portal = {
