@@ -28,7 +28,7 @@
     wireplumber.enable = true;
   };
 
-  services.epsonscan2.enable = true;
+
 
   hardware.sane = {
     enable = true;
