@@ -28,9 +28,11 @@
     wireplumber.enable = true;
   };
 
+  services.epsonscan2.enable = true;
+
   hardware.sane = {
     enable = true;
-    extraBackends = [ sane-airscan ];
+    extraBackends = [ epsonscan2 ];
   };
 
   xdg.portal = {
