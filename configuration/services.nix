@@ -32,7 +32,7 @@
 
   hardware.sane = {
     enable = true;
-    extraBackends = [ epson-scan2 ];
+    extraBackends = [ pkgs.epsonscan2 ];
   };
 
   xdg.portal = {
