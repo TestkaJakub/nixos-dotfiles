@@ -41,7 +41,7 @@
     ];
   };
 
-      avahi = {
+     services.avahi = {
       enable = true;
       nssmdns = true;
       publish = {
