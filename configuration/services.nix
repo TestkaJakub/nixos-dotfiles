@@ -30,7 +30,6 @@
 
   hardware.sane = {
     enable = true;
-    backends = [ "epson2" ];
     extraBackends = [ pkgs.epson-escpr2 ];
   };
 
@@ -50,7 +49,7 @@
   users.users.${user} = {
     isNormalUser = true;
     group = user;
-    extraGroups = [ "wheel" "dialout" "libvirtd" "adbusers" ];
+    extraGroups = [ "wheel" "dialout" "libvirtd" "adbusers" "scanner" "lp" ];
     shell = pkgs.bashInteractive;
   };
 
