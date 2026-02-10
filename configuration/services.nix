@@ -8,7 +8,10 @@
       wayland.enable = true;
     };
   };
-
+  services.printing = {
+    enable = true;
+    drivers = [ pkgs.epson-escpr ];
+  };
   services.openssh = {
     enable = true;
     settings = {
