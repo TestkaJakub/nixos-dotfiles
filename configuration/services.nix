@@ -30,6 +30,7 @@
 
   hardware.sane = {
     enable = true;
+    backends = [ "epson2" ];
     extraBackends = [ pkgs.epson-escpr2 ];
   };
 
