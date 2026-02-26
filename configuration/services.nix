@@ -9,6 +9,13 @@
     };
   };
 
+  services.resolved.enable = true;
+
+  services.mullvad-vpn = {
+    enable = true;
+    package = pkgs.mullvad-vpn;
+  };
+
   services.printing = {
     enable = true;
     drivers = [ pkgs.epson-escpr ];
