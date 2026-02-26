@@ -3,6 +3,7 @@
 {
 
   environment.systemPackages = with pkgs; [
+    tor
     brave
     prismlauncher
     heroic
