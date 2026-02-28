@@ -21,7 +21,7 @@ virtualisation.docker = {
 virtualisation.oci-containers = {
   backend = "docker";
 networks = [
-  vikunja-net
+  "vikunja-net"
 ];
   containers = {
 
