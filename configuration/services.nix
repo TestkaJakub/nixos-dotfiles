@@ -20,7 +20,9 @@ virtualisation.docker = {
 
 virtualisation.oci-containers = {
   backend = "docker";
-
+networks = {
+  vikunja-net = {};
+};
   containers = {
 
     vikunja-db = {
@@ -33,6 +35,7 @@ virtualisation.oci-containers = {
         POSTGRES_USER = "vikunja";
         POSTGRES_DB = "vikunja";
       };
+      networks = [ "vikunja-net" ];
 
       volumes = [
         "/home/jakub/docker-data/vikunja-db:/var/lib/postgresql/data"
@@ -61,6 +64,7 @@ vikunja = {
   volumes = [
     "/home/jakub/docker-data/vikunja-files:/app/vikunja/files"
   ];
+  networks = [ "vikunja-net" ];
   
   extraOptions = [
     "--user=0"
