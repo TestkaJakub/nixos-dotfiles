@@ -42,7 +42,21 @@
             home-manager.users.${globals.user} = import globals.configs.homePath;
           }
           mangowc.nixosModules.mango
-        ];
+        ]
+	++
+        (
+          let
+            privateDir = ./private;
+          in
+            if builtins.pathExists privateDir then
+              builtins.map
+                (file: privateDir + "/${file}")
+                (builtins.filter
+                  (name: builtins.match ".*\\.nix" name != null)
+                  (builtins.attrNames (builtins.readDir privateDir)))
+            else
+              []
+        );
       };
     };
 }
