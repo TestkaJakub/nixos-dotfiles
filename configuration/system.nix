@@ -11,6 +11,7 @@
   programs.nix-ld.libraries = with pkgs; [
     zlib
     stdenv.cc.cc.lib
+    icu
   ];
 
   console.keyMap = "pl2";
