@@ -50,12 +50,16 @@ vikunja = {
     VIKUNJA_DATABASE_USER = "vikunja";
     VIKUNJA_DATABASE_DATABASE = "vikunja";
     VIKUNJA_DATABASE_TYPE = "postgres";
+    VIKUNJA_SERVICE_PUBLICURL = "http://localhost:3456";
   };
 
   dependsOn = [ "vikunja-db" ];
 
   environmentFiles = [
     "/home/jakub/secrets/vikunja-db.env"
+  ];
+  volumes = [
+    "/home/jakub/docker-data/vikunja-files:/app/vikunja/files"
   ];
 
   autoStart = true;
