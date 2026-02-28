@@ -9,15 +9,66 @@
     };
   };
 
-  virtualisation.docker = {
-    enable = true;
+virtualisation.docker = {
+  enable = true;
+  enableOnBoot = false; # disable rootful daemon
 
-    # Recommended settings
-    daemon.settings = {
-      userland-proxy = false;
-      experimental = true;
+  rootless = {
+    enable = true;
+    setSocketVariable = true;
+  };
+};
+
+# Automatically start rootless docker for your user
+systemd.user.services.docker.wantedBy = [ "default.target" ];
+
+virtualisation.oci-containers = {
+  backend = "docker";
+
+  containers = {
+
+    vikunja-db = {
+      image = "postgres:16";
+      environmentFiles = [
+        "/home/jakub/secrets/vikunja-db.env"
+      ];
+
+      environment = {
+        POSTGRES_USER = "vikunja";
+        POSTGRES_DB = "vikunja";
+      };
+
+      volumes = [
+        "/home/jakub/docker-data/vikunja-db:/var/lib/postgresql/data"
+      ];
+
+      autoStart = true;
+    };
+
+    vikunja = {
+      image = "vikunja/vikunja:latest";
+
+      ports = [ "3456:3456" ];
+
+      environment = {
+        VIKUNJA_SERVICE_JWTSECRET = "change-me-later";
+        VIKUNJA_DATABASE_HOST = "vikunja-db";
+        VIKUNJA_DATABASE_PASSWORD = ""; # loaded from env file below
+        VIKUNJA_DATABASE_USER = "vikunja";
+        VIKUNJA_DATABASE_DATABASE = "vikunja";
+        VIKUNJA_DATABASE_TYPE = "postgres";
+      };
+
+      dependsOn = [ "vikunja-db" ];
+
+      environmentFiles = [
+        "/home/jakub/secrets/vikunja-db.env"
+      ];
+
+      autoStart = true;
     };
   };
+};
 
   services.resolved.enable = true;
 
@@ -68,7 +119,7 @@
   users.users.${user} = {
     isNormalUser = true;
     group = user;
-    extraGroups = [ "wheel" "dialout" "libvirtd" "adbusers" "scanner" "lp" "docker" ];
+    extraGroups = [ "wheel" "dialout" "libvirtd" "adbusers" "scanner" "lp" ];
     shell = pkgs.bashInteractive;
   };
 

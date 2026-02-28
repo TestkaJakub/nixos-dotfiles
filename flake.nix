@@ -9,7 +9,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     mangowc.url = "github:DreamMaoMao/mangowc";
-    private.url = "path:/home/jakub/nixos-private";
+    private = {
+  url = "path:/home/jakub/nixos-private";
+  flake = false;
+};
   };
 
   outputs = { self, nixpkgs, home-manager, mangowc, wrappers, ... } @ inputs:

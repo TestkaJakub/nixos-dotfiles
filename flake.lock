@@ -122,11 +122,25 @@
         "type": "github"
       }
     },
+    "private": {
+      "flake": false,
+      "locked": {
+        "lastModified": 0,
+        "narHash": "sha256-pdxYDPOVZO6EUd7Jq89LR5s/QnU8d0jzRU2bVfZNrA8=",
+        "path": "/home/jakub/nixos-private",
+        "type": "path"
+      },
+      "original": {
+        "path": "/home/jakub/nixos-private",
+        "type": "path"
+      }
+    },
     "root": {
       "inputs": {
         "home-manager": "home-manager",
         "mangowc": "mangowc",
         "nixpkgs": "nixpkgs_2",
+        "private": "private",
         "wrappers": "wrappers"
       }
     },
