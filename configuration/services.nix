@@ -55,7 +55,7 @@ vikunja = {
   image = "vikunja/vikunja:latest";
 
   environment = {
-    VIKUNJA_DATABASE_HOST = "vikunja-db";
+    VIKUNJA_DATABASE_HOST = "127.0.0.1";
     VIKUNJA_DATABASE_USER = "vikunja";
     VIKUNJA_DATABASE_DATABASE = "vikunja";
     VIKUNJA_DATABASE_TYPE = "postgres";
