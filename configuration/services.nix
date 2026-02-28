@@ -9,6 +9,16 @@
     };
   };
 
+  virtualisation.docker = {
+    enable = true;
+
+    # Recommended settings
+    daemon.settings = {
+      userland-proxy = false;
+      experimental = true;
+    };
+  };
+
   services.resolved.enable = true;
 
   services.mullvad-vpn = {
@@ -58,7 +68,7 @@
   users.users.${user} = {
     isNormalUser = true;
     group = user;
-    extraGroups = [ "wheel" "dialout" "libvirtd" "adbusers" "scanner" "lp" ];
+    extraGroups = [ "wheel" "dialout" "libvirtd" "adbusers" "scanner" "lp" "docker" ];
     shell = pkgs.bashInteractive;
   };
 
