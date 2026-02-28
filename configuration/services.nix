@@ -61,7 +61,10 @@ vikunja = {
   volumes = [
     "/home/jakub/docker-data/vikunja-files:/app/vikunja/files"
   ];
-
+  
+  extraOptions = [
+    "--user=0"
+  ];
   autoStart = true;
 };
     
