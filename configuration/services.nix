@@ -18,6 +18,19 @@ virtualisation.docker = {
   };
 };
 
+systemd.services.create-vikunja-network = {
+  description = "Create vikunja docker network";
+  after = [ "docker.service" ];
+  wantedBy = [ "multi-user.target" ];
+  serviceConfig = {
+    Type = "oneshot";
+    ExecStart = ''
+      ${pkgs.docker}/bin/docker network inspect vikunja-net >/dev/null 2>&1 || \
+      ${pkgs.docker}/bin/docker network create vikunja-net
+    '';
+  };
+};
+
 virtualisation.oci-containers = {
   backend = "docker";
   containers = {
