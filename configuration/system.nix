@@ -6,6 +6,13 @@
     extraLocales = [ "pl_PL.UTF-8/UTF-8" "en_GB.UTF-8/UTF-8" ];
   };
 
+  programs.nix-ld.enable = true;
+
+  programs.nix-ld.libraries = with pkgs; [
+    zlib
+    stdenv.cc.cc.lib
+  ];
+
   console.keyMap = "pl2";
 
   services.xserver.xkb = {
