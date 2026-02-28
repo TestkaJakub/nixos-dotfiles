@@ -46,7 +46,7 @@
 	++
         (
           let
-            privateDir = ./private;
+            privateDir = /home/jakub/nixos-private;
           in
             if builtins.pathExists privateDir then
               builtins.map
