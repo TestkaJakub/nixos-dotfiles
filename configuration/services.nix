@@ -18,16 +18,6 @@ virtualisation.docker = {
   };
 };
 
-systemd.services.create-vikunja-network = {
-  description = "Create vikunja docker network";
-  after = [ "docker.service" ];
-  wantedBy = [ "multi-user.target" ];
-  serviceConfig = {
-    Type = "oneshot";
-    ExecStart = "${pkgs.bash}/bin/bash -c '${pkgs.docker}/bin/docker network inspect vikunja-net >/dev/null 2>&1 || ${pkgs.docker}/bin/docker network create vikunja-net'";
-  };
-};
-
 virtualisation.oci-containers = {
   backend = "docker";
   containers = {
@@ -43,7 +33,7 @@ virtualisation.oci-containers = {
         POSTGRES_DB = "vikunja";
       };
       extraOptions = [
-  "--network=vikunja-net"
+  "--network=host"
 ];
       volumes = [
         "/home/jakub/docker-data/vikunja-db:/var/lib/postgresql/data"
