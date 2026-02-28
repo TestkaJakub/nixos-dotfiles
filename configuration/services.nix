@@ -54,8 +54,6 @@ virtualisation.oci-containers = {
 vikunja = {
   image = "vikunja/vikunja:latest";
 
-  ports = [ "3456:3456" ];
-
   environment = {
     VIKUNJA_DATABASE_HOST = "vikunja-db";
     VIKUNJA_DATABASE_USER = "vikunja";
@@ -74,7 +72,7 @@ vikunja = {
   ];
 
   extraOptions = [
-  "--network=vikunja-net"
+  "--network=host"
     "--user=0"
   ];
   autoStart = true;
