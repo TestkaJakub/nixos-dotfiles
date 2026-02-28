@@ -9,6 +9,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     mangowc.url = "github:DreamMaoMao/mangowc";
+    private.url = "path:/home/jakub/nixos-private";
   };
 
   outputs = { self, nixpkgs, home-manager, mangowc, wrappers, ... } @ inputs:
@@ -43,20 +44,14 @@
           }
           mangowc.nixosModules.mango
         ]
-	++
-        (
-          let
-            privateDir = /home/jakub/nixos-private;
-          in
-            if builtins.pathExists privateDir then
-              builtins.map
-                (file: privateDir + "/${file}")
-                (builtins.filter
-                  (name: builtins.match ".*\\.nix" name != null)
-                  (builtins.attrNames (builtins.readDir privateDir)))
-            else
-              []
-        );
-      };
+++ builtins.map
+  (name: inputs.private + "/${name}")
+  (builtins.filter
+    (n: builtins.match ".*\\.nix" n != null)
+    (builtins.attrNames (builtins.readDir inputs.private)))++ builtins.map
+  (name: inputs.private + "/${name}")
+  (builtins.filter
+    (n: builtins.match ".*\\.nix" n != null)
+    (builtins.attrNames (builtins.readDir inputs.private)));      };
     };
 }
