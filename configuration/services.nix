@@ -24,10 +24,7 @@ systemd.services.create-vikunja-network = {
   wantedBy = [ "multi-user.target" ];
   serviceConfig = {
     Type = "oneshot";
-    ExecStart = ''
-      ${pkgs.docker}/bin/docker network inspect vikunja-net >/dev/null 2>&1 || \
-      ${pkgs.docker}/bin/docker network create vikunja-net
-    '';
+    ExecStart = "${pkgs.bash}/bin/bash -c '${pkgs.docker}/bin/docker network inspect vikunja-net >/dev/null 2>&1 || ${pkgs.docker}/bin/docker network create vikunja-net'";
   };
 };
 
