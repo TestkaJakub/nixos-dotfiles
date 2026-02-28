@@ -3,6 +3,8 @@
 {
 
   environment.systemPackages = with pkgs; [
+    wineWowPackages.stable
+    winetricks
     tor-browser
     tor
     brave
