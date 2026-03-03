@@ -3,6 +3,7 @@
 {
 
   environment.systemPackages = with pkgs; [
+    micro
     wineWowPackages.stable
     winetricks
     tor-browser
