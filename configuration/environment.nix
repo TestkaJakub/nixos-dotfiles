@@ -3,6 +3,7 @@
 {
 
   environment.systemPackages = with pkgs; [
+	go
     micro
     wineWowPackages.stable
     winetricks
