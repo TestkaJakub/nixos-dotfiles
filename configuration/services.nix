@@ -66,7 +66,7 @@ virtualisation.oci-containers = {
 
       volumes = [
         "/home/jakub/docker-data/qbittorrent-config:/config"
-        "/home/jakub/downloads:/data"
+        "/home/jakub/downloads:/downloads"
       ];
 
       extraOptions = [
