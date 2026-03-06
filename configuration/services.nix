@@ -24,27 +24,23 @@ virtualisation.oci-containers = {
   	gluetun = {
       image = "qmcgaw/gluetun";
       autoStart = true;
-
+    
       environment = {
         VPN_PORT_FORWARDING = "on";
         VPN_PORT_FORWARDING_UP_COMMAND =
           "/bin/sh -c 'wget -O- --retry-connrefused --post-data \"json={\\\"listen_port\\\":{{PORTS}}}\" http://127.0.0.1:8085/api/v2/app/setPreferences 2>&1'";
       };
-
-      volumes = [
-        "/dev/net/tun:/dev/net/tun"
-      ];
-
+    
       ports = [
         "6881:6881"
         "6881:6881/udp"
         "8085:8085"
       ];
-
+    
       extraOptions = [
         "--cap-add=NET_ADMIN"
         "--device=/dev/net/tun:/dev/net/tun"
-
+    
         "--health-cmd=ping -c 1 1.1.1.1"
         "--health-interval=30s"
         "--health-timeout=10s"
