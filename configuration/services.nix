@@ -25,11 +25,18 @@ virtualisation.oci-containers = {
       image = "qmcgaw/gluetun";
       autoStart = true;
     
-      environment = {
-        VPN_PORT_FORWARDING = "on";
-        VPN_PORT_FORWARDING_UP_COMMAND =
-          "/bin/sh -c 'wget -O- --retry-connrefused --post-data \"json={\\\"listen_port\\\":{{PORTS}}}\" http://127.0.0.1:8085/api/v2/app/setPreferences 2>&1'";
-      };
+	  environmentFiles = [ "/home/jakub/secrets/gluetun.env" ];
+
+	  environment = {
+	    VPN_SERVICE_PROVIDER = "mullvad";
+	    VPN_TYPE = "wireguard";
+	    SERVER_COUNTRIES = "Poland";
+
+	    VPN_PORT_FORWARDING = "on";
+	    VPN_PORT_FORWARDING_PROVIDER = "mullvad";
+	    VPN_PORT_FORWARDING_UP_COMMAND =
+	      "/bin/sh -c 'wget -O- --retry-connrefused --post-data \"json={\\\"listen_port\\\":{{PORTS}}}\" http://127.0.0.1:8085/api/v2/app/setPreferences 2>&1'";
+	  };
     
       ports = [
         "6881:6881"
