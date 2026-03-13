@@ -1,8 +1,6 @@
 { pkgs, config, ... }:
 
 # ── Waybar ─────────────────────────────────────────────────────────────────────
-# Reads: config.theme.{palette, functions}
-#        config.profile.username
 let
   t    = config.theme;
   user = config.profile.username;
@@ -12,6 +10,13 @@ let
   waybarText        = t.functions.textcolor t.palette.primary;
   urgentBg          = t.functions.complement t.palette.primary;
   urgentFg          = t.functions.textcolor urgentBg;
+
+  # Full store paths so scripts work regardless of PATH
+  jq        = "${pkgs.jq}/bin/jq";
+  ping      = "${pkgs.iputils}/bin/ping";
+  iwgetid   = "${pkgs.wirelesstools}/bin/iwgetid";
+  pamixer   = "${pkgs.pamixer}/bin/pamixer";
+  bluetoothctl = "${pkgs.bluez}/bin/bluetoothctl";
 in
 {
   home-manager.users.${user}.programs.waybar = {
@@ -78,23 +83,16 @@ in
         format      = "{}";
         return-type = "json";
         on-click    = "alacritty -e nmtui";
-        exec = let
-          script = pkgs.writeShellApplication {
-            name          = "waybar-network";
-            runtimeInputs = with pkgs; [ iw wirelesstools gnugrep iproute2 coreutils iputils jq ];
-            checkPhase    = "";
-            text = ''
-              ssid=$(iwgetid -r)
-              if ping -c1 -W1 8.8.8.8 >/dev/null 2>&1; then
-                [ -z "$ssid" ] && ssid="Ethernet"
-                jq -Rn --arg text "Net: $ssid" --arg tooltip "Connected: $ssid" \
-                  '{text: $text, tooltip: $tooltip}'
-              else
-                jq -Rn '{text: "No connection", tooltip: "No internet connection"}'
-              fi
-            '';
-          };
-        in "${script}/bin/waybar-network";
+        exec = pkgs.writeShellScript "waybar-network" ''
+          ssid=$(${iwgetid} -r 2>/dev/null || echo "")
+          if ${ping} -c1 -W1 8.8.8.8 >/dev/null 2>&1; then
+            [ -z "$ssid" ] && ssid="Ethernet"
+            ${jq} -Rn --arg text "Net: $ssid" --arg tooltip "Connected: $ssid" \
+              '{text: $text, tooltip: $tooltip}'
+          else
+            ${jq} -Rn '{text: "No connection", tooltip: "No internet connection"}'
+          fi
+        '';
       };
 
       "custom/bluetooth" = {
@@ -102,72 +100,55 @@ in
         format      = "{}";
         return-type = "json";
         on-click    = "blueman-manager";
-        exec = let
-          script = pkgs.writeShellApplication {
-            name          = "waybar-bluetooth";
-            runtimeInputs = with pkgs; [ bluez gnugrep gawk coreutils gnused jq ];
-            checkPhase    = "";
-            text = ''
-              if bluetoothctl --help | grep -q "connected-devices"; then
-                devices_raw=$(bluetoothctl connected-devices)
-              else
-                devices_raw=$(bluetoothctl devices Connected)
-              fi
+        exec = pkgs.writeShellScript "waybar-bluetooth" ''
+          if ${bluetoothctl} --help | grep -q "connected-devices"; then
+            devices_raw=$(${bluetoothctl} connected-devices 2>/dev/null)
+          else
+            devices_raw=$(${bluetoothctl} devices Connected 2>/dev/null)
+          fi
 
-              if [ -z "$devices_raw" ]; then
-                jq -Rn '{text: "BT none", tooltip: "No Bluetooth devices connected"}'
-                exit 0
-              fi
+          if [ -z "$devices_raw" ]; then
+            ${jq} -Rn '{text: "BT none", tooltip: "No Bluetooth devices connected"}'
+            exit 0
+          fi
 
-              display_text=""
-              tooltip="Connected Bluetooth devices:\n"
-              tmpfile=$(mktemp)
-              echo "$devices_raw" > "$tmpfile"
+          display_text=""
+          tooltip="Connected Bluetooth devices:\n"
 
-              while read -r _ mac rest; do
-                [ -z "$mac" ] && continue
-                name=$(echo "$rest" | sed 's/^[[:space:]]*//')
-                battery=$(bluetoothctl info "$mac" 2>/dev/null \
-                  | grep "Battery Percentage" | grep -o "[0-9]\+%" || true)
-                entry="$name''${battery:+ ($battery)}"
-                tooltip="$tooltip$entry\n"
-                display_text="''${display_text:+$display_text, }$entry"
-              done < "$tmpfile"
-              rm -f "$tmpfile"
+          while read -r _ mac rest; do
+            [ -z "$mac" ] && continue
+            name=$(echo "$rest" | sed 's/^[[:space:]]*//')
+            battery=$(${bluetoothctl} info "$mac" 2>/dev/null \
+              | grep "Battery Percentage" | grep -o "[0-9]\+%" || true)
+            [ -n "$battery" ] && entry="$name ($battery)" || entry="$name"
+            tooltip="$tooltip$entry\n"
+            [ -n "$display_text" ] && display_text="$display_text, $entry" || display_text="$entry"
+          done <<< "$devices_raw"
 
-              [ -z "$display_text" ] && display_text="unknown"
-              jq -Rn \
-                --arg text "BT $display_text" \
-                --arg tooltip "$tooltip" \
-                '{text: $text, tooltip: $tooltip}'
-            '';
-          };
-        in "${script}/bin/waybar-bluetooth";
+          [ -z "$display_text" ] && display_text="unknown"
+          ${jq} -Rn \
+            --arg text "BT $display_text" \
+            --arg tooltip "$tooltip" \
+            '{text: $text, tooltip: $tooltip}'
+        '';
       };
 
       "custom/pamixer" = {
         interval       = 1;
         format         = "{}";
         return-type    = "json";
-        on-click       = "pamixer -t";
-        on-scroll-up   = "pamixer -i 5";
-        on-scroll-down = "pamixer -d 5";
-        exec = let
-          script = pkgs.writeShellApplication {
-            name          = "waybar-volume";
-            runtimeInputs = with pkgs; [ pamixer jq ];
-            checkPhase    = "";
-            text = ''
-              volume=$(pamixer --get-volume)
-              muted=$(pamixer --get-mute)
-              if [ "$muted" = "true" ]; then
-                jq -Rn '{text: "Muted", tooltip: "Muted"}'
-              else
-                jq -Rn --arg v "$volume" '{text: "Vol: \($v)%", tooltip: "Vol: \($v)%"}'
-              fi
-            '';
-          };
-        in "${script}/bin/waybar-volume";
+        on-click       = "${pamixer} -t";
+        on-scroll-up   = "${pamixer} -i 5";
+        on-scroll-down = "${pamixer} -d 5";
+        exec = pkgs.writeShellScript "waybar-volume" ''
+          volume=$(${pamixer} --get-volume 2>/dev/null || echo 0)
+          muted=$(${pamixer} --get-mute 2>/dev/null || echo false)
+          if [ "$muted" = "true" ]; then
+            ${jq} -Rn '{text: "Muted", tooltip: "Muted"}'
+          else
+            ${jq} -Rn --arg v "$volume" '{text: "Vol: \($v)%", tooltip: "Vol: \($v)%"}'
+          fi
+        '';
       };
     };
   };
