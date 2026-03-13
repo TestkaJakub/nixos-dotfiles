@@ -1,14 +1,41 @@
-{ pkgs, lib, ... }:
+{ pkgs, lib, config, ... }:
 
 # ── Display & session ──────────────────────────────────────────────────────────
+let
+  t = config.theme;
+
+  sddm-theme = pkgs.sddm-astronaut.override {
+    themeConfig = {
+      # Colors from config.theme.palette
+      AccentColor          = t.palette.primary;
+      BackgroundColor      = t.palette.secondary;
+      HoverColor           = t.functions.lighten t.palette.secondary 0.05;
+      FontColor            = t.functions.textcolor t.palette.secondary;
+      PlaceholderColor     = t.functions.darken t.palette.primary 0.2;
+      FormPosition         = "center";
+      HideCompletePassword = false;
+      # Use the same wallpaper as the desktop
+      Background           = config.meta.defaults.wallpaper;
+    };
+  };
+in
 {
   services.displayManager = {
     enable = true;
-    sddm   = {
-      enable         = true;
+    sddm = {
+      enable        = true;
       wayland.enable = true;
+      package       = pkgs.kdePackages.sddm;
+      theme         = "sddm-astronaut-theme";
+      extraPackages = [
+        sddm-theme
+        pkgs.kdePackages.qtmultimedia
+        pkgs.kdePackages.qtsvg
+      ];
     };
   };
+
+  environment.systemPackages = [ sddm-theme ];
 
   xdg.portal = {
     enable       = true;
@@ -18,16 +45,11 @@
     ];
   };
 
-  # xdg-desktop-portal-wlr has a ConditionEnvironment guard that prevents it
-  # from starting outside a recognised compositor session name. MangoWC is not
-  # on that list, so we clear the condition to let it start unconditionally.
   systemd.user.services.xdg-desktop-portal-wlr = {
-    overrideStrategy            = "asDropin";
+    overrideStrategy                = "asDropin";
     unitConfig.ConditionEnvironment = lib.mkForce "";
   };
 
-  # Wayland session environment variables — set system-wide so they are
-  # present for all processes, including those launched by SDDM.
   environment.sessionVariables = {
     NIXOS_OZONE_WL      = "1";
     XDG_CURRENT_DESKTOP = "wlroots";
