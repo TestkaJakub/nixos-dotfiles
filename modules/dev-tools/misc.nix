@@ -12,8 +12,11 @@ in
     micro
     polkit
     exfatprogs
+    unzip
+    nix-diff
     parted
     unzip
+    nix-diff
   ];
 
   # User-only tools

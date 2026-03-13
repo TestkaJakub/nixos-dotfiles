@@ -1,15 +1,17 @@
 { pkgs, config, inputs, ... }:
 
 # ── Compositor (MangoWC) ───────────────────────────────────────────────────────
-# Reads: config.theme.{palette, functions}
-#        config.locale.{keyboardLayout, latitude, longitude}
-#        config.profile.username
-#        config.meta.defaults.{browser, terminal, fileManager}
 let
   cfg  = config.theme;
   loc  = config.locale;
   meta = config.meta.defaults;
   user = config.profile.username;
+
+  hyprlock    = "${pkgs.hyprlock}/bin/hyprlock";
+  cliphist    = "${pkgs.cliphist}/bin/cliphist";
+  wlPaste     = "${pkgs.wl-clipboard}/bin/wl-paste";
+  wlCopy      = "${pkgs.wl-clipboard}/bin/wl-copy";
+  fuzzel      = "${pkgs.fuzzel}/bin/fuzzel";
 
   mangoConfig = ''
     monitorrule=eDP-1,0.55,1,title,0,1,0,0,1920,1080,60
@@ -22,6 +24,8 @@ let
     bind=super,code:107,spawn,screenshot-region
     bind=super,e,killclient
     bind=super,n,spawn,${meta.fileManager}
+    bind=super+ctrl,l,spawn,${hyprlock}
+    bind=super+shift,v,spawn,bash -c '${cliphist} list | ${fuzzel} --dmenu | ${cliphist} decode | ${wlCopy}'
 
     bind=super,Tab,focusstack,next
 
@@ -96,6 +100,10 @@ let
     mako &
     waybar &
     gammastep -m wayland -l ${toString loc.latitude}:${toString loc.longitude} -t 6000:3700 &
+
+    # Clipboard manager — pipe all clipboard events into cliphist
+    ${wlPaste} --type text --watch ${cliphist} store &
+    ${wlPaste} --type image --watch ${cliphist} store &
   '';
 in
 {
