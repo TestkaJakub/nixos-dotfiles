@@ -93,6 +93,7 @@ let
     sleep 2
 
     hyprpaper --config ~/.config/hypr/hyprpaper.conf &
+    mako &
     waybar &
     gammastep -m wayland -l ${toString loc.latitude}:${toString loc.longitude} -t 6000:3700 &
   '';
