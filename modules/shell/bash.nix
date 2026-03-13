@@ -23,14 +23,32 @@ in
       cpc
 
       (writeShellScriptBin "screenshot-region" ''
-        mkdir -p ~/Pictures/screenshots
-        grim -g "$(slurp)" ~/Pictures/screenshots/$(date +%Y-%m-%d_%H-%M-%S).png
-        ${pkgs.libnotify}/bin/notify-send "Screenshot saved"
+        dir="$HOME/Pictures/$(date +%Y-%m)"
+        mkdir -p "$dir"
+        base="$(date +%d_%H.%M.%S)"
+        file="$dir/$base.png"
+        n=1
+        while [ -e "$file" ]; do
+          file="$dir/$base.$n.png"
+          n=$(( n + 1 ))
+        done
+        grim -g "$(slurp)" "$file"
+        ${pkgs.wl-clipboard}/bin/wl-copy < "$file"
+        ${pkgs.libnotify}/bin/notify-send "Screenshot saved" "$file"
       '')
       (writeShellScriptBin "screenshot-full" ''
-        mkdir -p ~/Pictures/screenshots
-        grim ~/Pictures/screenshots/$(date +%Y-%m-%d_%H-%M-%S).png
-        ${pkgs.libnotify}/bin/notify-send "Fullscreen screenshot saved"
+        dir="$HOME/Pictures/$(date +%Y-%m)"
+        mkdir -p "$dir"
+        base="$(date +%d_%H.%M.%S)"
+        file="$dir/$base.png"
+        n=1
+        while [ -e "$file" ]; do
+          file="$dir/$base.$n.png"
+          n=$(( n + 1 ))
+        done
+        grim "$file"
+        ${pkgs.wl-clipboard}/bin/wl-copy < "$file"
+        ${pkgs.libnotify}/bin/notify-send "Screenshot saved" "$file"
       '')
     ];
 
