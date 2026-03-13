@@ -5,7 +5,7 @@
   # Bluetooth
   services.blueman.enable = true;
 
-  # Storage / removable media
+  # Storage / removable media — gvfs declared once here, not in filemanager.nix
   services.devmon.enable  = true;
   services.gvfs.enable    = true;
   services.udisks2.enable = true;
@@ -15,7 +15,7 @@
   hardware.uinput.enable           = true;
 
   # Keyboard backlight — dedicated group + one-shot service so kbm() works
-  # without sudo on every boot, no manual udevadm trigger needed.
+  # without sudo on every boot.
   users.groups.backlight = {};
   users.users.${config.profile.username}.extraGroups = [ "backlight" ];
 

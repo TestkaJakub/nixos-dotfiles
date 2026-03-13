@@ -3,25 +3,20 @@
 # ── Nemo — file manager ────────────────────────────────────────────────────────
 # Reads: config.theme.palette
 #        config.profile.username
+# Note: services.gvfs.enable is set in system/peripherals.nix — not here.
 let
-  user = config.profile.username;
-  t    = config.theme;
-
+  user   = config.profile.username;
+  t      = config.theme;
   bg     = t.palette.secondary;
-  fg     = t.functions.textcolor t.palette.secondary;
   accent = t.palette.primary;
 in
 {
   environment.systemPackages = with pkgs; [
     nemo
-    nemo-fileroller  # archive support (right-click extract/compress)
+    nemo-fileroller
   ];
 
-  # Set Nemo as the default directory handler
-  services.gvfs.enable = true;
-
   home-manager.users.${user} = {
-    # GTK theme — Adwaita-dark base with palette accent colors
     gtk = {
       enable = true;
       theme = {
@@ -43,10 +38,9 @@ in
       '';
     };
 
-    # Tell Qt apps to follow GTK theme
     qt = {
-      enable         = true;
-      platformTheme  = { name = "gtk"; };
+      enable        = true;
+      platformTheme = { name = "gtk"; };
     };
 
     dconf.settings."org/gnome/desktop/interface" = {
@@ -54,8 +48,8 @@ in
     };
 
     dconf.settings."org/nemo/preferences" = {
-      default-folder-viewer    = "list-view";
-      show-hidden-files        = false;
+      default-folder-viewer     = "list-view";
+      show-hidden-files         = false;
       show-advanced-permissions = true;
     };
   };

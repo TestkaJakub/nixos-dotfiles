@@ -10,6 +10,8 @@ let
   lightenedPrimary  = t.functions.lighten t.palette.primary 0.1;
   waybarFocusedText = t.functions.textcolor lightenedPrimary;
   waybarText        = t.functions.textcolor t.palette.primary;
+  urgentBg          = t.functions.complement t.palette.primary;
+  urgentFg          = t.functions.textcolor urgentBg;
 in
 {
   home-manager.users.${user}.programs.waybar = {
@@ -42,8 +44,8 @@ in
         color: ${waybarFocusedText};
       }
       #workspaces button.urgent {
-        background: ${waybarFocusedText};
-        color: ${waybarFocusedText};
+        background: ${urgentBg};
+        color: ${urgentFg};
       }
     '';
 
@@ -79,15 +81,16 @@ in
         exec = let
           script = pkgs.writeShellApplication {
             name          = "waybar-network";
-            runtimeInputs = with pkgs; [ iw wirelesstools gnugrep iproute2 coreutils ];
+            runtimeInputs = with pkgs; [ iw wirelesstools gnugrep iproute2 coreutils iputils jq ];
             checkPhase    = "";
             text = ''
               ssid=$(iwgetid -r)
               if ping -c1 -W1 8.8.8.8 >/dev/null 2>&1; then
                 [ -z "$ssid" ] && ssid="Ethernet"
-                echo "{\"text\": \"Net: $ssid\", \"tooltip\": \"Connected: $ssid\"}"
+                jq -Rn --arg text "Net: $ssid" --arg tooltip "Connected: $ssid" \
+                  '{text: $text, tooltip: $tooltip}'
               else
-                echo '{"text": "No connection", "tooltip": "No internet connection"}'
+                jq -Rn '{text: "No connection", tooltip: "No internet connection"}'
               fi
             '';
           };
@@ -102,7 +105,7 @@ in
         exec = let
           script = pkgs.writeShellApplication {
             name          = "waybar-bluetooth";
-            runtimeInputs = with pkgs; [ bluez gnugrep gawk coreutils ];
+            runtimeInputs = with pkgs; [ bluez gnugrep gawk coreutils gnused jq ];
             checkPhase    = "";
             text = ''
               if bluetoothctl --help | grep -q "connected-devices"; then
@@ -112,7 +115,7 @@ in
               fi
 
               if [ -z "$devices_raw" ]; then
-                echo '{"text": "BT none", "tooltip": "No Bluetooth devices connected"}'
+                jq -Rn '{text: "BT none", tooltip: "No Bluetooth devices connected"}'
                 exit 0
               fi
 
@@ -133,7 +136,10 @@ in
               rm -f "$tmpfile"
 
               [ -z "$display_text" ] && display_text="unknown"
-              echo "{\"text\": \"BT $display_text\", \"tooltip\": \"$tooltip\"}"
+              jq -Rn \
+                --arg text "BT $display_text" \
+                --arg tooltip "$tooltip" \
+                '{text: $text, tooltip: $tooltip}'
             '';
           };
         in "${script}/bin/waybar-bluetooth";
@@ -149,15 +155,15 @@ in
         exec = let
           script = pkgs.writeShellApplication {
             name          = "waybar-volume";
-            runtimeInputs = [ pkgs.pamixer ];
+            runtimeInputs = with pkgs; [ pamixer jq ];
             checkPhase    = "";
             text = ''
               volume=$(pamixer --get-volume)
               muted=$(pamixer --get-mute)
               if [ "$muted" = "true" ]; then
-                echo '{"text": "Muted", "tooltip": "Muted"}'
+                jq -Rn '{text: "Muted", tooltip: "Muted"}'
               else
-                echo "{\"text\": \"Vol: $volume%\", \"tooltip\": \"Vol: $volume%\"}"
+                jq -Rn --arg v "$volume" '{text: "Vol: \($v)%", tooltip: "Vol: \($v)%"}'
               fi
             '';
           };
