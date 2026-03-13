@@ -137,6 +137,12 @@ in
         "x-scheme-handler/about"   = [ meta.browserDesktop ];
         "x-scheme-handler/unknown" = [ meta.browserDesktop ];
         "inode/directory"          = [ meta.fileManagerDesktop ];
+        "image/png"                 = [ "swayimg.desktop" ];
+        "image/jpeg"                = [ "swayimg.desktop" ];
+        "image/gif"                 = [ "swayimg.desktop" ];
+        "image/webp"                = [ "swayimg.desktop" ];
+        "image/bmp"                 = [ "swayimg.desktop" ];
+        "image/tiff"                = [ "swayimg.desktop" ];
       };
     };
   };
