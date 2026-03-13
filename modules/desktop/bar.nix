@@ -87,10 +87,10 @@ in
           ssid=$(${iwgetid} -r 2>/dev/null || echo "")
           if ${ping} -c1 -W1 8.8.8.8 >/dev/null 2>&1; then
             [ -z "$ssid" ] && ssid="Ethernet"
-            ${jq} -Rn --arg text "Net: $ssid" --arg tooltip "Connected: $ssid" \
+            ${jq} -Rcn --arg text "Net: $ssid" --arg tooltip "Connected: $ssid" \
               '{text: $text, tooltip: $tooltip}'
           else
-            ${jq} -Rn '{text: "No connection", tooltip: "No internet connection"}'
+            ${jq} -Rcn '{text: "No connection", tooltip: "No internet connection"}'
           fi
         '';
       };
@@ -108,7 +108,7 @@ in
           fi
 
           if [ -z "$devices_raw" ]; then
-            ${jq} -Rn '{text: "BT none", tooltip: "No Bluetooth devices connected"}'
+            ${jq} -Rcn '{text: "BT none", tooltip: "No Bluetooth devices connected"}'
             exit 0
           fi
 
@@ -126,7 +126,7 @@ in
           done <<< "$devices_raw"
 
           [ -z "$display_text" ] && display_text="unknown"
-          ${jq} -Rn \
+          ${jq} -Rcn \
             --arg text "BT $display_text" \
             --arg tooltip "$tooltip" \
             '{text: $text, tooltip: $tooltip}'
@@ -144,9 +144,9 @@ in
           volume=$(${pamixer} --get-volume 2>/dev/null || echo 0)
           muted=$(${pamixer} --get-mute 2>/dev/null || echo false)
           if [ "$muted" = "true" ]; then
-            ${jq} -Rn '{text: "Muted", tooltip: "Muted"}'
+            ${jq} -Rcn '{text: "Muted", tooltip: "Muted"}'
           else
-            ${jq} -Rn --arg v "$volume" '{text: "Vol: \($v)%", tooltip: "Vol: \($v)%"}'
+            ${jq} -Rcn --arg v "$volume" '{text: "Vol: \($v)%", tooltip: "Vol: \($v)%"}'
           fi
         '';
       };
