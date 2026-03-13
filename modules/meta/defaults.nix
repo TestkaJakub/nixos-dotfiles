@@ -10,40 +10,42 @@
 # To switch default browser to firefox: set options.meta.defaults.browser = "firefox"
 # The keybind, xdg-open, and MIME associations all update on next rebuild.
 
-options.meta.defaults = {
-  browser = lib.mkOption {
-    type        = lib.types.str;
-    default     = "vivaldi";
-    description = "Binary name of the default web browser.";
-  };
+{
+  options.meta.defaults = {
+	  browser = lib.mkOption {
+	    type        = lib.types.str;
+	    default     = "vivaldi";
+	    description = "Binary name of the default web browser.";
+	  };
 
-  browserDesktop = lib.mkOption {
-    type        = lib.types.str;
-    default     = "vivaldi-stable.desktop";
-    description = "Desktop entry name for the default web browser (used by xdg-open).";
-  };
+	  browserDesktop = lib.mkOption {
+	    type        = lib.types.str;
+	    default     = "vivaldi-stable.desktop";
+	    description = "Desktop entry name for the default web browser (used by xdg-open).";
+	  };
 
-  terminal = lib.mkOption {
-    type        = lib.types.str;
-    default     = "alacritty";
-    description = "Binary name of the default terminal emulator.";
-  };
+	  terminal = lib.mkOption {
+	    type        = lib.types.str;
+	    default     = "alacritty";
+	    description = "Binary name of the default terminal emulator.";
+	  };
 
-  fileManager = lib.mkOption {
-    type        = lib.types.str;
-    default     = "thunar";
-    description = "Binary name of the default file manager.";
-  };
+	  fileManager = lib.mkOption {
+	    type        = lib.types.str;
+	    default     = "thunar";
+	    description = "Binary name of the default file manager.";
+	  };
 
-  fileManagerDesktop = lib.mkOption {
-    type        = lib.types.str;
-    default     = "thunar.desktop";
-    description = "Desktop entry name for the default file manager.";
-  };
+	  fileManagerDesktop = lib.mkOption {
+	    type        = lib.types.str;
+	    default     = "thunar.desktop";
+	    description = "Desktop entry name for the default file manager.";
+	  };
 
-  wallpaper = lib.mkOption {
-    type        = lib.types.str;
-    default     = "~/Wallpapers/AkuNoHana.jpg";
-    description = "Absolute or home-relative path to the wallpaper image.";
+	  wallpaper = lib.mkOption {
+	    type        = lib.types.str;
+	    default     = "~/Wallpapers/AkuNoHana.jpg";
+	    description = "Absolute or home-relative path to the wallpaper image.";
+	  };
   };
 }
