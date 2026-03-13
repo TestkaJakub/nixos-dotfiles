@@ -1,21 +1,24 @@
-{ pkgs, lib, config, inputs, ... }:
+{ pkgs, config, inputs, ... }:
 
 # ── Compositor (MangoWC) ───────────────────────────────────────────────────────
 # Reads: config.theme.{palette, functions}
 #        config.locale.{keyboardLayout, latitude, longitude}
 #        config.profile.username
+#        config.meta.defaults.{browser, terminal, fileManager}
 let
-  cfg     = config.theme;
-  loc     = config.locale;
-  user    = config.profile.username;
+  cfg  = config.theme;
+  loc  = config.locale;
+  meta = config.meta.defaults;
+  user = config.profile.username;
 
   mangoConfig = ''
     monitorrule=eDP-1,0.55,1,title,0,1,0,0,1920,1080,60
     monitorrule=HDMI-A-1,0.55,1,title,0,1,1925,0,1920,1080,60
 
     bind=super,r,reload_config
-    bind=super,q,spawn,alacritty
-    bind=super,b,spawn,firefox
+    bind=super,q,spawn,${meta.terminal}
+    bind=super,b,spawn,${meta.browser}
+    bind=super,e,spawn,${meta.fileManager}
     bind=super,f,spawn,fuzzel
     bind=super,code:107,spawn,screenshot-region
     bind=super,e,killclient
@@ -95,7 +98,6 @@ let
   '';
 in
 {
-  # MangoWC NixOS module (provided by mangowc flake input)
   programs.mango.enable = true;
 
   home-manager.users.${user} = {
@@ -116,5 +118,18 @@ in
       Type=Application
       DesktopNames=MangoWC
     '';
+
+    # XDG MIME associations — controls what xdg-open launches
+    xdg.mimeApps = {
+      enable = true;
+      defaultApplications = {
+        "text/html"                = [ meta.browserDesktop ];
+        "x-scheme-handler/http"   = [ meta.browserDesktop ];
+        "x-scheme-handler/https"  = [ meta.browserDesktop ];
+        "x-scheme-handler/about"  = [ meta.browserDesktop ];
+        "x-scheme-handler/unknown"= [ meta.browserDesktop ];
+        "inode/directory"         = [ meta.fileManagerDesktop ];
+      };
+    };
   };
 }
