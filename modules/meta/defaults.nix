@@ -10,13 +10,13 @@
   options.meta.defaults = {
     browser = lib.mkOption {
       type        = lib.types.str;
-      default     = "vivaldi-stable";
+      default     = "vivaldi";
       description = "Binary name of the default web browser.";
     };
 
     browserDesktop = lib.mkOption {
       type        = lib.types.str;
-      default     = "vivaldi-stable.desktop";
+      default     = "vivaldi.desktop";
       description = "Desktop entry name for the default web browser (used by xdg-open).";
     };
 

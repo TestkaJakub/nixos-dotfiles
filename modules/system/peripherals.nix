@@ -1,8 +1,8 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 
 # ── Peripherals ────────────────────────────────────────────────────────────────
 {
-  # Bluetooth GUI manager (pairs with hardware.bluetooth.enable in hardware.nix)
+  # Bluetooth
   services.blueman.enable = true;
 
   # Storage / removable media
@@ -10,7 +10,21 @@
   services.gvfs.enable    = true;
   services.udisks2.enable = true;
 
-  # Graphics tablet (Wacom, XP-Pen, Huion etc. via OpenTabletDriver)
+  # Graphics tablets
   hardware.opentabletdriver.enable = true;
-  hardware.uinput.enable           = true;  # required by OpenTabletDriver
+  hardware.uinput.enable           = true;
+
+  # Keyboard backlight — one-shot service runs at boot so kbm() works without sudo.
+  systemd.services.kbd-backlight-perms = {
+    description   = "Allow users group to write keyboard backlight brightness";
+    wantedBy      = [ "multi-user.target" ];
+    after         = [ "systemd-udev-settle.service" ];
+    serviceConfig = {
+      Type      = "oneshot";
+      ExecStart = "${pkgs.coreutils}/bin/chmod g+w /sys/class/leds/tpacpi::kbd_backlight/brightness";
+      RemainAfterExit = true;
+    };
+  };
+
+  users.users.${config.profile.username}.extraGroups = [ "users" ];
 }
