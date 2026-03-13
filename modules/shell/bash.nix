@@ -1,29 +1,12 @@
 { pkgs, config, ... }:
 
 # ── Bash ───────────────────────────────────────────────────────────────────────
-# Reads: config.profile.username
-#
-# kbm and cpc are standalone binaries (writeShellScriptBin) so the compositor
-# can invoke them via super+g / super+m without needing a login shell.
-# ard, nrs, nrsr remain shell functions since they are interactive-only.
+# kbm and cpc are defined in generals/scripts.nix and referenced here via
+# config.scripts so the compositor can use the same store paths.
 let
   user = config.profile.username;
-
-  kbm = pkgs.writeShellScriptBin "kbm" ''
-    path="/sys/class/leds/tpacpi::kbd_backlight/brightness"
-    max_path="/sys/class/leds/tpacpi::kbd_backlight/max_brightness"
-    cur=$(cat "$path" 2>/dev/null || echo 0)
-    max=$(cat "$max_path" 2>/dev/null || echo 2)
-    val=$(( (cur + 1) % (max + 1) ))
-    echo "$val" > "$path"
-  '';
-
-  cpc = pkgs.writeShellScriptBin "cpc" ''
-    echo "Copying .nix configs to clipboard..."
-    find ~/nixos-dotfiles -type f -name '*.nix' \
-      -exec echo "===== {} =====" \; -exec cat {} \; | ${pkgs.wl-clipboard}/bin/wl-copy
-    ${pkgs.libnotify}/bin/notify-send "✅ Config copied to clipboard"
-  '';
+  kbm  = config.scripts.kbm;
+  cpc  = config.scripts.cpc;
 in
 {
   home-manager.users.${user} = {
