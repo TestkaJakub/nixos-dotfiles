@@ -61,6 +61,7 @@ let
 
     bind=super,g,spawn,bash kbm
     bind=super,m,spawn,bash cpc
+    bind=ALT,m,spawn,${pkgs.wayvnc}/bin/wayvnc 0.0.0.0 5900
 
     bind=none,XF86AudioMute,spawn,pamixer -t
     bind=none,XF86AudioLowerVolume,spawn,pamixer --allow-boost -d 5

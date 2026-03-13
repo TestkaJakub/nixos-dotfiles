@@ -2,38 +2,52 @@
 
 # ── Bash ───────────────────────────────────────────────────────────────────────
 # Reads: config.profile.username
-# Contains all interactive shell functions:
-#   kbm   — cycle keyboard backlight
-#   cpc   — copy all .nix configs to clipboard
-#   ard   — compile + upload Arduino sketch
-#   nrs   — commit dotfiles + nixos-rebuild switch
-#   nrsr  — nrs + reboot on success
-#   screenshot-region / screenshot-full — grim helpers
+#
+# kbm and cpc are standalone binaries (writeShellScriptBin) so the compositor
+# can invoke them via super+g / super+m without needing a login shell.
+# ard, nrs, nrsr remain shell functions since they are interactive-only.
 let
   user = config.profile.username;
+
+  kbm = pkgs.writeShellScriptBin "kbm" ''
+    path="/sys/class/leds/tpacpi::kbd_backlight/brightness"
+    max_path="/sys/class/leds/tpacpi::kbd_backlight/max_brightness"
+    cur=$(cat "$path" 2>/dev/null || echo 0)
+    max=$(cat "$max_path" 2>/dev/null || echo 2)
+    val=$(( (cur + 1) % (max + 1) ))
+    echo "$val" > "$path"
+  '';
+
+  cpc = pkgs.writeShellScriptBin "cpc" ''
+    echo "Copying .nix configs to clipboard..."
+    find ~/nixos-dotfiles -type f -name '*.nix' \
+      -exec echo "===== {} =====" \; -exec cat {} \; | ${pkgs.wl-clipboard}/bin/wl-copy
+    ${pkgs.libnotify}/bin/notify-send "✅ Config copied to clipboard"
+  '';
 in
 {
   home-manager.users.${user} = {
     home.packages = with pkgs; [
-      wl-clipboard  # wl-copy used by cpc
-      grim          # screenshot capture
-      slurp         # region selection for screenshots
-      pamixer       # volume control (used by keybinds + waybar)
-      wayvnc        # VNC server (launched via keybind in compositor)
-      hyprpaper     # wallpaper daemon (launched by compositor autostart)
-      gammastep     # night light (launched by compositor autostart)
-      libnotify     # provides notify-send binary
+      wl-clipboard
+      grim
+      slurp
+      pamixer
+      wayvnc
+      hyprpaper
+      gammastep
+      libnotify
+      kbm
+      cpc
 
-      # Screenshot helpers as standalone binaries
       (writeShellScriptBin "screenshot-region" ''
         mkdir -p ~/Pictures/screenshots
         grim -g "$(slurp)" ~/Pictures/screenshots/$(date +%Y-%m-%d_%H-%M-%S).png
-        notify-send "Screenshot saved"
+        ${pkgs.libnotify}/bin/notify-send "Screenshot saved"
       '')
       (writeShellScriptBin "screenshot-full" ''
         mkdir -p ~/Pictures/screenshots
         grim ~/Pictures/screenshots/$(date +%Y-%m-%d_%H-%M-%S).png
-        notify-send "Fullscreen screenshot saved"
+        ${pkgs.libnotify}/bin/notify-send "Fullscreen screenshot saved"
       '')
     ];
 
@@ -55,25 +69,6 @@ in
 \D{%d-%m-%Y %H:%M:%S} \w \033[38;5;63m>\033[0m "
           export PS1
         fi
-
-        # ── kbm: cycle keyboard backlight ───────────────────────────────────────
-        kbm() {
-          local path="/sys/class/leds/tpacpi::kbd_backlight/brightness"
-          local max_path="/sys/class/leds/tpacpi::kbd_backlight/max_brightness"
-          local cur max val
-          cur=$(cat "$path" 2>/dev/null || echo 0)
-          max=$(cat "$max_path" 2>/dev/null || echo 2)
-          val=$(( (cur + 1) % (max + 1) ))
-          echo "$val" > "$path"
-        }
-
-        # ── cpc: copy all .nix configs to clipboard ─────────────────────────────
-        cpc() {
-          echo "Copying .nix configs to clipboard..."
-          find ~/nixos-dotfiles -type f -name '*.nix' \
-            -exec echo "===== {} =====" \; -exec cat {} \; | wl-copy
-          notify-send "Config copied to clipboard"
-        }
 
         # ── ard: compile + upload an Arduino sketch ─────────────────────────────
         ard() {
