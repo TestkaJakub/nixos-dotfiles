@@ -28,13 +28,13 @@
 
     fileManager = lib.mkOption {
       type        = lib.types.str;
-      default     = "yazi";
+      default     = "nemo";
       description = "Binary name of the default file manager.";
     };
 
     fileManagerDesktop = lib.mkOption {
       type        = lib.types.str;
-      default     = "yazi.desktop";
+      default     = "nemo.desktop";
       description = "Desktop entry name for the default file manager.";
     };
 

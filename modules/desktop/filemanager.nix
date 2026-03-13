@@ -1,103 +1,62 @@
 { pkgs, config, ... }:
 
-# ── Yazi — file manager ────────────────────────────────────────────────────────
+# ── Nemo — file manager ────────────────────────────────────────────────────────
 # Reads: config.theme.palette
 #        config.profile.username
-#        config.meta.defaults.fileManager / fileManagerDesktop
-#
-# Replaces Thunar. Terminal-based, fully palette-themed.
 let
   user = config.profile.username;
   t    = config.theme;
 
-  bg      = t.palette.secondary;
-  fg      = t.functions.textcolor t.palette.secondary;
-  accent  = t.palette.primary;
-  border  = t.palette.border;
-  dimmed  = t.functions.darken t.palette.primary 0.15;
+  bg     = t.palette.secondary;
+  fg     = t.functions.textcolor t.palette.secondary;
+  accent = t.palette.primary;
 in
 {
   environment.systemPackages = with pkgs; [
-    yazi
-    ffmpegthumbnailer  # video thumbnails
-    unar               # archive previews
-    jq                 # JSON previews
-    poppler_utils      # PDF previews
-    fd                 # faster file search
-    ripgrep            # content search
-    fzf                # fuzzy finder integration
+    nemo
+    nemo-fileroller  # archive support (right-click extract/compress)
   ];
 
+  # Set Nemo as the default directory handler
+  services.gvfs.enable = true;
+
   home-manager.users.${user} = {
-    xdg.configFile."yazi/theme.toml".text = ''
-      [manager]
-      cwd = { fg = "${accent}" }
+    # GTK theme — Adwaita-dark base with palette accent colors
+    gtk = {
+      enable = true;
+      theme = {
+        name    = "Adwaita-dark";
+        package = pkgs.gnome-themes-extra;
+      };
+      gtk3.extraCss = ''
+        * {
+          --accent-bg-color: ${accent};
+          --accent-color: ${accent};
+          --accent-fg-color: ${bg};
+        }
+        .view:selected,
+        row:selected,
+        .nemo-window .nemo-places-sidebar row:selected {
+          background-color: ${accent};
+          color: ${bg};
+        }
+      '';
+    };
 
-      hovered         = { fg = "${bg}", bg = "${accent}" }
-      preview_hovered = { underline = true }
+    # Tell Qt apps to follow GTK theme
+    qt = {
+      enable         = true;
+      platformTheme  = { name = "gtk"; };
+    };
 
-      find_keyword  = { fg = "${accent}", bold = true }
-      find_position = { fg = "${accent}", bg = "${bg}", bold = true }
+    dconf.settings."org/gnome/desktop/interface" = {
+      color-scheme = "prefer-dark";
+    };
 
-      marker_copied = { fg = "${accent}", bg = "${accent}" }
-      marker_cut    = { fg = "${dimmed}", bg = "${dimmed}" }
-
-      tab_active   = { fg = "${bg}", bg = "${accent}" }
-      tab_inactive = { fg = "${fg}", bg = "${bg}" }
-      tab_width    = 1
-
-      border_style  = { fg = "${border}" }
-      border_symbol = "│"
-
-      [status]
-      separator_open  = ""
-      separator_close = ""
-
-      [input]
-      border   = { fg = "${accent}" }
-      title    = { fg = "${accent}" }
-      value    = { fg = "${fg}" }
-      selected = { reversed = true }
-
-      [select]
-      border   = { fg = "${accent}" }
-      active   = { fg = "${accent}" }
-      inactive = { fg = "${dimmed}" }
-
-      [tasks]
-      border  = { fg = "${accent}" }
-      title   = { fg = "${accent}" }
-      hovered = { underline = true }
-
-      [which]
-      mask            = { bg = "${bg}" }
-      cand            = { fg = "${accent}" }
-      rest            = { fg = "${dimmed}" }
-      desc            = { fg = "${fg}" }
-      separator       = "  "
-      separator_style = { fg = "${dimmed}" }
-
-      [help]
-      on      = { fg = "${accent}" }
-      run     = { fg = "${fg}" }
-      desc    = { fg = "${dimmed}" }
-      hovered = { bg = "${bg}", bold = true }
-      footer  = { fg = "${bg}", bg = "${accent}" }
-    '';
-
-    # Shell integration — `y` opens yazi and cds into the last directory on exit
-    programs.bash.initExtra = ''
-      y() {
-        local tmp
-        tmp=$(mktemp -t yazi-cwd.XXXXXX)
-        yazi "$@" --cwd-file="$tmp"
-        if [ -f "$tmp" ]; then
-          local cwd
-          cwd=$(cat "$tmp")
-          [ -n "$cwd" ] && [ "$cwd" != "$PWD" ] && cd "$cwd"
-          rm -f "$tmp"
-        fi
-      }
-    '';
+    dconf.settings."org/nemo/preferences" = {
+      default-folder-viewer    = "list-view";
+      show-hidden-files        = false;
+      show-advanced-permissions = true;
+    };
   };
 }
