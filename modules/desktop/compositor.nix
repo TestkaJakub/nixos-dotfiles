@@ -21,7 +21,7 @@ let
     bind=super,f,spawn,fuzzel
     bind=super,code:107,spawn,screenshot-region
     bind=super,e,killclient
-    bind=super,n,spawn,${meta.fileManager}
+    bind=super,n,spawn,${meta.terminal} -e ${meta.fileManager}
 
     bind=super,Tab,focusstack,next
 

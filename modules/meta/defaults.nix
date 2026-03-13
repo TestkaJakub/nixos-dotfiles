@@ -28,13 +28,13 @@
 
     fileManager = lib.mkOption {
       type        = lib.types.str;
-      default     = "thunar";
+      default     = "yazi";
       description = "Binary name of the default file manager.";
     };
 
     fileManagerDesktop = lib.mkOption {
       type        = lib.types.str;
-      default     = "thunar.desktop";
+      default     = "yazi.desktop";
       description = "Desktop entry name for the default file manager.";
     };
 
