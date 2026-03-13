@@ -18,10 +18,10 @@ let
     bind=super,r,reload_config
     bind=super,q,spawn,${meta.terminal}
     bind=super,b,spawn,${meta.browser}
-    bind=super,e,spawn,${meta.fileManager}
     bind=super,f,spawn,fuzzel
     bind=super,code:107,spawn,screenshot-region
     bind=super,e,killclient
+    bind=super,n,spawn,${meta.fileManager}
 
     bind=super,Tab,focusstack,next
 
@@ -59,8 +59,8 @@ let
     bind=super+alt,h,tagmon,left,1
     bind=super+alt,l,tagmon,right,1
 
-    bind=super,g,spawn,bash -c kbm
-    bind=super,m,spawn,bash -c cpc
+    bind=super,g,spawn,bash kbm
+    bind=super,m,spawn,bash cpc
     bind=ALT,m,spawn,${pkgs.wayvnc}/bin/wayvnc 0.0.0.0 5900
 
     bind=none,XF86AudioMute,spawn,pamixer -t
@@ -92,7 +92,7 @@ let
     ) &
     sleep 2
 
-    hyprpaper &
+    hyprpaper --config ~/.config/hypr/hyprpaper.conf &
     waybar &
     gammastep -m wayland -l ${toString loc.latitude}:${toString loc.longitude} -t 6000:3700 &
   '';
@@ -119,16 +119,15 @@ in
       DesktopNames=MangoWC
     '';
 
-    # XDG MIME associations — controls what xdg-open launches
     xdg.mimeApps = {
       enable = true;
       defaultApplications = {
-        "text/html"                = [ meta.browserDesktop ];
-        "x-scheme-handler/http"   = [ meta.browserDesktop ];
-        "x-scheme-handler/https"  = [ meta.browserDesktop ];
-        "x-scheme-handler/about"  = [ meta.browserDesktop ];
-        "x-scheme-handler/unknown"= [ meta.browserDesktop ];
-        "inode/directory"         = [ meta.fileManagerDesktop ];
+        "text/html"                 = [ meta.browserDesktop ];
+        "x-scheme-handler/http"    = [ meta.browserDesktop ];
+        "x-scheme-handler/https"   = [ meta.browserDesktop ];
+        "x-scheme-handler/about"   = [ meta.browserDesktop ];
+        "x-scheme-handler/unknown" = [ meta.browserDesktop ];
+        "inode/directory"          = [ meta.fileManagerDesktop ];
       };
     };
   };
