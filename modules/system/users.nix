@@ -2,7 +2,6 @@
 
 # ── Users ──────────────────────────────────────────────────────────────────────
 # Reads: config.profile.{username, stateVersion}
-# home-manager stateVersion is set here centrally for the user session.
 {
   users.users.${config.profile.username} = {
     isNormalUser = true;
@@ -14,8 +13,9 @@
   users.groups.${config.profile.username} = {};
 
   home-manager = {
-    useGlobalPkgs   = true;
-    useUserPackages = true;
+    useGlobalPkgs        = true;
+    useUserPackages      = true;
+    backupFileExtension  = "bak";
 
     users.${config.profile.username} = { ... }: {
       home.stateVersion = config.profile.stateVersion;
