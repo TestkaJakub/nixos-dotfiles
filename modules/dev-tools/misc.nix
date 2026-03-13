@@ -13,6 +13,7 @@ in
     polkit
     exfatprogs
     parted
+    unzip
   ];
 
   # User-only tools
