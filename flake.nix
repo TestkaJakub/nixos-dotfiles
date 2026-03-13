@@ -2,59 +2,84 @@
   description = "Jakub's NixOS configuration";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
-    wrappers.url = "github:lassulus/wrappers";
+    flake-parts.url  = "github:hercules-ci/flake-parts";
+    nixpkgs.url      = "github:NixOS/nixpkgs/nixos-25.05";
+
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.05";
+      url            = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    mangowc.url = "github:DreamMaoMao/mangowc";
+
+    mangowc.url      = "github:DreamMaoMao/mangowc";
+    wrappers.url     = "github:lassulus/wrappers";
+
     private = {
-  url = "path:/home/jakub/nixos-private";
-  flake = false;
-};
+      url   = "path:/home/jakub/nixos-private";
+      flake = false;
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, mangowc, wrappers, ... } @ inputs:
+  outputs = inputs:
+    inputs.flake-parts.lib.mkFlake { inherit inputs; } ({ lib, ... }:
     let
-      globals = import ./globals.nix;
-      pkgs = import nixpkgs { inherit (globals) system; config.allowUnfree = true; };
+      # ── Recursive module walker ─────────────────────────────────────────────
+      collectModules = dir: blacklist:
+        let
+          walk = prefix: entries:
+            lib.concatMap (name:
+              let
+                path    = dir + "/${prefix}${name}";
+                relPath = "${prefix}${name}";
+                type    = entries.${name};
+              in
+              if type == "directory" then
+                walk "${prefix}${name}/" (builtins.readDir path)
+              else if type == "regular"
+                && lib.hasSuffix ".nix" name
+                && !(builtins.elem relPath blacklist)
+              then [ path ]
+              else []
+            ) (builtins.attrNames entries);
+        in
+          walk "" (builtins.readDir dir);
+
+      # ── Blacklist ───────────────────────────────────────────────────────────
+      moduleBlacklist = [
+        "system/hardware.nix"
+      ];
+
+      # ── Patched pkgs ────────────────────────────────────────────────────────
+      # nixpkgs 25.05 moved lndir into pkgs.xorg.lndir but home-manager's
+      # internal fontconfig module still references pkgs.lndir directly.
+      # This overlay bridges the gap until home-manager is updated.
+      pkgs = import inputs.nixpkgs {
+        system = "x86_64-linux";
+        overlays = [ (_final: prev: { lndir = prev.xorg.lndir; }) ];
+        config.allowUnfree = true;
+      };
+
     in {
-      nixosConfigurations.${globals.host} = nixpkgs.lib.nixosSystem {
-        system = globals.system;
+      systems = [ "x86_64-linux" ];
 
-        specialArgs = { 
-	  inherit (globals) system version user host timezone;
-	  inherit (globals.configs) configurationModulesPath wrapsPath;
-	  inherit inputs globals wrappers;
-	} // {
-          theme = (import ./globals/theming.nix {inherit pkgs; lib = nixpkgs.lib; }).config.theme;
-	};
+      flake.nixosConfigurations.nixos = inputs.nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        inherit pkgs;
 
-        modules = [
-	  ./globals/theming.nix
-          globals.configs.configurationPath
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.extraSpecialArgs = {
-	      inherit (globals) system version user;
-	      inherit (globals.configs) homeConfigurationPath;
-	      inherit (globals.localisation) latitude longitude keyboardLayout;
-	      inherit inputs pkgs wrappers;
-	      theme = (import ./globals/theming.nix { inherit pkgs; lib = nixpkgs.lib; }).config.theme; 
-	    };
-            home-manager.users.${globals.user} = import globals.configs.homePath;
-          }
-          mangowc.nixosModules.mango
-        ]
-++ builtins.map
-  (name: inputs.private + "/${name}")
-  (builtins.filter
-    (n: builtins.match ".*\\.nix" n != null)
-    (builtins.attrNames (builtins.readDir inputs.private)))++ builtins.map
-  (name: inputs.private + "/${name}")
-  (builtins.filter
-    (n: builtins.match ".*\\.nix" n != null)
-    (builtins.attrNames (builtins.readDir inputs.private)));      };
-    };
+        modules =
+          (collectModules ./modules moduleBlacklist)
+          ++ [ ./modules/system/hardware.nix ]
+          ++ [ inputs.home-manager.nixosModules.home-manager ]
+          ++ [ inputs.mangowc.nixosModules.mango ]
+          ++ (
+            let
+              privateDir = inputs.private;
+              names      = builtins.attrNames (builtins.readDir privateDir);
+              nixFiles   = builtins.filter (n: lib.hasSuffix ".nix" n) names;
+            in
+              map (n: privateDir + "/${n}") nixFiles
+          );
+
+        specialArgs = { inherit inputs; };
+      };
+    });
 }
