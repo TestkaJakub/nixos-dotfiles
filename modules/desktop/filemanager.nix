@@ -1,8 +1,6 @@
 { pkgs, config, ... }:
 
 # ── Nemo — file manager ────────────────────────────────────────────────────────
-# Reads: config.theme.palette
-#        config.profile.username
 # Note: services.gvfs.enable is set in system/peripherals.nix — not here.
 let
   user   = config.profile.username;
@@ -16,7 +14,7 @@ in
     nemo-fileroller
   ];
 
-  home-manager.users.${user} = {
+  home-manager.users.${user} = { lib, ... }: {
     gtk = {
       enable = true;
       theme = {
@@ -52,5 +50,14 @@ in
       show-hidden-files         = false;
       show-advanced-permissions = true;
     };
+
+    # Fix thumbnail cache permissions — Nemo complains if these are wrong
+    home.activation.fixThumbnailCache =
+      lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        mkdir -p "$HOME/.cache/thumbnails/"{normal,large,x-large,xx-large,fail}
+        chmod 700 "$HOME/.cache/thumbnails"
+        find "$HOME/.cache/thumbnails" -type d -exec chmod 700 {} \;
+        find "$HOME/.cache/thumbnails" -type f -exec chmod 600 {} \;
+      '';
   };
 }
