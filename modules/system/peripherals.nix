@@ -14,17 +14,24 @@
   hardware.opentabletdriver.enable = true;
   hardware.uinput.enable           = true;
 
-  # Keyboard backlight — one-shot service runs at boot so kbm() works without sudo.
+  # Keyboard backlight — dedicated group + one-shot service so kbm() works
+  # without sudo on every boot, no manual udevadm trigger needed.
+  users.groups.backlight = {};
+  users.users.${config.profile.username}.extraGroups = [ "backlight" ];
+
   systemd.services.kbd-backlight-perms = {
-    description   = "Allow users group to write keyboard backlight brightness";
-    wantedBy      = [ "multi-user.target" ];
-    after         = [ "systemd-udev-settle.service" ];
+    description     = "Set keyboard backlight brightness group to backlight";
+    wantedBy        = [ "multi-user.target" ];
+    after           = [ "systemd-udev-settle.service" ];
     serviceConfig = {
-      Type      = "oneshot";
-      ExecStart = "${pkgs.coreutils}/bin/chmod g+w /sys/class/leds/tpacpi::kbd_backlight/brightness";
+      Type            = "oneshot";
       RemainAfterExit = true;
+      ExecStart       = pkgs.writeShellScript "kbd-backlight-perms" ''
+        ${pkgs.coreutils}/bin/chown root:backlight \
+          /sys/class/leds/tpacpi::kbd_backlight/brightness
+        ${pkgs.coreutils}/bin/chmod g+w \
+          /sys/class/leds/tpacpi::kbd_backlight/brightness
+      '';
     };
   };
-
-  users.users.${config.profile.username}.extraGroups = [ "users" ];
 }
