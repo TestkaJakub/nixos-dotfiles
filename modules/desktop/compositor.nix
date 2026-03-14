@@ -11,24 +11,28 @@ let
   cliphist    = "${pkgs.cliphist}/bin/cliphist";
   wlPaste     = "${pkgs.wl-clipboard}/bin/wl-paste";
   wlCopy      = "${pkgs.wl-clipboard}/bin/wl-copy";
-  # Use the themed wrapper exposed by launcher.nix — not the bare pkgs.fuzzel.
   fuzzel      = "${meta.fuzzel}/bin/fuzzel";
   hyprpaper   = "${pkgs.hyprpaper}/bin/hyprpaper";
   mako        = "${pkgs.mako}/bin/mako";
   waybar      = "${pkgs.waybar}/bin/waybar";
   gammastep   = "${pkgs.gammastep}/bin/gammastep";
+  pamixer     = "${pkgs.pamixer}/bin/pamixer";
+
+  browser     = "${meta.browserPackage}/bin/${meta.browser}";
+  terminal    = "${meta.terminalPackage}/bin/${meta.terminal}";
+  fileManager = "${meta.fileManagerPackage}/bin/${meta.fileManager}";
 
   mangoConfig = ''
     monitorrule=eDP-1,0.55,1,title,0,1,0,0,1920,1080,60
     monitorrule=HDMI-A-1,0.55,1,title,0,1,1925,0,1920,1080,60
 
     bind=super,r,reload_config
-    bind=super,q,spawn,${meta.terminal}
-    bind=super,b,spawn,${meta.browser}
+    bind=super,q,spawn,${terminal}
+    bind=super,b,spawn,${browser}
     bind=super,f,spawn,${fuzzel}
     bind=super,code:107,spawn,screenshot-region
     bind=super,e,killclient
-    bind=super,n,spawn,${meta.fileManager}
+    bind=super,n,spawn,${fileManager}
     bind=super+ctrl,l,spawn,${hyprlock}
     bind=super+shift,v,spawn,bash -c '${cliphist} list | ${fuzzel} --dmenu | ${cliphist} decode | ${wlCopy}'
 
@@ -72,9 +76,9 @@ let
     bind=super,m,spawn,${config.scripts.cpc}/bin/cpc
     bind=ALT,m,spawn,${pkgs.wayvnc}/bin/wayvnc 0.0.0.0 5900
 
-    bind=none,XF86AudioMute,spawn,pamixer -t
-    bind=none,XF86AudioLowerVolume,spawn,pamixer --allow-boost -d 5
-    bind=none,XF86AudioRaiseVolume,spawn,pamixer --allow-boost -i 5
+    bind=none,XF86AudioMute,spawn,${pamixer} -t
+    bind=none,XF86AudioLowerVolume,spawn,${pamixer} --allow-boost -d 5
+    bind=none,XF86AudioRaiseVolume,spawn,${pamixer} --allow-boost -i 5
 
     focuscolor=${cfg.functions.toMango cfg.palette.primary}
     bordercolor=${cfg.functions.toMango cfg.palette.secondary}

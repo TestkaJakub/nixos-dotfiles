@@ -20,7 +20,10 @@ in
     };
   };
 
-  programs.mango.enable = true;   # MangoHUD FPS overlay
+  # MangoWC window compositor — required for Steam's Wayland session and
+  # overlay support. Declared here so Steam works standalone even if
+  # desktop/compositor.nix is removed.
+  programs.mango.enable = true;
 
   # Install GE-Proton into Steam's compatibility tools directory
   home-manager.users.${user} = { lib, ... }: {

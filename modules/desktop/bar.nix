@@ -83,7 +83,9 @@ in
         interval    = 5;
         format      = "{}";
         return-type = "json";
-        on-click    = "${meta.terminal} start -- nmtui";
+        # terminalRun carries the full store path + correct sub-command syntax
+        # for whatever terminal is set as default, e.g. "wezterm start -- nmtui"
+        on-click    = "${meta.terminalRun} nmtui";
         exec = pkgs.writeShellScript "waybar-network" ''
           ssid=$(${iwgetid} -r 2>/dev/null || echo "")
           if ${ping} -c1 -W1 8.8.8.8 >/dev/null 2>&1; then
