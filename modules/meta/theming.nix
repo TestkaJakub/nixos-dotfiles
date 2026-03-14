@@ -43,20 +43,20 @@ in
         text       = "#b1b1b1";
 
         # ── Terminal prompt colors ───────────────────────────────────────────
-        # Used by both bash (PS1) and fish (fish_color_* + prompt function).
-        termUser    = "#ff69b4";   # user and host name  (pink,   ANSI 206)
-        termAccent  = "#6666cc";   # @ symbol and >      (purple, ANSI 63)
+        # Used by both bash (PS1) and fish (fish_prompt function).
+        termUser   = "#ff69b4";   # user and host name  (pink,   ANSI 206)
+        termAccent = "#6666cc";   # @ symbol and >      (purple, ANSI 63)
 
         # ── Fish syntax highlighting colors ──────────────────────────────────
         # These apply to fish only (no bash equivalent).
-        shellCommand   = "#b1b1b1";   # valid commands
-        shellError     = "#e06c75";   # errors / invalid commands
-        shellParam     = "#abb2bf";   # parameters and arguments
-        shellComment   = "#5c6370";   # comments
-        shellAutosugg  = "#4b5263";   # autosuggestion ghost text
-        shellKeyword   = "#c678dd";   # keywords (if, for, while…)
-        shellString    = "#98c379";   # quoted strings
-        shellOperator  = "#56b6c2";   # operators (|, &&, ;…)
+        shellCommand  = "#b1b1b1";
+        shellError    = "#e06c75";
+        shellParam    = "#abb2bf";
+        shellComment  = "#5c6370";
+        shellAutosugg = "#4b5263";
+        shellKeyword  = "#c678dd";
+        shellString   = "#98c379";
+        shellOperator = "#56b6c2";
       };
 
       # ── Functions ────────────────────────────────────────────────────────────
@@ -73,13 +73,18 @@ in
         saturate   = hex: amount: runPastel "saturate ${toString amount} '${hex}' | pastel format hex";
 
         # Convert #RRGGBB to the escape sequence bash PS1 needs: \033[38;2;R;G;Bm
-        # Usage in PS1: "\[${toPs1 color}\]text\[\033[0m\]"
+        # Uses pastel to extract R;G;B — avoids hex parsing in Nix eval.
         toPs1 = hex:
           let
-            r = lib.strings.toInt ("0x" + builtins.substring 1 2 hex);
-            g = lib.strings.toInt ("0x" + builtins.substring 3 2 hex);
-            b = lib.strings.toInt ("0x" + builtins.substring 5 2 hex);
-          in "\\033[38;2;${toString r};${toString g};${toString b}m";
+            # pastel outputs e.g. "rgb(255, 105, 180)"
+            rgb   = runPastel "format rgb '${hex}'";
+            nums  = lib.strings.trim (builtins.replaceStrings
+                      [ "rgb(" ")" " " ] [ "" "" "" ] rgb);
+            parts = lib.strings.splitString "," nums;
+            r     = lib.strings.trim (builtins.elemAt parts 0);
+            g     = lib.strings.trim (builtins.elemAt parts 1);
+            b     = lib.strings.trim (builtins.elemAt parts 2);
+          in "\\033[38;2;${r};${g};${b}m";
       };
     };
   };
