@@ -47,7 +47,7 @@ in
       '')
 
       (writeShellScriptBin "screenshot-full" ''
-        dir="$HOME/Pictures/$(date +%Y-%m)"
+        dir="$HOME/Pictures/Screenshots/$(date +%Y-%m)"
         mkdir -p "$dir"
         base="$(date +%d_%H.%M.%S)"
         file="$dir/$base.png"

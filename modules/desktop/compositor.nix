@@ -11,7 +11,12 @@ let
   cliphist    = "${pkgs.cliphist}/bin/cliphist";
   wlPaste     = "${pkgs.wl-clipboard}/bin/wl-paste";
   wlCopy      = "${pkgs.wl-clipboard}/bin/wl-copy";
-  fuzzel      = "${pkgs.fuzzel}/bin/fuzzel";
+  # Use the themed wrapper exposed by launcher.nix — not the bare pkgs.fuzzel.
+  fuzzel      = "${meta.fuzzel}/bin/fuzzel";
+  hyprpaper   = "${pkgs.hyprpaper}/bin/hyprpaper";
+  mako        = "${pkgs.mako}/bin/mako";
+  waybar      = "${pkgs.waybar}/bin/waybar";
+  gammastep   = "${pkgs.gammastep}/bin/gammastep";
 
   mangoConfig = ''
     monitorrule=eDP-1,0.55,1,title,0,1,0,0,1920,1080,60
@@ -20,7 +25,7 @@ let
     bind=super,r,reload_config
     bind=super,q,spawn,${meta.terminal}
     bind=super,b,spawn,${meta.browser}
-    bind=super,f,spawn,fuzzel
+    bind=super,f,spawn,${fuzzel}
     bind=super,code:107,spawn,screenshot-region
     bind=super,e,killclient
     bind=super,n,spawn,${meta.fileManager}
@@ -96,10 +101,10 @@ let
     ) &
     sleep 2
 
-    hyprpaper --config ~/.config/hypr/hyprpaper.conf &
-    mako &
-    waybar &
-    gammastep -m wayland -l ${toString loc.latitude}:${toString loc.longitude} -t 6000:3700 &
+    ${hyprpaper} --config ~/.config/hypr/hyprpaper.conf &
+    ${mako} &
+    ${waybar} &
+    ${gammastep} -m wayland -l ${toString loc.latitude}:${toString loc.longitude} -t 6000:3700 &
 
     # Clipboard manager — pipe all clipboard events into cliphist
     ${wlPaste} --type text --watch ${cliphist} store &

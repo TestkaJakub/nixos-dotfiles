@@ -3,7 +3,8 @@
 # ── Launcher (Fuzzel) ──────────────────────────────────────────────────────────
 # Reads: config.theme.{palette, functions}
 # The fuzzel wrapper from lassulus/wrappers is applied inline here.
-# wraps/fuzzel.nix is no longer needed as a separate file.
+# The wrapped package is exposed as config.meta.defaults.fuzzel so that
+# compositor.nix and any other caller use the themed binary consistently.
 let
   t    = config.theme;
   user = config.profile.username;
@@ -21,5 +22,17 @@ let
   }).wrapper;
 in
 {
-  home-manager.users.${user}.home.packages = [ fuzzelPkg ];
+  # Expose the store path so compositor.nix can reference it without
+  # duplicating the wrapper logic or relying on ambient PATH.
+  options.meta.defaults.fuzzel = lib.mkOption {
+    type        = lib.types.package;
+    readOnly    = true;
+    description = "Themed fuzzel wrapper package.";
+  };
+
+  config = {
+    meta.defaults.fuzzel = fuzzelPkg;
+
+    home-manager.users.${user}.home.packages = [ fuzzelPkg ];
+  };
 }

@@ -12,8 +12,6 @@ in
   environment.systemPackages = with pkgs; [
     nemo
     nemo-fileroller
-    pkgs.nemo-preview
-    pkgs.file-roller
     nemo-preview
     file-roller
   ];

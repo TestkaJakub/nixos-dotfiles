@@ -4,6 +4,7 @@
 let
   t    = config.theme;
   user = config.profile.username;
+  meta = config.meta.defaults;
 
   lightenedPrimary  = t.functions.lighten t.palette.primary 0.1;
   waybarFocusedText = t.functions.textcolor lightenedPrimary;
@@ -82,7 +83,7 @@ in
         interval    = 5;
         format      = "{}";
         return-type = "json";
-        on-click    = "alacritty -e nmtui";
+        on-click    = "${meta.terminal} start -- nmtui";
         exec = pkgs.writeShellScript "waybar-network" ''
           ssid=$(${iwgetid} -r 2>/dev/null || echo "")
           if ${ping} -c1 -W1 8.8.8.8 >/dev/null 2>&1; then
