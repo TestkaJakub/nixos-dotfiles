@@ -78,7 +78,7 @@ in
           _build_ps1() {
             local date_str
             date_str=$(date '+%d-%m-%Y %H:%M:%S')
-            PS1="${clUser}\u${clAcc}@${clUser}\h${reset} $date_str \w ${clAcc}>${reset} "
+            PS1="${clUser}\u${clAcc}@${clUser}\h${reset} $date_str \w ${clAcc}bash >${reset} "
           }
           PROMPT_COMMAND=_build_ps1
         fi

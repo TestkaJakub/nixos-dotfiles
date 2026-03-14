@@ -36,7 +36,7 @@ in
         echo -n (set_color $user_color)(whoami)(set_color $accent_color)@(set_color $user_color)(hostname)(set_color normal)
         echo -n " $date_str "
         echo -n (prompt_pwd)
-        echo -n " "(set_color $accent_color)">"(set_color normal)" "
+        echo -n " "(set_color $accent_color)"fish >"(set_color normal)" "
       '';
 
       # ── Syntax highlighting ──────────────────────────────────────────────
