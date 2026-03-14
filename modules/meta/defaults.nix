@@ -22,7 +22,7 @@
 
     terminal = lib.mkOption {
       type        = lib.types.str;
-      default     = "alacritty";
+      default     = "wezterm";
       description = "Binary name of the default terminal emulator.";
     };
 
