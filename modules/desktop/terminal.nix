@@ -1,8 +1,8 @@
 { pkgs, config, inputs, ... }:
 
 # ── Terminal (Alacritty) ───────────────────────────────────────────────────────
-# The alacritty wrapper from lassulus/wrappers is applied inline here.
-# wraps/alacritty.nix is no longer needed as a separate file.
+# Runs fastfetch once on startup via shell -c so it works regardless of whether
+# the login shell is bash or fish. After fastfetch the shell continues normally.
 let
   user = config.profile.username;
 
@@ -16,6 +16,10 @@ let
       font.normal = {
         family = "JetBrains Mono";
         style  = "Regular";
+      };
+      shell = {
+        program = "${pkgs.fish}/bin/fish";
+        args    = [ "--init-command" "fastfetch" ];
       };
     };
   }).wrapper;
