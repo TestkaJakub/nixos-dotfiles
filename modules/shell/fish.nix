@@ -23,6 +23,8 @@ in
         nhc = "sudo nvim ~/nixos-dotfiles/modules";
         vnc = "wayvnc 192.168.0.16 5900";
         cd  = "z";
+        # nrs/nrsr/ard are real binaries defined in bash.nix — no alias needed,
+        # they are on PATH automatically.
       };
 
       # ── Prompt ────────────────────────────────────────────────────────────
@@ -50,8 +52,6 @@ in
         set -g fish_color_quote          '${p.shellString}'
         set -g fish_color_operator       '${p.shellOperator}'
         set -g fish_color_end            '${p.shellOperator}'
-
-        fastfetch
       '';
     };
 

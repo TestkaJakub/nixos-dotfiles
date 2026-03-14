@@ -1,8 +1,6 @@
 { pkgs, config, inputs, ... }:
 
 # ── Terminal (Alacritty) ───────────────────────────────────────────────────────
-# Runs fastfetch once on startup via shell -c so it works regardless of whether
-# the login shell is bash or fish. After fastfetch the shell continues normally.
 let
   user = config.profile.username;
 
@@ -17,7 +15,7 @@ let
         family = "JetBrains Mono";
         style  = "Regular";
       };
-      shell = {
+      terminal.shell = {
         program = "${pkgs.fish}/bin/fish";
         args    = [ "--init-command" "fastfetch" ];
       };
