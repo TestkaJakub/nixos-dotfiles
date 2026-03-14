@@ -43,7 +43,7 @@ in
 
       # ── Syntax highlighting ──────────────────────────────────────────────
       interactiveShellInit = ''
-        set -g fish_greeting ''
+        set -g fish_greeting ""
         set -g fish_color_command        '${p.shellCommand}'
         set -g fish_color_error          '${p.shellError}'
         set -g fish_color_param          '${p.shellParam}'
