@@ -72,10 +72,10 @@
     };
 
     wallpaper = lib.mkOption {
-      type        = lib.types.path;
-      default     = ./wallpapers/AkuNoHana.jpg;
+      type        = lib.types.str;
+      default     = toString ./wallpapers/AkuNoHana.jpg;
       description = ''
-        Path to the wallpaper image. Stored in the repo under
+        Absolute store path to the wallpaper image. Stored in the repo under
         modules/meta/wallpapers/ so it is store-backed and reproducible.
         To change wallpapers: commit the new image to that directory and
         update the default here.
