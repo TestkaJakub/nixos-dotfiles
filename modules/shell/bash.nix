@@ -3,10 +3,18 @@
 # ── Bash ───────────────────────────────────────────────────────────────────────
 # kbm and cpc are defined in generals/scripts.nix and referenced here via
 # config.scripts so the compositor can use the same store paths.
+# PS1 colors come from config.theme.palette.term* so they stay in sync with
+# fish and can be changed from theming.nix alone.
 let
   user = config.profile.username;
   kbm  = config.scripts.kbm;
   cpc  = config.scripts.cpc;
+
+  p      = config.theme.palette;
+  toPs1  = config.theme.functions.toPs1;
+  clUser = toPs1 p.termUser;
+  clAcc  = toPs1 p.termAccent;
+  reset  = "\\033[0m";
 in
 {
   home-manager.users.${user} = {
@@ -64,11 +72,15 @@ in
 
       initExtra = ''
         # ── Prompt ──────────────────────────────────────────────────────────────
+        # PS1 is rebuilt before every prompt via PROMPT_COMMAND so the date/time
+        # reflects when the previous command finished, not when the shell started.
         if [[ $- == *i* ]]; then
-          unset PS1
-          PS1="\033[38;5;206m\u\033[38;5;63m@\033[38;5;206m\h\033[0m \
-\D{%d-%m-%Y %H:%M:%S} \w \033[38;5;63m>\033[0m "
-          export PS1
+          _build_ps1() {
+            local date_str
+            date_str=$(date '+%d-%m-%Y %H:%M:%S')
+            PS1="${clUser}\u${clAcc}@${clUser}\h${reset} $date_str \w ${clAcc}>${reset} "
+          }
+          PROMPT_COMMAND=_build_ps1
         fi
 
         # ── ard: compile + upload an Arduino sketch ─────────────────────────────
