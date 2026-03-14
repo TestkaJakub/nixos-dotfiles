@@ -158,8 +158,8 @@
     "private": {
       "flake": false,
       "locked": {
-        "lastModified": 1773443151,
-        "narHash": "sha256-VLWlljenDIaYKqSQxEtu9sQkNJiSZ7b3gEe2FaPpt20=",
+        "lastModified": 1773473698,
+        "narHash": "sha256-sTLeOBXyFN6QV8BOZ30niADHDswLOHJFbNnbVCHbIAQ=",
         "path": "/home/jakub/nixos-private",
         "type": "path"
       },
