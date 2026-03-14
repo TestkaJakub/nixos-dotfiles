@@ -9,19 +9,10 @@
 #   - desktop/display.nix    (SDDM theme background)
 #   - desktop/bar.nix        (network widget click)
 #
-# Wallpaper note: the path must be readable by SDDM, which runs as a system
-# service before any user session exists. To guarantee this, the image is
-# copied into the Nix store at eval time via builtins.path. The resulting
-# store path is world-readable and survives across rebuilds identically.
-# To change wallpaper: replace wallpaperSource below and rebuild.
-let
-  wallpaperSource = /home/jakub/Wallpapers/AkuNoHana.jpg;
-
-  wallpaperStore = builtins.path {
-    path = wallpaperSource;
-    name = "wallpaper";
-  };
-in
+# Wallpaper note: wallpaper is declared as a derivation (via pkgs.copyPathToStore)
+# rather than a raw /home path. This makes it readable by SDDM, which runs as a
+# system service before /home is necessarily available. To change the wallpaper,
+# replace the path passed to pkgs.copyPathToStore below and rebuild.
 {
   options.meta.defaults = {
     browser = lib.mkOption {
@@ -82,13 +73,13 @@ in
     };
 
     wallpaper = lib.mkOption {
-      type        = lib.types.str;
-      default     = wallpaperStore;
+      type        = lib.types.path;
+      default     = pkgs.copyPathToStore /home/jakub/Wallpapers/AkuNoHana.jpg;
       description = ''
-        Nix store path to the wallpaper image. Defaults to a store-copied
-        version of ~/Wallpapers/AkuNoHana.jpg so it is readable by SDDM
-        (a system service) and by hyprpaper alike. Change wallpaperSource
-        at the top of this file to switch images.
+        Path to the wallpaper image. The default uses pkgs.copyPathToStore so
+        the file lands in the Nix store and is world-readable by system services
+        like SDDM. To change wallpaper, pass a different path to copyPathToStore,
+        or assign any other store path / derivation output.
       '';
     };
   };
