@@ -4,11 +4,12 @@
 # PS1 colors come from config.theme.palette.term* so they stay in sync with
 # fish and can be changed from theming.nix alone.
 #
-# nrs, nrsr, ard are real binaries (writeShellScriptBin) so they work from
-# fish, bash, and anywhere else — not just inside an interactive bash session.
+# ard is a real binary (writeShellScriptBin) so it works from fish, bash, and
+# anywhere else — not just inside an interactive bash session.
 #
-# Common aliases (nmc, nhc, vnc) live in shell/aliases.nix and are merged in
-# automatically — do not redeclare them here.
+# Screenshots  → desktop/screenshots.nix
+# nrs / nrsr   → meta/scripts.nix
+# Common aliases (nmc, nhc, vnc) live in shell/aliases.nix — do not redeclare.
 let
   user = config.profile.username;
   kbm  = config.scripts.kbm;
@@ -34,71 +35,7 @@ in
       kbm
       cpc
 
-      (writeShellScriptBin "screenshot-region" ''
-        dir="$HOME/Pictures/Screenshots/$(date +%Y-%m)"
-        mkdir -p "$dir"
-        base="$(date +%d_%H.%M.%S)"
-        file="$dir/$base.png"
-        n=1
-        while [ -e "$file" ]; do
-          file="$dir/$base.$n.png"
-          n=$(( n + 1 ))
-        done
-        grim -g "$(slurp)" "$file"
-        ${pkgs.wl-clipboard}/bin/wl-copy < "$file"
-        ${pkgs.libnotify}/bin/notify-send "Screenshot saved" "$file"
-      '')
-
-      (writeShellScriptBin "screenshot-full" ''
-        dir="$HOME/Pictures/Screenshots/$(date +%Y-%m)"
-        mkdir -p "$dir"
-        base="$(date +%d_%H.%M.%S)"
-        file="$dir/$base.png"
-        n=1
-        while [ -e "$file" ]; do
-          file="$dir/$base.$n.png"
-          n=$(( n + 1 ))
-        done
-        grim "$file"
-        ${pkgs.wl-clipboard}/bin/wl-copy < "$file"
-        ${pkgs.libnotify}/bin/notify-send "Screenshot saved" "$file"
-      '')
-
-      # ── nrs: commit dotfiles + rebuild ───────────────────────────────────────
-      (writeShellScriptBin "nrs" ''
-        OLDPWD=$(pwd)
-        cd ~/nixos-dotfiles || exit 1
-
-        if ! git rev-parse --verify development &>/dev/null; then
-          echo "Creating branch 'development'..."
-          git checkout -b development || exit 1
-        else
-          git checkout development || exit 1
-        fi
-
-        git add . || exit 1
-        if ! git diff --cached --quiet; then
-          git commit -m "upgrade $(date '+%Y-%m-%d %H:%M')" || exit 1
-        fi
-
-        git push -u origin development || exit 1
-        sudo nixos-rebuild switch --flake ~/nixos-dotfiles#nixos
-        result=$?
-        cd "$OLDPWD" || exit 1
-        exit $result
-      '')
-
-      # ── nrsr: rebuild + reboot on success ────────────────────────────────────
-      (writeShellScriptBin "nrsr" ''
-        if nrs; then
-          echo "Rebuild succeeded. Rebooting..."
-          reboot
-        else
-          echo "Rebuild failed, NOT rebooting."
-        fi
-      '')
-
-      # ── ard: compile + upload an Arduino sketch ───────────────────────────────
+      # ── ard: compile + upload an Arduino sketch ───────────────────────────
       (writeShellScriptBin "ard" ''
         if [ -z "$1" ]; then
           echo "Usage: ard <SketchDir>"

@@ -9,11 +9,15 @@
 # Secrets: /home/jakub/secrets/vikunja-db.env must contain POSTGRES_PASSWORD
 #          and VIKUNJA_DATABASE_PASSWORD.
 #
-# Volume ownership: Vikunja runs as uid 1000 inside the container (the default
-# non-root user in the official image). Ensure the host paths are owned by
-# uid 1000 before first start:
-#   sudo chown -R 1000:1000 /home/jakub/docker-data/vikunja-files
+# Volume ownership is enforced declaratively via systemd-tmpfiles so the
+# host paths are always owned by uid/gid 1000 (the non-root user the official
+# Vikunja image runs as) without any manual chown step.
 {
+  systemd.tmpfiles.rules = [
+    "d /home/jakub/docker-data/vikunja-db    0755 1000 1000 -"
+    "d /home/jakub/docker-data/vikunja-files 0755 1000 1000 -"
+  ];
+
   virtualisation.oci-containers.containers = {
 
     vikunja-db = {
@@ -46,8 +50,6 @@
 
       volumes      = [ "/home/jakub/docker-data/vikunja-files:/app/vikunja/files" ];
       extraOptions = [ "--network=host" ];
-      # Runs as the default non-root user (uid 1000) defined in the official image.
-      # See ownership note above if the files volume was previously owned by root.
     };
 
   };

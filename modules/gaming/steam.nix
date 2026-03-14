@@ -25,17 +25,22 @@ in
   # desktop/compositor.nix is removed.
   programs.mango.enable = true;
 
-  # Install GE-Proton into Steam's compatibility tools directory
+  # Install GE-Proton into Steam's compatibility tools directory.
+  # The sentinel check skips unpacking when the version is already present,
+  # so rebuilds that don't bump geProtonVersion are instant.
   home-manager.users.${user} = { lib, ... }: {
     home.activation.installProtonGE =
       lib.hm.dag.entryAfter [ "writeBoundary" ] ''
         dest="$HOME/.local/share/Steam/compatibilitytools.d"
         mkdir -p "$dest"
-        rm -rf "$dest/${geProtonVersion}"
-        echo "Unpacking ${geProtonVersion}..."
-        ${pkgs.gnutar}/bin/tar --use-compress-program=${pkgs.gzip}/bin/gzip \
-          -x -f ${geProtonTarball} -C "$dest"
-        echo "${geProtonVersion} ready"
+        if [ ! -d "$dest/${geProtonVersion}" ]; then
+          echo "Unpacking ${geProtonVersion}..."
+          ${pkgs.gnutar}/bin/tar --use-compress-program=${pkgs.gzip}/bin/gzip \
+            -x -f ${geProtonTarball} -C "$dest"
+          echo "${geProtonVersion} ready"
+        else
+          echo "${geProtonVersion} already installed, skipping."
+        fi
       '';
   };
 }

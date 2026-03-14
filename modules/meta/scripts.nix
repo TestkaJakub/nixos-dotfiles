@@ -1,9 +1,12 @@
 { lib, pkgs, ... }:
 
 # ── User scripts ───────────────────────────────────────────────────────────────
-# Standalone binaries that need to be reachable both from the terminal and
-# from the compositor (which has no user PATH). Exposing them as
-# config.scripts.* lets compositor.nix reference the full store path directly.
+# Standalone binaries reachable both from the terminal and from the compositor
+# (which has no user PATH). Exposing them as config.scripts.* lets
+# compositor.nix reference the full store path directly.
+#
+# nrs / nrsr live here rather than bash.nix because they are system-management
+# binaries, not shell configuration — they need to work from fish too.
 {
   options.scripts = {
     kbm = lib.mkOption {
@@ -15,6 +18,16 @@
       type        = lib.types.package;
       readOnly    = true;
       description = "Copy all .nix configs to clipboard.";
+    };
+    nrs = lib.mkOption {
+      type        = lib.types.package;
+      readOnly    = true;
+      description = "Commit dotfiles to git and run nixos-rebuild switch.";
+    };
+    nrsr = lib.mkOption {
+      type        = lib.types.package;
+      readOnly    = true;
+      description = "Run nrs and reboot on success.";
     };
   };
 
@@ -33,6 +46,40 @@
       find ~/nixos-dotfiles -type f -name '*.nix' \
         -exec echo "===== {} =====" \; -exec cat {} \; | ${pkgs.wl-clipboard}/bin/wl-copy
       ${pkgs.libnotify}/bin/notify-send "✅ Config copied to clipboard"
+    '';
+
+    # ── nrs: commit dotfiles + rebuild ────────────────────────────────────────
+    nrs = pkgs.writeShellScriptBin "nrs" ''
+      OLDPWD=$(pwd)
+      cd ~/nixos-dotfiles || exit 1
+
+      if ! git rev-parse --verify development &>/dev/null; then
+        echo "Creating branch 'development'..."
+        git checkout -b development || exit 1
+      else
+        git checkout development || exit 1
+      fi
+
+      git add . || exit 1
+      if ! git diff --cached --quiet; then
+        git commit -m "upgrade $(date '+%Y-%m-%d %H:%M')" || exit 1
+      fi
+
+      git push -u origin development || exit 1
+      sudo nixos-rebuild switch --flake ~/nixos-dotfiles#nixos
+      result=$?
+      cd "$OLDPWD" || exit 1
+      exit $result
+    '';
+
+    # ── nrsr: rebuild + reboot on success ─────────────────────────────────────
+    nrsr = pkgs.writeShellScriptBin "nrsr" ''
+      if nrs; then
+        echo "Rebuild succeeded. Rebooting..."
+        reboot
+      else
+        echo "Rebuild failed, NOT rebooting."
+      fi
     '';
   };
 }

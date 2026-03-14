@@ -1,6 +1,13 @@
 { pkgs, config, inputs, ... }:
 
 # ── Compositor (MangoWC) ───────────────────────────────────────────────────────
+# MangoWC is the Wayland compositor. Supporting daemons launched via autostart:
+#   hyprpaper  — wallpaper
+#   hyprlock   — screen locker (invoked on super+ctrl+l)
+#   mako       — notification daemon
+#   waybar     — status bar
+#   gammastep  — night-light / color temperature
+#   cliphist   — clipboard history (piped from wl-paste)
 let
   cfg  = config.theme;
   loc  = config.locale;

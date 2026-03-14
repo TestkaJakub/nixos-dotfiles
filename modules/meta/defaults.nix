@@ -9,10 +9,9 @@
 #   - desktop/display.nix    (SDDM theme background)
 #   - desktop/bar.nix        (network widget click)
 #
-# Wallpaper: kept as a plain string path. Copying /home paths into the Nix
-# store at eval time is forbidden in pure evaluation mode. If SDDM ever fails
-# to read the wallpaper, the practical fix is to commit the image into the
-# dotfiles repo and reference it as ./path/to/image, or fetch it with pkgs.fetchurl.
+# Wallpaper: committed to the repo at wallpapers/AkuNoHana.jpg and referenced
+# as a relative path so it is store-backed, portable, and reproducible.
+# To swap wallpapers, commit a new image and update the path below.
 {
   options.meta.defaults = {
     browser = lib.mkOption {
@@ -73,14 +72,13 @@
     };
 
     wallpaper = lib.mkOption {
-      type        = lib.types.str;
-      default     = "${config.profile.homeDirectory}/Wallpapers/AkuNoHana.jpg";
+      type        = lib.types.path;
+      default     = ./wallpapers/AkuNoHana.jpg;
       description = ''
-        Absolute path to the wallpaper image. Used by hyprpaper (user session)
-        and SDDM (system service). In practice SDDM can read /home paths fine
-        on a single-disk setup where home is available at display manager start.
-        To make this fully store-backed, commit the image into the repo and
-        reference it as a relative path or via pkgs.fetchurl with a known hash.
+        Path to the wallpaper image. Stored in the repo under
+        modules/meta/wallpapers/ so it is store-backed and reproducible.
+        To change wallpapers: commit the new image to that directory and
+        update the default here.
       '';
     };
   };
