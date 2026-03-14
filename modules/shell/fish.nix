@@ -7,6 +7,9 @@
 #
 # programs.fish.enable must be set at system level so NixOS adds fish to
 # /etc/shells, which is required for it to be a valid login shell.
+#
+# Common aliases (nmc, nhc, vnc) live in shell/aliases.nix and are merged in
+# automatically — do not redeclare them here.
 let
   user = config.profile.username;
   p    = config.theme.palette;
@@ -18,13 +21,9 @@ in
     programs.fish = {
       enable = true;
 
+      # Shell-specific alias only — common aliases come from shell/aliases.nix.
       shellAliases = {
-        nmc = "sudo nvim ~/nixos-dotfiles/flake.nix";
-        nhc = "sudo nvim ~/nixos-dotfiles/modules";
-        vnc = "wayvnc 192.168.0.16 5900";
-        cd  = "z";
-        # nrs/nrsr/ard are real binaries defined in bash.nix — no alias needed,
-        # they are on PATH automatically.
+        cd = "z";
       };
 
       # ── Prompt ────────────────────────────────────────────────────────────

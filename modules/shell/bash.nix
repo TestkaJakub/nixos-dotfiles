@@ -6,6 +6,9 @@
 #
 # nrs, nrsr, ard are real binaries (writeShellScriptBin) so they work from
 # fish, bash, and anywhere else — not just inside an interactive bash session.
+#
+# Common aliases (nmc, nhc, vnc) live in shell/aliases.nix and are merged in
+# automatically — do not redeclare them here.
 let
   user = config.profile.username;
   kbm  = config.scripts.kbm;
@@ -146,11 +149,9 @@ in
       enable           = true;
       enableCompletion = false;
 
-      shellAliases = {
-        nmc = "sudo nvim ~/nixos-dotfiles/flake.nix";
-        nhc = "sudo nvim ~/nixos-dotfiles/modules";
-        vnc = "wayvnc 192.168.0.16 5900";
-      };
+      # Shell-specific alias — cd override lives in zoxide.nix.
+      # Common aliases (nmc, nhc, vnc) come from shell/aliases.nix.
+      shellAliases = {};
 
       initExtra = ''
         # ── Prompt ────────────────────────────────────────────────────────────

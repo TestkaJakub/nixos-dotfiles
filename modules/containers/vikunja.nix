@@ -8,6 +8,11 @@
 # Web UI is available at http://localhost:3456
 # Secrets: /home/jakub/secrets/vikunja-db.env must contain POSTGRES_PASSWORD
 #          and VIKUNJA_DATABASE_PASSWORD.
+#
+# Volume ownership: Vikunja runs as uid 1000 inside the container (the default
+# non-root user in the official image). Ensure the host paths are owned by
+# uid 1000 before first start:
+#   sudo chown -R 1000:1000 /home/jakub/docker-data/vikunja-files
 {
   virtualisation.oci-containers.containers = {
 
@@ -26,7 +31,7 @@
     };
 
     vikunja = {
-      image     = "vikunja/vikunja:latest";
+      image     = "vikunja/vikunja:0.24.6";
       autoStart = true;
       dependsOn = [ "vikunja-db" ];
 
@@ -40,7 +45,9 @@
       };
 
       volumes      = [ "/home/jakub/docker-data/vikunja-files:/app/vikunja/files" ];
-      extraOptions = [ "--network=host" "--user=0" ];
+      extraOptions = [ "--network=host" ];
+      # Runs as the default non-root user (uid 1000) defined in the official image.
+      # See ownership note above if the files volume was previously owned by root.
     };
 
   };

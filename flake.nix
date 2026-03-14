@@ -13,6 +13,9 @@
     mangowc.url      = "github:DreamMaoMao/mangowc";
     wrappers.url     = "github:lassulus/wrappers";
 
+    # Private modules: lives at an absolute path on this machine only.
+    # The guard below makes the config evaluate cleanly on machines where
+    # the path does not exist (e.g. a fresh install or a CI check).
     private = {
       url   = "path:/home/jakub/nixos-private";
       flake = false;
@@ -58,6 +61,20 @@
         config.allowUnfree = true;
       };
 
+      # ── Private modules ─────────────────────────────────────────────────────
+      # Only loaded when /home/jakub/nixos-private actually exists on disk.
+      # On a machine without the private repo (fresh install, CI) this
+      # evaluates to an empty list, so the rest of the config still builds.
+      privateModules =
+        let privatePath = /home/jakub/nixos-private;
+        in lib.optionals (builtins.pathExists privatePath) (
+          let
+            names    = builtins.attrNames (builtins.readDir privatePath);
+            nixFiles = builtins.filter (n: lib.hasSuffix ".nix" n) names;
+          in
+            map (n: privatePath + "/${n}") nixFiles
+        );
+
     in {
       systems = [ "x86_64-linux" ];
 
@@ -70,14 +87,7 @@
           ++ [ ./modules/system/hardware.nix ]
           ++ [ inputs.home-manager.nixosModules.home-manager ]
           ++ [ inputs.mangowc.nixosModules.mango ]
-          ++ (
-            let
-              privateDir = inputs.private;
-              names      = builtins.attrNames (builtins.readDir privateDir);
-              nixFiles   = builtins.filter (n: lib.hasSuffix ".nix" n) names;
-            in
-              map (n: privateDir + "/${n}") nixFiles
-          );
+          ++ privateModules;
 
         specialArgs = { inherit inputs; };
       };

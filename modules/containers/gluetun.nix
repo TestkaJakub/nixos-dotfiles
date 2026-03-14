@@ -29,7 +29,9 @@
     extraOptions = [
       "--cap-add=NET_ADMIN"
       "--device=/dev/net/tun:/dev/net/tun"
-      "--health-cmd=ping -c 1 1.1.1.1"
+      # Use exec-form JSON array for health-cmd so the arguments are passed
+      # directly to the kernel without shell parsing — avoids quoting issues.
+      ''--health-cmd=["ping","-c","1","1.1.1.1"]''
       "--health-interval=30s"
       "--health-timeout=10s"
       "--health-retries=3"
