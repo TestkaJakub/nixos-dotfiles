@@ -6,7 +6,22 @@
 #   - xdg.mimeApps           (what opens when you click a file/link)
 #   - desktop/compositor.nix (keybinds: super+b, super+q, super+e)
 #   - desktop/wallpaper.nix  (hyprpaper config)
+#   - desktop/display.nix    (SDDM theme background)
 #   - desktop/bar.nix        (network widget click)
+#
+# Wallpaper note: the path must be readable by SDDM, which runs as a system
+# service before any user session exists. To guarantee this, the image is
+# copied into the Nix store at eval time via builtins.path. The resulting
+# store path is world-readable and survives across rebuilds identically.
+# To change wallpaper: replace wallpaperSource below and rebuild.
+let
+  wallpaperSource = /home/jakub/Wallpapers/AkuNoHana.jpg;
+
+  wallpaperStore = builtins.path {
+    path = wallpaperSource;
+    name = "wallpaper";
+  };
+in
 {
   options.meta.defaults = {
     browser = lib.mkOption {
@@ -68,8 +83,13 @@
 
     wallpaper = lib.mkOption {
       type        = lib.types.str;
-      default     = "${config.profile.homeDirectory}/Wallpapers/AkuNoHana.jpg";
-      description = "Absolute path to the wallpaper image.";
+      default     = wallpaperStore;
+      description = ''
+        Nix store path to the wallpaper image. Defaults to a store-copied
+        version of ~/Wallpapers/AkuNoHana.jpg so it is readable by SDDM
+        (a system service) and by hyprpaper alike. Change wallpaperSource
+        at the top of this file to switch images.
+      '';
     };
   };
 }

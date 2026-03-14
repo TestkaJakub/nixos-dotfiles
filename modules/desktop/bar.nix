@@ -13,11 +13,12 @@ let
   urgentFg          = t.functions.textcolor urgentBg;
 
   # Full store paths so scripts work regardless of PATH
-  jq        = "${pkgs.jq}/bin/jq";
-  ping      = "${pkgs.iputils}/bin/ping";
-  iwgetid   = "${pkgs.wirelesstools}/bin/iwgetid";
-  pamixer   = "${pkgs.pamixer}/bin/pamixer";
+  jq           = "${pkgs.jq}/bin/jq";
+  ping         = "${pkgs.iputils}/bin/ping";
+  iwgetid      = "${pkgs.wirelesstools}/bin/iwgetid";
+  pamixer      = "${pkgs.pamixer}/bin/pamixer";
   bluetoothctl = "${pkgs.bluez}/bin/bluetoothctl";
+  blueman      = "${pkgs.blueman}/bin/blueman-manager";
 in
 {
   home-manager.users.${user}.programs.waybar = {
@@ -102,7 +103,7 @@ in
         interval    = 8;
         format      = "{}";
         return-type = "json";
-        on-click    = "blueman-manager";
+        on-click    = "${blueman}";
         exec = pkgs.writeShellScript "waybar-bluetooth" ''
           if ${bluetoothctl} --help | grep -q "connected-devices"; then
             devices_raw=$(${bluetoothctl} connected-devices 2>/dev/null)
