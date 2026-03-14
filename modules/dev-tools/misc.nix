@@ -3,6 +3,27 @@
 # ── Misc dev tools ─────────────────────────────────────────────────────────────
 let
   user = config.profile.username;
+
+  fastfetchLogo = pkgs.writeText "fastfetch-logo.txt" ''
+          $1██      $2███  ██
+          $1███      $2██████
+           $1███      $2██████
+       $1█████████████ $2████
+      $1███████████████ $2███    $3
+                         $2███  $3██
+          $6███           $2██ $3███
+         $6███             $2 $3███
+  $6█████████                $3████████
+  $6████████                $3█████████
+      $6███ $5             $3███
+     $6███ $5██           $3███
+     $6██  $5███
+      $6    $5███ $4███████████████
+            $5████ $4█████████████
+           $5██████      $4███
+          $5██████      $4███
+          $5██  ███      $4██
+  '';
 in
 {
   # System-wide tools — available to all users and in nix-shell environments
@@ -29,8 +50,35 @@ in
       wev
     ];
 
-    # programs.fastfetch manages both the package and config
-    programs.fastfetch.enable = true;
+    programs.fastfetch = {
+      enable = true;
+      settings = {
+        logo = {
+          source  = "${fastfetchLogo}";
+          type    = "file";
+          padding = {
+            top   = 1;
+            left  = 2;
+          };
+        };
+        display = {
+          separator = "  ";
+        };
+        modules = [
+          "title"
+          "separator"
+          "os"
+          "kernel"
+          "uptime"
+          "packages"
+          "shell"
+          "terminal"
+          "cpu"
+          "memory"
+          "disk"
+        ];
+      };
+    };
   };
 
   environment.variables = {
