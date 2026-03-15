@@ -53,6 +53,7 @@ __end: nop
 EOF
 
     echo "  NEW $file"
+    exec ${config.meta.defaults.editor} "$file"
   '';
 
   asm32 = pkgs.writeShellScriptBin "asm32" ''

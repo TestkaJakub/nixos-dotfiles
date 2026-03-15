@@ -71,6 +71,12 @@
       description = "Package for the default file manager.";
     };
 
+    editor = lib.mkOption {
+      type        = lib.types.str;
+      default     = "${pkgs.micro}/bin/micro";
+      description = "Full path to the default editor binary.";
+    };
+
     wallpaper = lib.mkOption {
       type        = lib.types.str;
       default     = toString ./wallpapers/AkuNoHana.jpg;
