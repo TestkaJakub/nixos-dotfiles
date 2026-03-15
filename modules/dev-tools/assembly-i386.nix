@@ -46,7 +46,8 @@ let
       exit 1
     fi
 
-    obj="''${input%.s}.o"
+    obj=$(mktemp /tmp/asm32-XXXXXX.o)
+    trap 'rm -f "$obj"' EXIT
 
     echo "  AS  $input -> $obj"
     ${pkgs.binutils}/bin/as --32 -g "$input" -o "$obj" || exit 1
