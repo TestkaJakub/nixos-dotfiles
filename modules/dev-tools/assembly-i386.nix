@@ -19,6 +19,42 @@
 let
   user = config.profile.username;
 
+  asm32new = pkgs.writeShellScriptBin "masm32" ''
+    file=""
+
+    usage() {
+      echo "Usage: masm32 [-f file.s] [file.s]"
+      echo "  -f  output filename"
+      exit 1
+    }
+
+    while [ $# -gt 0 ]; do
+      case "$1" in
+        -f) file="$2"; shift 2 ;;
+        -*) usage ;;
+        *)  [ -z "$file" ] && file="$1" || usage; shift ;;
+      esac
+    done
+
+    [ -z "$file" ] && usage
+
+    if [ -e "$file" ]; then
+      echo "masm32: file already exists: $file"
+      exit 1
+    fi
+
+    cat > "$file" <<'EOF'
+.globl _start
+.text
+
+_start:
+__begin:
+__end: nop
+EOF
+
+    echo "  NEW $file"
+  '';
+
   asm32 = pkgs.writeShellScriptBin "asm32" ''
     input=""
     output="a.out"
@@ -60,5 +96,5 @@ let
   '';
 in
 {
-  home-manager.users.${user}.home.packages = [ asm32 ];
+  home-manager.users.${user}.home.packages = [ asm32 asm32new ];
 }
