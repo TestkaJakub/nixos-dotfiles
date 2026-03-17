@@ -1,88 +1,25 @@
-{ pkgs, config, ... }:
+{ pkgs, config, inputs, ... }:
 
-# ── Terminal (WezTerm) ─────────────────────────────────────────────────────────
-# Replaces Alacritty. WezTerm has built-in tabs, splits, and pixel graphics
-# support (so fastfetch can show actual images).
-# Config is via a Lua file at ~/.config/wezterm/wezterm.lua.
+# ── Terminal (Alacritty) ───────────────────────────────────────────────────────
+# The alacritty wrapper from lassulus/wrappers is applied inline here.
+# wraps/alacritty.nix is no longer needed as a separate file.
 let
   user = config.profile.username;
-  p    = config.theme.palette;
+
+  alacrittyPkg = (inputs.wrappers.wrapperModules.alacritty.apply {
+    pkgs = pkgs // { lndir = pkgs.xorg.lndir; };
+    settings = {
+      window = {
+        opacity = 0.9;
+        padding = { x = 10; y = 10; };
+      };
+      font.normal = {
+        family = "JetBrains Mono";
+        style  = "Regular";
+      };
+    };
+  }).wrapper;
 in
 {
-  home-manager.users.${user} = {
-    home.packages = [ pkgs.wezterm ];
-
-    xdg.configFile."wezterm/wezterm.lua".text = ''
-      local wezterm = require 'wezterm'
-      local config  = wezterm.config_builder()
-
-      -- ── Appearance ────────────────────────────────────────────────────────
-      config.font                = wezterm.font 'JetBrains Mono'
-      config.font_size           = 12.0
-      config.window_background_opacity = 0.9
-      config.color_scheme        = 'Builtin Dark'
-
-      config.colors = {
-        foreground    = '${p.text}',
-        background    = '${p.secondary}',
-        cursor_bg     = '${p.termUser}',
-        cursor_border = '${p.termUser}',
-        cursor_fg     = '${p.secondary}',
-        selection_bg  = '${p.termAccent}',
-        selection_fg  = '${p.secondary}',
-      }
-
-      config.window_padding = {
-        left = 10, right = 10, top = 10, bottom = 10,
-      }
-
-      -- ── Tab bar ───────────────────────────────────────────────────────────
-      config.enable_tab_bar              = true
-      config.use_fancy_tab_bar           = false
-      config.tab_bar_at_bottom           = false
-      config.hide_tab_bar_if_only_one_tab = true
-
-      config.colors.tab_bar = {
-        background = '${p.secondary}',
-        active_tab = {
-          bg_color  = '${p.termAccent}',
-          fg_color  = '${p.secondary}',
-        },
-        inactive_tab = {
-          bg_color = '${p.secondary}',
-          fg_color = '${p.text}',
-        },
-        inactive_tab_hover = {
-          bg_color = '${p.secondary}',
-          fg_color = '${p.termUser}',
-        },
-        new_tab = {
-          bg_color = '${p.secondary}',
-          fg_color = '${p.text}',
-        },
-      }
-
-      -- ── Keybinds ──────────────────────────────────────────────────────────
-      config.keys = {
-        -- Tabs
-        { key = 't', mods = 'CTRL|SHIFT', action = wezterm.action.SpawnTab 'CurrentPaneDomain' },
-        { key = 'w', mods = 'CTRL|SHIFT', action = wezterm.action.CloseCurrentTab { confirm = false } },
-        { key = 'Tab', mods = 'CTRL',       action = wezterm.action.ActivateTabRelative(1)  },
-        { key = 'Tab', mods = 'CTRL|SHIFT', action = wezterm.action.ActivateTabRelative(-1) },
-        -- Splits
-        { key = 'd', mods = 'CTRL|SHIFT', action = wezterm.action.SplitHorizontal { domain = 'CurrentPaneDomain' } },
-        { key = 'e', mods = 'CTRL|SHIFT', action = wezterm.action.SplitVertical   { domain = 'CurrentPaneDomain' } },
-        -- Pane navigation (vim-style)
-        { key = 'h', mods = 'CTRL|SHIFT', action = wezterm.action.ActivatePaneDirection 'Left'  },
-        { key = 'l', mods = 'CTRL|SHIFT', action = wezterm.action.ActivatePaneDirection 'Right' },
-        { key = 'k', mods = 'CTRL|SHIFT', action = wezterm.action.ActivatePaneDirection 'Up'    },
-        { key = 'j', mods = 'CTRL|SHIFT', action = wezterm.action.ActivatePaneDirection 'Down'  },
-      }
-
-      -- ── Shell ─────────────────────────────────────────────────────────────
-      config.default_prog = { '${pkgs.fish}/bin/fish', '--init-command', 'fastfetch' }
-
-      return config
-    '';
-  };
+  home-manager.users.${user}.home.packages = [ alacrittyPkg ];
 }
