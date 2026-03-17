@@ -44,7 +44,7 @@ in
         Restart        = "on-failure";
         RestartSec     = "5s";
       };
-      Install.WantedBy = [ "graphical-session.target" ];
+      Install.WantedBy = [ "default.target" ];
     };
 
     systemd.user.services.aw-watcher-window = {
@@ -59,7 +59,7 @@ in
         Restart        = "on-failure";
         RestartSec     = "5s";
       };
-      Install.WantedBy = [ "graphical-session.target" ];
+      Install.WantedBy = [ "default.target" ];
     };
 
     systemd.user.services.aw-watcher-afk = {
@@ -74,7 +74,7 @@ in
         Restart        = "on-failure";
         RestartSec     = "5s";
       };
-      Install.WantedBy = [ "graphical-session.target" ];
+      Install.WantedBy = [ "default.target" ];
     };
   };
 }
