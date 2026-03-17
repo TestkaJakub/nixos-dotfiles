@@ -121,14 +121,7 @@ let
     ${wlPaste} --type text --watch ${cliphist} store &
     ${wlPaste} --type image --watch ${cliphist} store &
     
-    ${pkgs.writeShellScript "startup-browser" ''
-      flag="/run/user/$(id -u)/startup-browser/opened"
-      mkdir -p "$(dirname "$flag")"
-      if [ ! -f "$flag" ]; then
-        touch "$flag"
-        ${browser} ${urlArgs}
-      fi
-    ''
+    ${config.scripts.startupBrowser}/bin/startup-browser &
   '';
 in
 {
