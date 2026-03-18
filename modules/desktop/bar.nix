@@ -54,7 +54,7 @@ in
         color: ${urgentFg};
       }
       #custom-pomodoro.focus { color: ${t.palette.termAccent}; }
-      #custom-pomodoro.idle  { color: ${t.palette.termUser}; }
+      #custom-pomodoro.idle  { color: ${t.palette.secondary}; }
     '';
 
     settings.main = {
