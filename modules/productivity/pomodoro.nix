@@ -460,7 +460,7 @@ let
       const time = document.getElementById('time');
       const sub  = document.getElementById('sub');
       const btn  = document.getElementById('btn-toggle');
-      dot.className = 'status-dot ' + (d.css ? d.css : '');
+      dot.className = 'status-dot ' + (d.css ? d.css : "");
       if (d.css === 'paused') {
         time.textContent = d.time;
         sub.textContent  = 'paused \u00b7 ' + d.mode + ' \u00b7 session ' + d.session + '/' + d.set_size;
