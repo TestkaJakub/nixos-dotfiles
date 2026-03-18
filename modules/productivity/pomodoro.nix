@@ -13,8 +13,23 @@
 #   pomo        — start / pause / skip / status
 #   pomo-waybar — stdout JSON consumed by waybar's custom module
 #
-# Keybind: super+p → pomo toggle  (wired in compositor.nix separately)
-# Waybar:  add "custom/pomodoro" to modules-right in desktop/bar.nix
+# Add to desktop/bar.nix manually:
+#
+#   modules-right = [ "custom/pomodoro" "custom/bluetooth" ... ];
+#
+#   "custom/pomodoro" = {
+#     exec            = "${pkgs.pomo-waybar}/bin/pomo-waybar";  # use the store path from home.packages
+#     interval        = 1;
+#     format          = "{}";
+#     return-type     = "json";
+#     on-click        = "${pkgs.pomo}/bin/pomo toggle";
+#     on-click-right  = "${pkgs.pomo}/bin/pomo skip";
+#     on-click-middle = "${pkgs.pomo}/bin/pomo reset";
+#     tooltip         = true;
+#   };
+#
+#   CSS classes for styling: focus / short / long / paused / idle
+#   e.g. in bar.nix style: "#custom-pomodoro.focus { color: ${t.palette.termAccent}; }"
 #
 # Durations (seconds) — edit the three variables below to taste.
 let
@@ -23,11 +38,10 @@ let
   focusSecs = 25 * 60;
   shortSecs  =  5 * 60;
   longSecs   = 15 * 60;
-  setSize    = 4;           # sessions before a long break
+  setSize    = 4;
 
-  notifySend   = "${pkgs.libnotify}/bin/notify-send";
-  waybarcli    = "${pkgs.waybar}/bin/waybar";
-  jq           = "${pkgs.jq}/bin/jq";
+  notifySend = "${pkgs.libnotify}/bin/notify-send";
+  jq         = "${pkgs.jq}/bin/jq";
 
   # ── pomo: main control binary ──────────────────────────────────────────────
   pomo = pkgs.writeShellScriptBin "pomo" ''
@@ -69,7 +83,6 @@ let
       (
         sleep "$secs"
         _notify "$label"
-        # advance state
         local sess
         sess=$(_read session 1)
         if [ "$mode" = "focus" ]; then
@@ -105,7 +118,6 @@ let
       start|toggle)
         pid=$(_read pid)
         if [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null; then
-          # already running — pause by killing and saving remaining
           rem=$(_remaining)
           _kill
           _write "$rem" paused
@@ -114,7 +126,6 @@ let
           rem=$(_read paused)
           mode=$(_read mode focus)
           if [ -n "$rem" ] && [ "$rem" -gt 0 ]; then
-            # resume
             rm -f "$STATE/paused"
             end=$(( $(date +%s) + rem ))
             _write "$end" end
@@ -125,7 +136,6 @@ let
             _write "$!" pid
             _notify "Resumed — $(_fmt $rem) remaining"
           else
-            # fresh start
             rm -f "$STATE"/*
             _write 1 session
             _start_countdown ${toString focusSecs} focus \
@@ -140,11 +150,11 @@ let
         mode=$(_read mode focus)
         sess=$(_read session 1)
         if [ "$mode" = "focus" ]; then
-          _notify "Skipped focus → short break"
+          _notify "Skipped focus — short break"
           _write "short" mode
           _start_countdown ${toString shortSecs} short "Short break over!"
         else
-          _notify "Skipped break → focus"
+          _notify "Skipped break — focus"
           _write "focus" mode
           _start_countdown ${toString focusSecs} focus \
             "Focus session $sess of ${toString setSize} complete!"
@@ -179,7 +189,7 @@ let
   pomoWaybar = pkgs.writeShellScriptBin "pomo-waybar" ''
     STATE="''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/pomodoro"
 
-    _read()  { cat "$STATE/$1" 2>/dev/null || echo "''${2:-}"; }
+    _read() { cat "$STATE/$1" 2>/dev/null || echo "''${2:-}"; }
 
     _fmt() {
       local s=$1
@@ -224,24 +234,5 @@ let
 
 in
 {
-  home-manager.users.${user} = {
-    home.packages = [ pomo pomoWaybar ];
-
-    # Wire into waybar.
-    # In desktop/bar.nix add "custom/pomodoro" to modules-right, e.g.:
-    #   modules-right = [ "custom/pomodoro" "custom/bluetooth" ... ];
-    #
-    # The CSS classes (focus / short / long / paused / idle) let you style
-    # the module from bar.nix's `style` string using #custom-pomodoro.focus etc.
-    programs.waybar.settings.main."custom/pomodoro" = {
-      exec            = "${pomoWaybar}/bin/pomo-waybar";
-      interval        = 1;
-      format          = "{}";
-      return-type     = "json";
-      on-click        = "${pomo}/bin/pomo toggle";
-      on-click-right  = "${pomo}/bin/pomo skip";
-      on-click-middle = "${pomo}/bin/pomo reset";
-      tooltip         = true;
-    };
-  };
+  home-manager.users.${user}.home.packages = [ pomo pomoWaybar ];
 }

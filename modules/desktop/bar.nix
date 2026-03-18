@@ -157,6 +157,17 @@ in
           fi
         '';
       };
+
+      "custom/pomodoro" = {
+        exec            = "${pomoWaybar}/bin/pomo-waybar";
+        interval        = 1;
+        format          = "{}";
+        return-type     = "json";
+        on-click        = "${pomo}/bin/pomo toggle";
+        on-click-right  = "${pomo}/bin/pomo skip";
+        on-click-middle = "${pomo}/bin/pomo reset";
+        tooltip         = true;
+      };
     };
   };
 }
