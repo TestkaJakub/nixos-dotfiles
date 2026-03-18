@@ -58,7 +58,7 @@ in
 
     settings.main = {
       modules-left  = [ "ext/workspaces" ];
-      modules-right = [ "custom/bluetooth" "custom/network" "custom/pamixer" "battery" "clock" ];
+      modules-right = [ "custom/pomodoro" "custom/bluetooth" "custom/network" "custom/pamixer" "battery" "clock" ];
 
       clock = {
         interval       = 1;
@@ -71,6 +71,10 @@ in
         format          = "Pow: {}%";
         format-charging = "Pow: {}% charging";
       };
+
+      "custom-pomodoro.focus"  { color: ${t.palette.termAccent}; }
+      "custom-pomodoro.short"  { color: ${t.palette.termUser}; }
+      "custom-pomodoro.paused" { color: ${t.palette.text}; opacity: 0.5; }
 
       "ext/workspaces" = {
         format         = "{icon}";
