@@ -55,7 +55,6 @@ in
         color: ${urgentFg};
       }
       #custom-pomodoro.focus  { color: ${t.palette.termAccent}; }
-      #custom-pomodoro.paused { color: ${t.palette.text}; opacity: 0.5; }
       #custom-pomodoro.idle   { color: ${t.palette.text}; opacity: 0.4; }
     '';
 
@@ -158,16 +157,16 @@ in
 
       "custom/pomodoro" = {
         exec            = "pomo-waybar";
-        interval        = 1;
+        interval        = 5;
         format          = "{}";
         return-type     = "json";
         tooltip         = true;
-        # left-click  → start / resume
-        on-click        = "pomo start";
-        # right-click → pause
-        on-click-right  = "pomo pause";
-        # middle-click → delete task at index 0 (reset)
-        on-click-middle = "pomo delete 0";
+        # left-click  → start a 25-min session
+        on-click        = "pomodoro start";
+        # right-click → mark session as finished
+        on-click-right  = "pomodoro finish";
+        # middle-click → cancel (no history entry)
+        on-click-middle = "pomodoro cancel";
       };
     };
   };

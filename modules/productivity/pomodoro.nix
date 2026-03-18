@@ -1,70 +1,60 @@
 { pkgs, config, ... }:
 
 # ── Pomodoro ───────────────────────────────────────────────────────────────────
-# Uses the nixpkgs `pomo` CLI package (github.com/kevinschoon/pomo) instead of
-# a custom shell script.
+# Uses pkgs.openpomodoro-cli — a Go CLI that is in nixpkgs 25.05.
+# The binary is called `pomodoro` (not `openpomodoro-cli`).
 #
 # Waybar integration (desktop/bar.nix):
-#
-#   "custom/pomodoro" = {
-#     exec            = "pomo-waybar";
-#     interval        = 1;
-#     format          = "{}";
-#     return-type     = "json";
-#     on-click        = "pomo start";
-#     on-click-right  = "pomo pause";
-#     on-click-middle = "pomo delete 0";
-#     tooltip         = true;
-#   };
-#
-#   CSS classes: focus / paused / idle
+#   exec            = "pomo-waybar";
+#   on-click        = "pomodoro start";
+#   on-click-right  = "pomodoro finish";
+#   on-click-middle = "pomodoro cancel";
 #
 # Usage:
-#   pomo create -d 25m -s 5m 4 "Work"   → create a 4-session pomodoro
-#   pomo start                           → start the first task
-#   pomo pause                           → pause/resume
-#   pomo delete 0                        → remove task at index 0 (reset)
-#   pomo list                            → show all tasks
-#   pomo show                            → show current status
+#   pomodoro start                → start a 25-min pomodoro
+#   pomodoro start --duration 25  → explicit duration in minutes
+#   pomodoro start "task name"    → with description
+#   pomodoro status               → show remaining time
+#   pomodoro finish               → mark done early
+#   pomodoro cancel               → cancel without recording
+#   pomodoro history              → list past pomodoros
+#
+# State lives in ~/.local/share/openpomodoro (XDG). No daemon needed.
 let
   user = config.profile.username;
   jq   = "${pkgs.jq}/bin/jq";
 
-  # ── pomo-waybar: thin JSON wrapper for waybar ─────────────────────────────
-  # `pomo show` outputs a single line like:
-  #   ● [1/4] Work 24:13 remaining
-  # or nothing when idle.
+  # pomo-waybar: JSON wrapper for the Waybar custom module.
+  # `pomodoro status` output:
+  #   active:   "12:34 🍅"
+  #   finished: "❗🍅"
+  #   idle:     empty / non-zero exit
   pomoWaybar = pkgs.writeShellScriptBin "pomo-waybar" ''
-    status=$(${pkgs.pomo}/bin/pomo show 2>/dev/null || true)
+    status=$(${pkgs.openpomodoro-cli}/bin/pomodoro status 2>/dev/null || true)
 
     if [ -z "$status" ]; then
       ${jq} -cn '{text: "pomo", tooltip: "idle — click to start", class: "idle"}'
       exit 0
     fi
 
-    # Detect paused state (pomo show prefixes with ◌ when paused)
-    if echo "$status" | grep -q "◌"; then
-      css="paused"
-      icon="⏸"
-    else
-      css="focus"
-      icon="●"
+    # Finished pomodoro shows the warning emoji but no MM:SS
+    if ! echo "$status" | grep -qP '\d+:\d+'; then
+      ${jq} -cn '{text: "✓ pomo", tooltip: "Pomodoro finished — click to start another", class: "focus"}'
+      exit 0
     fi
 
-    # Extract remaining time — last field before "remaining"
-    time=$(echo "$status" | grep -oP '\d+:\d+(?= remaining)' || echo "--:--")
-    tooltip=$(echo "$status" | sed 's/^[[:space:]]*//')
+    time=$(echo "$status" | grep -oP '\d+:\d+' | head -1 || echo "--:--")
 
     ${jq} -cn \
-      --arg text    "$icon $time" \
-      --arg tooltip "$tooltip" \
-      --arg class   "$css" \
+      --arg text    "● $time" \
+      --arg tooltip "Pomodoro running — $time remaining" \
+      --arg class   "focus" \
       '{text: $text, tooltip: $tooltip, class: $class}'
   '';
 in
 {
   home-manager.users.${user}.home.packages = [
-    pkgs.pomo
+    pkgs.openpomodoro-cli
     pomoWaybar
   ];
 }
