@@ -54,6 +54,9 @@ in
         background: ${urgentBg};
         color: ${urgentFg};
       }
+      #custom-pomodoro.focus  { color: ${t.palette.termAccent}; }
+      #custom-pomodoro.short  { color: ${t.palette.termUser}; }
+      #custom-pomodoro.paused { color: ${t.palette.text}; opacity: 0.5; }
     '';
 
     settings.main = {
@@ -71,10 +74,6 @@ in
         format          = "Pow: {}%";
         format-charging = "Pow: {}% charging";
       };
-
-      "custom-pomodoro.focus" = { color: ${t.palette.termAccent}; }
-      "custom-pomodoro.short" =  { color: ${t.palette.termUser}; }
-      "custom-pomodoro.paused" = { color: ${t.palette.text}; opacity: 0.5; }
 
       "ext/workspaces" = {
         format         = "{icon}";
