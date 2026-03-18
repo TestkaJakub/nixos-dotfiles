@@ -12,8 +12,9 @@ let
   browser = "${meta.browserPackage}/bin/${meta.browser}";
 
   startupUrls = [
-    "https://github.com"
-    "https://news.ycombinator.com"
+    "https://music.youtube.com/"
+    "http://localhost:5600/#/activity/nixos/view/"
+    "http://localhost:3456"
   ];
 
   urlArgs = builtins.concatStringsSep " " startupUrls;
