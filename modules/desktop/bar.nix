@@ -159,8 +159,8 @@ in
       };
 
       "custom/pomodoro" = {
-        exec       = "pomo-waybar";
-        on-click   = "pomo toggle";
+        exec            = "pomo-waybar";
+        on-click        = "pomo-panel";       # ← changed
         on-click-right  = "pomo skip";
         on-click-middle = "pomo reset";
         interval        = 1;
