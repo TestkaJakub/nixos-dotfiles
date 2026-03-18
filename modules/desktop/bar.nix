@@ -55,8 +55,8 @@ in
         color: ${urgentFg};
       }
       #custom-pomodoro.focus  { color: ${t.palette.termAccent}; }
-      #custom-pomodoro.short  { color: ${t.palette.termUser}; }
       #custom-pomodoro.paused { color: ${t.palette.text}; opacity: 0.5; }
+      #custom-pomodoro.idle   { color: ${t.palette.text}; opacity: 0.4; }
     '';
 
     settings.main = {
@@ -87,8 +87,6 @@ in
         interval    = 5;
         format      = "{}";
         return-type = "json";
-        # terminalRun carries the full store path + correct sub-command syntax
-        # for whatever terminal is set as default, e.g. "wezterm start -- nmtui"
         on-click    = "${meta.terminalRun} nmtui";
         exec = pkgs.writeShellScript "waybar-network" ''
           ssid=$(${iwgetid} -r 2>/dev/null || echo "")
@@ -160,13 +158,16 @@ in
 
       "custom/pomodoro" = {
         exec            = "pomo-waybar";
-        on-click        = "pomo-panel";       # ← changed
-        on-click-right  = "pomo skip";
-        on-click-middle = "pomo reset";
         interval        = 1;
         format          = "{}";
         return-type     = "json";
         tooltip         = true;
+        # left-click  → start / resume
+        on-click        = "pomo start";
+        # right-click → pause
+        on-click-right  = "pomo pause";
+        # middle-click → delete task at index 0 (reset)
+        on-click-middle = "pomo delete 0";
       };
     };
   };
