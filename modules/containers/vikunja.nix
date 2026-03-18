@@ -35,7 +35,7 @@
     };
 
     vikunja = {
-      image     = "vikunja/vikunja:2";
+      image     = "vikunja/vikunja:2.1.0";
       autoStart = true;
       dependsOn = [ "vikunja-db" ];
 
