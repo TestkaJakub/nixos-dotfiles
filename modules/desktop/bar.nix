@@ -12,7 +12,6 @@ let
   urgentBg          = t.functions.complement t.palette.primary;
   urgentFg          = t.functions.textcolor urgentBg;
 
-  # Full store paths so scripts work regardless of PATH
   jq           = "${pkgs.jq}/bin/jq";
   ping         = "${pkgs.iputils}/bin/ping";
   iwgetid      = "${pkgs.wirelesstools}/bin/iwgetid";
@@ -54,8 +53,8 @@ in
         background: ${urgentBg};
         color: ${urgentFg};
       }
-      #custom-pomodoro.focus  { color: ${t.palette.termAccent}; }
-      #custom-pomodoro.idle   { color: ${t.palette.text}; opacity: 0.4; }
+      #custom-pomodoro.focus { color: ${t.palette.termAccent}; }
+      #custom-pomodoro.idle  { color: ${t.palette.text}; opacity: 0.4; }
     '';
 
     settings.main = {
@@ -156,17 +155,15 @@ in
       };
 
       "custom/pomodoro" = {
-        exec            = "pomo-waybar";
-        interval        = 5;
-        format          = "{}";
-        return-type     = "json";
-        tooltip         = true;
-        # left-click  → start a 25-min session
-        on-click        = "pomodoro start";
-        # right-click → mark session as finished
-        on-click-right  = "pomodoro finish";
-        # middle-click → cancel (no history entry)
-        on-click-middle = "pomodoro cancel";
+        exec           = "pomo-waybar";
+        interval       = 1;
+        format         = "{}";
+        return-type    = "json";
+        tooltip        = true;
+        on-click       = "pomo-start";
+        on-click-right = "pomo-cancel";
+        on-scroll-up   = "pomo-add";
+        on-scroll-down = "pomo-remove";
       };
     };
   };
