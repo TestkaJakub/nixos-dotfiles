@@ -38,6 +38,26 @@
 
           shellHook = ''
             export PS1="(python-env) $PS1"
+
+            # Regenerate .vscode/settings.json on every `nix develop` so the
+            # nix store paths stay correct after flake input updates.
+            mkdir -p "$PWD/.vscode"
+            cat > "$PWD/.vscode/settings.json" <<EOF
+{
+  "python.defaultInterpreterPath": "$(which python)",
+  "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.ruff": "explicit",
+      "source.organizeImports.ruff": "explicit"
+    }
+  },
+  "mypy-type-checker.path": ["$(which mypy)"],
+  "ruff.path": ["$(which ruff)"]
+}
+EOF
+
             codium "$PWD" &
           '';
         };
