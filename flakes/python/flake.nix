@@ -34,10 +34,11 @@
       in {
         devShells.default = pkgs.mkShell {
           name     = "python-dev-env";
-          packages = [ pythonEnv pkgs.ruff ];
+          packages = [ pythonEnv pkgs.ruff pkgs.vscodium ];
 
           shellHook = ''
             export PS1="(python-env) $PS1"
+            codium "$PWD" &
           '';
         };
       });
