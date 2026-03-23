@@ -80,6 +80,20 @@ in
         ];
       };
     };
+
+    xdg.configFile."micro/init.lua".text = ''
+        local config = import("micro/config")
+        local shell  = import("micro/shell")
+    
+        function init()
+          config.TryBindKey("Ctrl-m", "lua:initlua.glowPreview", true)
+        end
+    
+        function glowPreview(bp)
+          local path = bp.Buf.Path
+          shell.RunInteractiveShell("${pkgs.glow}/bin/glow " .. path .. " | less -R", true, false)
+        end
+      '';
   };
 
   environment.variables = {
