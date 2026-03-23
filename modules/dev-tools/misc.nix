@@ -31,6 +31,7 @@ in
   # System-wide tools — available to all users and in nix-shell environments
   environment.systemPackages = with pkgs; [
     git
+    glow
     wget
     micro
     polkit
