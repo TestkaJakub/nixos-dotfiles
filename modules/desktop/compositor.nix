@@ -8,6 +8,8 @@
 #   waybar     — status bar
 #   gammastep  — night-light / color temperature
 #   cliphist   — clipboard history (piped from wl-paste)
+#
+# super+ctrl+d — toggle display power (screens off / on) via dpt
 let
   cfg  = config.theme;
   loc  = config.locale;
@@ -41,6 +43,7 @@ let
     bind=super,e,killclient
     bind=super,n,spawn,${fileManager}
     bind=super+ctrl,l,spawn,${hyprlock}
+    bind=super+ctrl,d,spawn,${config.scripts.dpt}/bin/dpt
     bind=super+shift,v,spawn,bash -c '${cliphist} list | ${fuzzel} --dmenu | ${cliphist} decode | ${wlCopy}'
 
     bind=super,Tab,focusstack,next

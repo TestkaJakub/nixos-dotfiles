@@ -7,6 +7,9 @@
 #
 # nrs / nrsr live here rather than bash.nix because they are system-management
 # binaries, not shell configuration — they need to work from fish too.
+#
+# dpt (display power toggle) turns all outputs off/on via wlopm.
+# Press super+ctrl+d once → screens off, again → screens on.
 {
   options.scripts = {
     kbm = lib.mkOption {
@@ -28,6 +31,11 @@
       type        = lib.types.package;
       readOnly    = true;
       description = "Run nrs and reboot on success.";
+    };
+    dpt = lib.mkOption {
+      type        = lib.types.package;
+      readOnly    = true;
+      description = "Toggle all displays on/off via wlopm.";
     };
   };
 
@@ -82,11 +90,30 @@
           echo "Rebuild failed, NOT rebooting."
         fi
       '';
+
+      # ── dpt: display power toggle ──────────────────────────────────────────────
+      # Uses wlopm to cut power to all Wayland outputs (works on MangoWC /
+      # any wlroots compositor that implements wlr-output-power-management-v1).
+      # State is tracked via a flag file in /run/user/<uid>/ which is wiped
+      # on every reboot, so you can never get stuck with screens "thinking"
+      # they are off after a reboot.
+      dpt = pkgs.writeShellScriptBin "dpt" ''
+        flag="/run/user/$(id -u)/display-off"
+        if [ -f "$flag" ]; then
+          rm -f "$flag"
+          ${pkgs.wlopm}/bin/wlopm --on '*'
+        else
+          touch "$flag"
+          ${pkgs.wlopm}/bin/wlopm --off '*'
+        fi
+      '';
+
     };
 
     environment.systemPackages = [
       config.scripts.nrs
       config.scripts.nrsr
+      config.scripts.dpt
     ];
   };
 }
