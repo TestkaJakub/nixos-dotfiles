@@ -43,10 +43,18 @@
             fi
 
             # Write VSCodium settings pointing at the venv python
+            # and pinning the integrated terminal to bash so the nix
+            # shell environment (PATH, PYTHONPATH, etc.) is inherited.
             mkdir -p "$PROJECT_DIR/.vscode"
             cat > "$PROJECT_DIR/.vscode/settings.json" <<EOF
 {
   "python.defaultInterpreterPath": "$PROJECT_DIR/.venv/bin/python",
+  "terminal.integrated.defaultProfile.linux": "bash",
+  "terminal.integrated.profiles.linux": {
+    "bash": {
+      "path": "${pkgs.bash}/bin/bash"
+    }
+  },
   "[python]": {
     "editor.defaultFormatter": "charliermarsh.ruff",
     "editor.formatOnSave": true,

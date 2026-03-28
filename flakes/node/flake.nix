@@ -29,6 +29,21 @@
             mkdir -p $HOME/Android/Sdk/platform-tools
             ln -sf ${pkgs.android-tools}/bin/adb $HOME/Android/Sdk/platform-tools/adb
 
+            # Pin VSCodium's integrated terminal to bash so the nix shell
+            # environment (PATH, NODE_PATH, etc.) is inherited. Without this,
+            # VSCodium opens fish which doesn't inherit the nix dev shell env.
+            mkdir -p "$PWD/.vscode"
+            cat > "$PWD/.vscode/settings.json" <<EOF
+{
+  "terminal.integrated.defaultProfile.linux": "bash",
+  "terminal.integrated.profiles.linux": {
+    "bash": {
+      "path": "${pkgs.bash}/bin/bash"
+    }
+  }
+}
+EOF
+
             codium "$PWD" &
           '';
         };
