@@ -10,6 +10,7 @@
 #   cliphist   — clipboard history (piped from wl-paste)
 #
 # super+ctrl+d — toggle display power (screens off / on) via dpt
+# super+ctrl+t — open Trayscale (Tailscale tray GUI)
 let
   cfg  = config.theme;
   loc  = config.locale;
@@ -44,6 +45,7 @@ let
     bind=super,n,spawn,${fileManager}
     bind=super+ctrl,l,spawn,${hyprlock}
     bind=super+ctrl,d,spawn,${config.scripts.dpt}/bin/dpt
+    bind=super+ctrl,t,spawn,trayscale
     bind=super+shift,v,spawn,bash -c '${cliphist} list | ${fuzzel} --dmenu | ${cliphist} decode | ${wlCopy}'
 
     bind=super,Tab,focusstack,next

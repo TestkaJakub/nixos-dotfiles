@@ -1,30 +1,32 @@
 { pkgs, config, lib, ... }:
 
 # ── Tailscale ──────────────────────────────────────────────────────────────────
-# Mesh VPN for secure remote access to this machine and all services.
-# Accessible via https://<tailscale-ip>:<port> from any device on the tailnet.
+# Mesh VPN for secure remote access.
+# Trayscale provides a GTK system tray GUI for connect/disconnect.
 #
 # First-time setup (run once after rebuild):
-#   sudo tailscale up --advertise-exit-node   # optional: use as exit node
-#   sudo tailscale up                         # basic auth, opens browser URL
+#   sudo tailscale up
 #
 # Useful commands:
 #   tailscale status          — show connected devices
 #   tailscale ip              — show this machine's tailscale IP
-#   tailscale ping <host>     — check connectivity to another tailnet device
+let
+  user = config.profile.username;
+in
 {
   services.tailscale = {
-    enable     = true;
-    useRoutingFeatures = "both";   # allows exit node + subnet routing
+    enable             = true;
+    useRoutingFeatures = "both";
   };
 
-  # Open firewall for Tailscale
   networking.firewall = {
-    trustedInterfaces          = [ "tailscale0" ];
-    allowedUDPPorts            = [ config.services.tailscale.port ];
-    checkReversePath           = "loose";   # required for Tailscale to work
+    trustedInterfaces = [ "tailscale0" ];
+    allowedUDPPorts   = [ config.services.tailscale.port ];
+    checkReversePath  = "loose";
   };
 
-  # Persist Tailscale state across reboots
   environment.systemPackages = [ pkgs.tailscale ];
+
+  # Trayscale — GTK tray GUI for Tailscale
+  home-manager.users.${user}.home.packages = [ pkgs.trayscale ];
 }
