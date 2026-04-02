@@ -86,7 +86,7 @@ let
 
     bind=super,g,spawn,${config.scripts.kbm}/bin/kbm
     bind=super,m,spawn,${config.scripts.cpc}/bin/cpc
-    bind=ALT,m,spawn,${pkgs.wayvnc}/bin/wayvnc 0.0.0.0 5900
+    bind=ALT,m,spawn,${config.scripts.cpcs}/bin/cpcs
 
     bind=none,XF86AudioMute,spawn,${pamixer} -t
     bind=none,XF86AudioLowerVolume,spawn,${pamixer} --allow-boost -d 5

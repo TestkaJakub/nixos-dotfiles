@@ -10,6 +10,9 @@
 #
 # dpt (display power toggle) turns all outputs off/on via wlopm.
 # Press super+ctrl+d once → screens off, again → screens on.
+#
+# cpcs (copy server config) SSHes into `server`, dumps all *.nix files under
+# /root/server-nixos, copies the result to the local clipboard, and notifies.
 {
   options.scripts = {
     kbm = lib.mkOption {
@@ -21,6 +24,11 @@
       type        = lib.types.package;
       readOnly    = true;
       description = "Copy all .nix configs to clipboard.";
+    };
+    cpcs = lib.mkOption {
+      type        = lib.types.package;
+      readOnly    = true;
+      description = "Copy server .nix configs to clipboard over SSH.";
     };
     nrs = lib.mkOption {
       type        = lib.types.package;
@@ -55,6 +63,14 @@
         find ~/nixos-dotfiles -type f -name '*.nix' \
           -exec echo "===== {} =====" \; -exec cat {} \; | ${pkgs.wl-clipboard}/bin/wl-copy
         ${pkgs.libnotify}/bin/notify-send "✅ Config copied to clipboard"
+      '';
+
+      cpcs = pkgs.writeShellScriptBin "cpcs" ''
+        echo "Copying server .nix configs to clipboard..."
+        ssh server 'sudo find /root/server-nixos -type f -name "*.nix" \
+          -exec echo "===== {} =====" \; -exec cat {} \;' \
+          | ${pkgs.wl-clipboard}/bin/wl-copy
+        ${pkgs.libnotify}/bin/notify-send "✅ Server config copied to clipboard"
       '';
 
       # ── nrs: commit dotfiles + rebuild ────────────────────────────────────────
