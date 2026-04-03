@@ -29,7 +29,7 @@
     binfmt = true;
   };
 
-  security.pki.certificateFiles = [
-    /home/jakub/homelab-root.crt
-  ];
+	security.pki.certificateFiles = [
+	  (builtins.toFile "homelab-root.crt" (builtins.readFile /home/jakub/homelab-root.crt))
+	];
 }
