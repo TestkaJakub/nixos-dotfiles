@@ -14,6 +14,7 @@ let
   user = config.profile.username;
   kbm  = config.scripts.kbm;
   cpc  = config.scripts.cpc;
+  cpcs = config.scripts.cpcs;
 
   p      = config.theme.palette;
   toPs1  = config.theme.functions.toPs1;
@@ -34,6 +35,7 @@ in
       libnotify
       kbm
       cpc
+      cpcs
 
       # ── ard: compile + upload an Arduino sketch ───────────────────────────
       (writeShellScriptBin "ard" ''
