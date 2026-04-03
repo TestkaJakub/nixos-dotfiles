@@ -28,4 +28,8 @@
     enable = true;
     binfmt = true;
   };
+
+  security.pki.certificateFiles = [
+    /home/jakub/homelab-root.crt
+  ];
 }
