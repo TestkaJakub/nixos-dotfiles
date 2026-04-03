@@ -67,9 +67,7 @@
 
       cpcs = pkgs.writeShellScriptBin "cpcs" ''
         echo "Copying server .nix configs to clipboard..."
-        ssh server 'sudo find /root/server-nixos -type f -name "*.nix" \
-          -exec echo "===== {} =====" \; -exec cat {} \;' \
-          | ${pkgs.wl-clipboard}/bin/wl-copy
+        ssh server cpc | ${pkgs.wl-clipboard}/bin/wl-copy
         ${pkgs.libnotify}/bin/notify-send "✅ Server config copied to clipboard"
       '';
 
