@@ -30,6 +30,6 @@
   };
 
 	security.pki.certificateFiles = [
-	  (builtins.toFile "homelab-root.crt" (builtins.readFile /home/jakub/homelab-root.crt))
+	  ../meta/homelab-root.crt  # relative to the module file using it
 	];
 }
