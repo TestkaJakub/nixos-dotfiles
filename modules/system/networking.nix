@@ -37,11 +37,11 @@
 
 	services.resolved = {
 	  enable = true;
-	  domains = [ "~home" ];
+	  domains = [ "~." ];
 	  fallbackDns = [ "1.1.1.1" ];
 	  extraConfig = ''
 	    DNS=192.168.0.252
-	    Domains=~home
+	    Domains=~.
 	  '';
 	};
 
