@@ -18,6 +18,9 @@ let
   pamixer      = "${pkgs.pamixer}/bin/pamixer";
   bluetoothctl = "${pkgs.bluez}/bin/bluetoothctl";
   blueman      = "${pkgs.blueman}/bin/blueman-manager";
+  pavucontrol  = "${pkgs.pavucontrol}/bin/pavucontrol";
+  btop         = "${pkgs.btop}/bin/btop";
+  ncdu         = "${pkgs.ncdu}/bin/ncdu";
 in
 {
   home-manager.users.${user}.programs.waybar = {
@@ -55,11 +58,31 @@ in
       }
       #custom-pomodoro.focus { color: ${t.palette.termAccent}; }
       #custom-pomodoro.idle  { color: ${waybarText}; }
+
+      #custom-btop:hover,
+      #custom-ncdu:hover {
+        background: ${lightenedPrimary};
+        color: ${waybarFocusedText};
+      }
+
+      tray { padding: 0 4px; }
+      tray > .passive { -gtk-icon-effect: dim; }
     '';
 
     settings.main = {
-      modules-left  = [ "ext/workspaces" ];
-      modules-right = [ "custom/pomodoro" "custom/bluetooth" "custom/network" "custom/pamixer" "battery" "clock" ];
+      # tray sits next to workspaces so udiskie/trayscale/bitwarden icons
+      # appear on the left where they're out of the way
+      modules-left  = [ "ext/workspaces" "tray" ];
+      modules-right = [
+        "custom/btop"
+        "custom/ncdu"
+        "custom/pomodoro"
+        "custom/bluetooth"
+        "custom/network"
+        "custom/pamixer"
+        "battery"
+        "clock"
+      ];
 
       clock = {
         interval       = 1;
@@ -73,12 +96,32 @@ in
         format-charging = "Pow: {}% charging";
       };
 
+      tray = {
+        icon-size          = 16;
+        spacing            = 4;
+        show-passive-items = true;
+      };
+
       "ext/workspaces" = {
         format         = "{icon}";
         ignore-hidden  = true;
         on-click       = "activate";
         on-click-right = "deactivate";
         sort-by-id     = true;
+      };
+
+      # ── btop launcher ───────────────────────────────────────────────────────
+      "custom/btop" = {
+        format   = "󰓅 btop";
+        tooltip  = false;
+        on-click = "${meta.terminalRun} ${btop}";
+      };
+
+      # ── ncdu launcher ───────────────────────────────────────────────────────
+      "custom/ncdu" = {
+        format   = "󰋊 ncdu";
+        tooltip  = false;
+        on-click = "${meta.terminalRun} ${ncdu} ~";
       };
 
       "custom/network" = {
@@ -136,20 +179,22 @@ in
         '';
       };
 
+      # ── Volume — left-click opens pavucontrol, right-click mutes ────────────
       "custom/pamixer" = {
         interval       = 1;
         format         = "{}";
         return-type    = "json";
-        on-click       = "${pamixer} -t";
+        on-click       = "${pavucontrol}";
+        on-click-right = "${pamixer} -t";
         on-scroll-up   = "${pamixer} -i 5";
         on-scroll-down = "${pamixer} -d 5";
         exec = pkgs.writeShellScript "waybar-volume" ''
           volume=$(${pamixer} --get-volume 2>/dev/null || echo 0)
           muted=$(${pamixer} --get-mute 2>/dev/null || echo false)
           if [ "$muted" = "true" ]; then
-            ${jq} -Rcn '{text: "Muted", tooltip: "Muted"}'
+            ${jq} -Rcn '{text: "Muted", tooltip: "Muted — right-click to unmute"}'
           else
-            ${jq} -Rcn --arg v "$volume" '{text: "Vol: \($v)%", tooltip: "Vol: \($v)%"}'
+            ${jq} -Rcn --arg v "$volume" '{text: "Vol: \($v)%", tooltip: "Vol: \($v)% — click for mixer"}'
           fi
         '';
       };
