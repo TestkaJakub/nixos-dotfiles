@@ -1,34 +1,34 @@
 { pkgs, lib, config, ... }:
 
 # ── Rustup ─────────────────────────────────────────────────────────────────────
-# Rust toolchain manager, fully declarative via home-manager's programs.rustup.
-# Toolchain, components, and targets are all set here — no manual rustup calls
-# needed after rebuild.
+# Rust toolchain manager. Toolchain and components are declared via a global
+# rust-toolchain.toml written to ~/ — rustup reads this automatically and
+# installs the correct toolchain on first use (or after rebuild if changed).
 #
-# NixOS note: rustup manages toolchains under ~/.rustup. The Nix-provided
-# rustPlatform is still used for building Nix derivations (e.g. app-drawer) —
-# rustup is for interactive development only.
+# No manual `rustup default stable` needed — the toolchain file handles it.
+# A home activation script runs `rustup show` once to trigger the install.
 #
-# PKG_CONFIG_PATH is set so that `cargo build` can find GTK4 headers in the
-# Nix store when compiling outside of a Nix derivation.
+# PKG_CONFIG_PATH is set so that `cargo build` finds GTK4 headers in the
+# Nix store when compiling outside a Nix derivation.
 let
   user = config.profile.username;
 in
 {
   environment.systemPackages = with pkgs; [
+    rustup
     gcc        # linker
     pkg-config # needed by gtk4-rs and most C-binding crates
   ];
 
-  home-manager.users.${user} = {
-    programs.rustup = {
-      enable   = true;
-      toolchains = [ "stable" ];
-      components = [ "rust-analyzer" "rust-src" "clippy" "rustfmt" ];
-    };
+  home-manager.users.${user} = { lib, ... }: {
+    # Declare the toolchain declaratively — rustup reads this from ~/
+    home.file."rust-toolchain.toml".text = ''
+      [toolchain]
+      channel    = "stable"
+      components = ["rust-analyzer", "rust-src", "clippy", "rustfmt"]
+    '';
 
-    # GTK4 and other build-time libraries that gtk4-rs needs to find via
-    # pkg-config when compiling with cargo directly (outside a Nix derivation)
+    # GTK4 headers for cargo builds outside Nix derivations
     home.sessionVariables.PKG_CONFIG_PATH = lib.concatStringsSep ":" [
       "${pkgs.gtk4.dev}/lib/pkgconfig"
       "${pkgs.glib.dev}/lib/pkgconfig"
@@ -38,5 +38,15 @@ in
       "${pkgs.graphene.dev}/lib/pkgconfig"
       "${pkgs.harfbuzz.dev}/lib/pkgconfig"
     ];
+
+    # Trigger rustup to install the declared toolchain on first activation
+    home.activation.installRustToolchain =
+      lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        export RUSTUP_HOME="''${RUSTUP_HOME:-$HOME/.rustup}"
+        export CARGO_HOME="''${CARGO_HOME:-$HOME/.cargo}"
+        if command -v rustup >/dev/null 2>&1; then
+          rustup show >/dev/null 2>&1 || true
+        fi
+      '';
   };
 }
