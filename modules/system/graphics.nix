@@ -9,7 +9,7 @@
     enable32Bit = true;
     extraPackages = with pkgs; [
       mesa
-      amdvlk  # AMD Vulkan driver
+      #amdvlk
       libdrm  # low-level DRM access
     ];
   };
