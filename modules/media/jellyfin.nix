@@ -13,7 +13,7 @@ let
 	    };
 	  };
 	};
-  bundle = pkgs.runCommand "combined-ca-bundle" {} ''
+  bundle = pkgs.runCommand "combined-ca-bundle-v2" {} ''
     cat ${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt \
         ${builtins.path { path = ../meta/homelab-root.crt; name = "homelab-root.crt"; }} \
         ${builtins.path { path = ../meta/homelab-intermediate.crt; name = "homelab-intermediate.crt"; }} > $out
