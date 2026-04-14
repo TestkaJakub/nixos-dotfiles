@@ -15,8 +15,8 @@ let
 	};
   bundle = pkgs.runCommand "combined-ca-bundle" {} ''
     cat ${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt \
-        ${../meta/homelab-root.crt} \
-        ${../meta/homelab-intermediate.crt} > $out
+        ${builtins.path { path = ../meta/homelab-root.crt; name = "homelab-root.crt"; }} \
+        ${builtins.path { path = ../meta/homelab-intermediate.crt; name = "homelab-intermediate.crt"; }} > $out
   '';
 	wrapper = pkgs.writeShellScriptBin "jellyfin-mpv-shim" ''
 	  export SSL_CERT_FILE="${bundle}"
