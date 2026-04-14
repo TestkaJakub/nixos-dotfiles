@@ -1,18 +1,18 @@
 { pkgs, config, ... }:
 let
   user = config.profile.username;
-  shim = pkgs.jellyfin-mpv-shim.override {
-    python3 = pkgs.python3.override {
-      packageOverrides = self: super: {
-        certifi = super.certifi.overrideAttrs (old: {
-          postInstall = (old.postInstall or "") + ''
-            cat ${../meta/homelab-root.crt} ${../meta/homelab-intermediate.crt} \
-              >> $out/lib/python*/site-packages/certifi/cacert.pem
-          '';
-        });
-      };
-    };
-  };
+	shim = pkgs.jellyfin-mpv-shim.override {
+	  python = pkgs.python3.override {
+	    packageOverrides = self: super: {
+	      certifi = super.certifi.overrideAttrs (old: {
+	        postInstall = (old.postInstall or "") + ''
+	          cat ${../meta/homelab-root.crt} ${../meta/homelab-intermediate.crt} \
+	            >> $out/lib/python*/site-packages/certifi/cacert.pem
+	        '';
+	      });
+	    };
+	  };
+	};
   bundle = pkgs.runCommand "combined-ca-bundle" {} ''
     cat ${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt \
         ${../meta/homelab-root.crt} \
