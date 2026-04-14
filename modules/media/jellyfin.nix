@@ -3,7 +3,7 @@ let
   user = config.profile.username;
   shim = pkgs.jellyfin-mpv-shim;
   bundle = pkgs.runCommand "combined-ca-bundle" {} ''
-    cat ${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt ${./homelab-root.crt} > $out
+    cat ${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt ${../meta/homelab-root.crt} > $out
   '';
   wrapper = pkgs.writeShellScriptBin "jellyfin-mpv-shim" ''
     export SSL_CERT_FILE="${bundle}"
