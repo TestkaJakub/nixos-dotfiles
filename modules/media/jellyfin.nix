@@ -7,11 +7,12 @@ let
         ${../meta/homelab-root.crt} \
         ${../meta/homelab-intermediate.crt} > $out
   '';
-  wrapper = pkgs.writeShellScriptBin "jellyfin-mpv-shim" ''
-    export SSL_CERT_FILE="${bundle}"
-    export REQUESTS_CA_BUNDLE="${bundle}"
-    exec ${shim}/bin/jellyfin-mpv-shim "$@"
-  '';
+	wrapper = pkgs.writeShellScriptBin "jellyfin-mpv-shim" ''
+	  export SSL_CERT_FILE="${bundle}"
+	  export REQUESTS_CA_BUNDLE="${bundle}"
+	  export WEBSOCKET_CLIENT_CA_BUNDLE="${bundle}"
+	  exec ${shim}/bin/jellyfin-mpv-shim "$@"
+	'';
 in
 {
   home-manager.users.${user}.home.packages = [ wrapper ];
