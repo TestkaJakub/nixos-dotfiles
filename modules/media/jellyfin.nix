@@ -3,8 +3,8 @@ let
   user = config.profile.username;
   shim = pkgs.jellyfin-mpv-shim.overridePythonAttrs (old: {
     postInstall = (old.postInstall or "") + ''
-      cat ${../meta/homelab-root.crt} ${../meta/homelab-intermediate.crt} \
-        >> $out/lib/python*/site-packages/certifi/cacert.pem
+      find $out/lib -name "cacert.pem" -exec sh -c \
+        'cat ${../meta/homelab-root.crt} ${../meta/homelab-intermediate.crt} >> {}' \;
     '';
   });
   bundle = pkgs.runCommand "combined-ca-bundle" {} ''
