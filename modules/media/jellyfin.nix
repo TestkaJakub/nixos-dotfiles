@@ -1,31 +1,19 @@
 { pkgs, config, ... }:
 let
   user = config.profile.username;
-	shim = pkgs.jellyfin-mpv-shim.override {
-	  python = pkgs.python3.override {
-	    packageOverrides = self: super: {
-	      certifi = super.certifi.overrideAttrs (old: {
-	        postInstall = (old.postInstall or "") + ''
-	          cat ${../meta/homelab-root.crt} ${../meta/homelab-intermediate.crt} \
-	            >> $out/lib/python*/site-packages/certifi/cacert.pem
-	        '';
-	      });
-	    };
-	  };
-	};
-	bundle = pkgs.runCommand "combined-ca-bundle-v3" {} ''
-	  cat ${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt \
-	      ${../meta/homelab-root.crt} \
-	      ${../meta/homelab-intermediate.crt} > $out
-	'';
-	wrapper = pkgs.writeShellScriptBin "jellyfin-mpv-shim" ''
-	  export SSL_CERT_FILE="${bundle}"
-	  export REQUESTS_CA_BUNDLE="${bundle}"
-	  export WEBSOCKET_CLIENT_CA_BUNDLE="${bundle}"
-	  export PYTHONHTTPSVERIFY=0
-	  exec ${shim}/bin/jellyfin-mpv-shim "$@"
-	'';
+  bundle = pkgs.runCommand "combined-ca-bundle-v3" {} ''
+    cat ${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt \
+        ${../meta/homelab-root.crt} \
+        ${../meta/homelab-intermediate.crt} > $out
+  '';
+  shim = pkgs.jellyfin-mpv-shim.overrideAttrs (old: {
+    makeWrapperArgs = (old.makeWrapperArgs or []) ++ [
+      "--set" "WEBSOCKET_CLIENT_CA_BUNDLE" "${bundle}"
+      "--set" "REQUESTS_CA_BUNDLE" "${bundle}"
+      "--set" "SSL_CERT_FILE" "${bundle}"
+    ];
+  });
 in
 {
-  home-manager.users.${user}.home.packages = [ wrapper ];
+  home-manager.users.${user}.home.packages = [ shim ];
 }
