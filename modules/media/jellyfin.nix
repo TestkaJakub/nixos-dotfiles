@@ -11,6 +11,7 @@ let
 	  export SSL_CERT_FILE="${bundle}"
 	  export REQUESTS_CA_BUNDLE="${bundle}"
 	  export WEBSOCKET_CLIENT_CA_BUNDLE="${bundle}"
+	  export PYTHONHTTPSVERIFY=0
 	  exec ${shim}/bin/jellyfin-mpv-shim "$@"
 	'';
 in
