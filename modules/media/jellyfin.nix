@@ -13,11 +13,11 @@ let
 	    };
 	  };
 	};
-  bundle = pkgs.runCommand "combined-ca-bundle-v2" {} ''
-    cat ${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt \
-        ${builtins.path { path = ../meta/homelab-root.crt; name = "homelab-root.crt"; }} \
-        ${builtins.path { path = ../meta/homelab-intermediate.crt; name = "homelab-intermediate.crt"; }} > $out
-  '';
+	bundle = pkgs.runCommand "combined-ca-bundle-v3" {} ''
+	  cat ${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt \
+	      ${../meta/homelab-root.crt} \
+	      ${../meta/homelab-intermediate.crt} > $out
+	'';
 	wrapper = pkgs.writeShellScriptBin "jellyfin-mpv-shim" ''
 	  export SSL_CERT_FILE="${bundle}"
 	  export REQUESTS_CA_BUNDLE="${bundle}"
