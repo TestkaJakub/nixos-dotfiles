@@ -146,7 +146,7 @@ in
       [Desktop Entry]
       Name=MangoWC
       Comment=Mango window manager
-      Exec=mangowc --config ~/.config/mango/config.conf
+      Exec=mango --config ~/.config/mango/config.conf
       Type=Application
       DesktopNames=MangoWC
     '';
