@@ -6,7 +6,7 @@
   users.users.${config.profile.username} = {
     isNormalUser = true;
     group        = config.profile.username;
-    extraGroups  = [ "wheel" "dialout" "libvirtd" "adbusers" "scanner" "lp" "docker" ];
+    extraGroups  = [ "wheel" "dialout" "libvirtd" "adbusers" "scanner" "lp" "docker" "video" "render" ];
     shell        = pkgs.fish;                          # changed from pkgs.bashInteractive
   };
 
