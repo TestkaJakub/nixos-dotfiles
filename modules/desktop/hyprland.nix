@@ -98,9 +98,6 @@ in
       bind = SUPER, V, fullscreen,    0   # togglefullscreen
       bind = SUPER, C, togglefloating
 
-      # gaps toggle
-      bind = SUPER, P, togglegaps
-
       # move windows (exchange_client → movewindow)
       bind = SUPER, K, movewindow, u
       bind = SUPER, J, movewindow, d
