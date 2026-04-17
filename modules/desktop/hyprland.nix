@@ -1,19 +1,6 @@
 { pkgs, config, ... }:
 
 # ── Hyprland — backup compositor ───────────────────────────────────────────────
-# Fallback Wayland compositor selectable from the SDDM session picker.
-# Keybinds mirror compositor.nix (MangoWC) as closely as Hyprland allows.
-#
-# Notable differences from MangoWC:
-#   - Layout switching (tile/vertical_grid/spiral/scroller) → not applicable,
-#     Hyprland uses its own layout system (dwindle by default)
-#   - comboview (workspaces) → mapped to standard Hyprland workspaces
-#   - exchange_client / focusdir → mapped to movefocus / movewindow
-#   - tagmon → movewindow to monitor
-#   - togglemaxmizescreen → fullscreen 1 (maximized, not true fullscreen)
-#   - togglegaps → togglegaps (same name, works in Hyprland)
-#
-# To remove once MangoWC is fixed: delete this file and rebuild.
 let
   meta = config.meta.defaults;
   loc  = config.locale;
@@ -38,6 +25,12 @@ in
   programs.hyprland.enable = true;
 
   home-manager.users.${user} = {
+    home.pointerCursor = {
+      name    = "Bibata-Modern-Classic";
+      package = pkgs.bibata-cursors;
+      size    = 24;
+    };
+
     xdg.configFile."hypr/hyprland.conf".text = ''
       # ── Monitors ────────────────────────────────────────────────────────────
       monitor = eDP-1,    1920x1080@60, 0x0,    1
@@ -66,6 +59,10 @@ in
         layout = dwindle
       }
 
+      # ── Cursor ──────────────────────────────────────────────────────────────
+      env = XCURSOR_THEME,Bibata-Modern-Classic
+      env = XCURSOR_SIZE,24
+
       # ── Keybinds ────────────────────────────────────────────────────────────
       # spawn
       bind = SUPER,       Q,     exec, ${terminal}
@@ -81,34 +78,34 @@ in
       bind = SUPER,       M,     exec, ${config.scripts.cpc}/bin/cpc
       bind = ALT,         M,     exec, ${config.scripts.cpcs}/bin/cpcs
 
-      # close window (killclient → killactive)
+      # close window
       bind = SUPER, E, killactive
 
-      # focus (focusdir → movefocus)
+      # focus
       bind = SUPER, A, movefocus, l
       bind = SUPER, D, movefocus, r
       bind = SUPER, W, movefocus, u
       bind = SUPER, S, movefocus, d
 
-      # cycle focus (focusstack next → cyclenext)
+      # cycle focus
       bind = SUPER, Tab, cyclenext
 
       # window state
-      bind = SUPER, X, fullscreen,    1   # togglemaxmizescreen
-      bind = SUPER, V, fullscreen,    0   # togglefullscreen
+      bind = SUPER, X, fullscreen,    1
+      bind = SUPER, V, fullscreen,    0
       bind = SUPER, C, togglefloating
 
-      # move windows (exchange_client → movewindow)
+      # move windows
       bind = SUPER, K, movewindow, u
       bind = SUPER, J, movewindow, d
       bind = SUPER, H, movewindow, l
       bind = SUPER, L, movewindow, r
 
-      # move window to monitor (tagmon)
-      bind = SUPER ALT, H, movewindow, mon:l
-      bind = SUPER ALT, L, movewindow, mon:r
+      # move window to monitor — use explicit monitor names
+      bind = SUPER ALT, H, movewindow, mon:eDP-1
+      bind = SUPER ALT, L, movewindow, mon:HDMI-A-1
 
-      # workspaces (comboview → workspace)
+      # workspaces
       bind = SUPER, 1, workspace, 1
       bind = SUPER, 2, workspace, 2
       bind = SUPER, 3, workspace, 3
