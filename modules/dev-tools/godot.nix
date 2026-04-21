@@ -1,8 +1,15 @@
 { pkgs, ... }:
-
-# ── Godot ──────────────────────────────────────────────────────────────────────
-# Game engine. For GDScript and C# development.
-# Mono variant includes C# support via .NET runtime.
 {
-  environment.systemPackages = [ pkgs.godot_4 ];
+  environment.systemPackages = [
+    (pkgs.symlinkJoin {
+      name = "godot4";
+      paths = [ pkgs.godot_4 ];
+      buildInputs = [ pkgs.makeWrapper ];
+      postBuild = ''
+        wrapProgram $out/bin/godot4 \
+          --set WAYLAND_DISPLAY "" \
+          --set GDK_BACKEND x11
+      '';
+    })
+  ];
 }
