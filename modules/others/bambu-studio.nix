@@ -13,14 +13,14 @@ let
   bambu-studio-appimage = pkgs.appimageTools.wrapType2 rec {
     name         = "BambuStudio";
     pname        = "bambustudio";
-    shortversion = "2.04";
-    version      = "0${shortversion}.00.70";
-    pr           = "PR-8834";
+	shortversion = "2.06";
+	version      = "0${shortversion}.00.51";
+	pr           = "20260417160415";
 
-    src = pkgs.fetchurl {
-      url    = "https://github.com/bambulab/BambuStudio/releases/download/v${version}/Bambu_Studio_ubuntu-2${shortversion}_${pr}.AppImage";
-      sha256 = "/xcVD3YPuAr8mNmEGxNMC62kiX1qrzaAi1F6S+0sEbA=";
-    };
+	src = pkgs.fetchurl {
+	  url    = "https://github.com/bambulab/BambuStudio/releases/download/v${version}/BambuStudio_ubuntu-24.04-v${version}-${pr}.AppImage";
+	  sha256 = "0d7pg2lpzgkdw6kbn0q1bybjcya4in3b15z35c07f5bvy9wqz1q9";
+	};
 
     profile = ''
       export SSL_CERT_FILE="${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
