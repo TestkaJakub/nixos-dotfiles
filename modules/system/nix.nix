@@ -9,16 +9,16 @@
   nix = {
     settings = {
     	experimental-features = [ "nix-command" "flakes" ];
-    	gc = {
-      		automatic = true;
-      		dates     = "weekly";
-      		options   = "--delete-older-than 30d";
-   		};
    		extraOptions = ''
    		  !include /etc/nix/github-token.conf
    		'';
 
    	};
+   	gc = {
+     	automatic = true;
+     	dates     = "weekly";
+     	options   = "--delete-older-than 30d";
+ 	};
   };
 
   system.stateVersion = config.profile.stateVersion;
