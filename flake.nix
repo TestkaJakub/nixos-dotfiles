@@ -12,14 +12,6 @@
 
     mangowc.url      = "github:DreamMaoMao/mangowc";
     wrappers.url     = "github:lassulus/wrappers";
-
-    # Private modules: lives at an absolute path on this machine only.
-    # The guard below makes the config evaluate cleanly on machines where
-    # the path does not exist (e.g. a fresh install or a CI check).
-    private = {
-      url   = "path:/home/jakub/nixos-private";
-      flake = false;
-    };
   };
 
   outputs = inputs:
@@ -52,20 +44,14 @@
       ];
 
       # ── Patched pkgs ────────────────────────────────────────────────────────
-      # nixpkgs 25.05 moved lndir into pkgs.xorg.lndir but home-manager's
-      # internal fontconfig module still references pkgs.lndir directly.
-      # This overlay bridges the gap until home-manager is updated.
       pkgs = import inputs.nixpkgs {
         system = "x86_64-linux";
-        #overlays = [ (_final: prev: { lndir = prev.xorg.lndir; }) ];
         overlays = [];
         config.allowUnfree = true;
       };
 
       # ── Private modules ─────────────────────────────────────────────────────
       # Only loaded when /home/jakub/nixos-private actually exists on disk.
-      # On a machine without the private repo (fresh install, CI) this
-      # evaluates to an empty list, so the rest of the config still builds.
       privateModules =
         let privatePath = /home/jakub/nixos-private;
         in lib.optionals (builtins.pathExists privatePath) (
