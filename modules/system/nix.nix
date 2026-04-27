@@ -1,4 +1,4 @@
-{ pkgs, lib, config, ... }:
+\{ pkgs, lib, config, ... }:
 
 # ── Nix & system core ──────────────────────────────────────────────────────────
 # Reads: config.profile.stateVersion, config.profile.hostname
@@ -7,13 +7,10 @@
 
 
   nix = {
-    settings = {
-    	experimental-features = [ "nix-command" "flakes" ];
-   		extraOptions = ''
+    settings.experimental-features = [ "nix-command" "flakes" ];
+   	extraOptions = ''
    		  !include /etc/nix/github-token.conf
    		'';
-
-   	};
    	gc = {
      	automatic = true;
      	dates     = "weekly";
