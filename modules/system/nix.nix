@@ -1,4 +1,4 @@
-\{ pkgs, lib, config, ... }:
+{ pkgs, lib, config, ... }:
 
 # ── Nix & system core ──────────────────────────────────────────────────────────
 # Reads: config.profile.stateVersion, config.profile.hostname
