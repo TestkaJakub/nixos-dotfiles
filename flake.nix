@@ -10,7 +10,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    mangowc.url      = "github:DreamMaoMao/mangowc";
+    mangowc.url = "github:DreamMaoMao/mangowc/3fa306fc191fd70ea2cdb8f2328685af7d44e419";
     wrappers.url     = "github:lassulus/wrappers";
   };
 
