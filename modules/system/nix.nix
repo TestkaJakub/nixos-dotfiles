@@ -7,6 +7,9 @@
 
 
   nix = {
+	  extraSettings = ''
+	    !include /etc/nix/github-token.conf
+	  '';
     settings.experimental-features = [ "nix-command" "flakes" ];
     gc = {
       automatic = true;
