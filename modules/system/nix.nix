@@ -7,15 +7,18 @@
 
 
   nix = {
-	  extraSettings = ''
-	    !include /etc/nix/github-token.conf
-	  '';
-    settings.experimental-features = [ "nix-command" "flakes" ];
-    gc = {
-      automatic = true;
-      dates     = "weekly";
-      options   = "--delete-older-than 30d";
-    };
+    settings = {
+    	experimental-features = [ "nix-command" "flakes" ];
+    	gc = {
+      		automatic = true;
+      		dates     = "weekly";
+      		options   = "--delete-older-than 30d";
+   		};
+   		extraOptions = ''
+   		  !include /etc/nix/github-token.conf
+   		'';
+
+   	};
   };
 
   system.stateVersion = config.profile.stateVersion;
