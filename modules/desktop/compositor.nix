@@ -94,9 +94,6 @@ let
 
     focuscolor=${cfg.functions.toMango cfg.palette.primary}
     bordercolor=${cfg.functions.toMango cfg.palette.secondary}
-
-    xkb_rules_layout=${loc.keyboardLayout}
-    xkb_layout=${loc.keyboardLayout}
   '';
 
   autostartScript = ''
