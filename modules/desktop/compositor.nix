@@ -151,14 +151,14 @@ in
       executable = true;
     };
 
-	xdg.dataFile."wayland-sessions/mangowc.desktop".text = ''
-	  [Desktop Entry]
-	  Name=MangoWC
-	  Comment=Mango window manager
-	  Exec=bash -c 'exec bash $HOME/.config/mango/autostart.sh'
-	  Type=Application
-	  DesktopNames=MangoWC
-	'';
+xdg.dataFile."wayland-sessions/mangowc.desktop".text = ''
+[Desktop Entry]
+Name=MangoWC
+Comment=Mango window manager
+Exec=bash -c 'exec bash $HOME/.config/mango/autostart.sh'
+Type=Application
+DesktopNames=MangoWC
+'';
 
     xdg.mimeApps = {
       enable = true;
