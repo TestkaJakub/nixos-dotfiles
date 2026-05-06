@@ -140,11 +140,11 @@ let
 in
 {
   programs.mango.enable = true;
-
-  # System-level session file so SDDM can find it
-  environment.etc."wayland-sessions/mangowc.desktop".text = ''
+# Override the mango.desktop installed by the mangowc nixos module
+# so SDDM launches our autostart script instead of bare mango
+environment.etc."sddm-wayland-sessions/mango.desktop".text = ''
 [Desktop Entry]
-Name=MangoWC
+Name=Mango
 Comment=Mango window manager
 Exec=bash -c 'exec bash $HOME/.config/mango/autostart.sh'
 Type=Application
