@@ -64,17 +64,17 @@
         "scenefx": "scenefx"
       },
       "locked": {
-        "lastModified": 1761113633,
-        "narHash": "sha256-KrU0lymivJypF3cGKx936uGYQESVD0uO4jFspKdV7oY=",
+        "lastModified": 1778073611,
+        "narHash": "sha256-6rNTdQZq4x/F2bHQsk7qo4OhXs5Y0xsQrTR1hgKZOqw=",
         "owner": "DreamMaoMao",
         "repo": "mangowc",
-        "rev": "3fa306fc191fd70ea2cdb8f2328685af7d44e419",
+        "rev": "42c02e3dc20eb09c0191b027e387c0268f8e0fb5",
         "type": "github"
       },
       "original": {
         "owner": "DreamMaoMao",
         "repo": "mangowc",
-        "rev": "3fa306fc191fd70ea2cdb8f2328685af7d44e419",
+        "rev": "42c02e3dc20eb09c0191b027e387c0268f8e0fb5",
         "type": "github"
       }
     },
