@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, ... }:
 
 # ── Network mounts ─────────────────────────────────────────────────────────────
 # Samba share from server — mounted at /mnt/server-data

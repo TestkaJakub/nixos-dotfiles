@@ -18,11 +18,6 @@
       fsType = "ext4";
     };
 
-  fileSystems."/mnt/server-data" =
-    { device = "systemd-1";
-      fsType = "autofs";
-    };
-
   fileSystems."/boot" =
     { device = "/dev/disk/by-uuid/9F8E-C2AB";
       fsType = "vfat";
