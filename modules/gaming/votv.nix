@@ -4,7 +4,7 @@
   environment.systemPackages = [
     (pkgs.stdenv.mkDerivation {
       pname   = "yeetpatch";
-      version = "latest";
+      version = "latest2";
 
       src = pkgs.fetchurl {
         url    = "https://votv.dev/patcher_assets/download/YeetPatch-latest-linux.tar";
