@@ -17,10 +17,12 @@
 
 	  installPhase = ''
 	    mkdir -p $out/bin
-	    cp YeetPatch.sh $out/bin/yeetpatch
-	    chmod +x $out/bin/yeetpatch
-	    wrapProgram $out/bin/yeetpatch \
+	    substitute YeetPatch.sh $out/bin/.yeetpatch-wrapped \
+	      --replace-fail 'DESYNC_BIN="$SCRIPT_DIR/desync"' 'DESYNC_BIN="desync"'
+	    chmod +x $out/bin/.yeetpatch-wrapped
+	    wrapProgram $out/bin/.yeetpatch-wrapped \
 	      --prefix PATH : ${pkgs.lib.makeBinPath [ pkgs.jq pkgs.curl pkgs.desync ]}
+	    mv $out/bin/.yeetpatch-wrapped $out/bin/yeetpatch
 	  '';
     })
   ];
