@@ -144,10 +144,19 @@ environment.etc."sddm-wayland-sessions/mango.desktop".text = ''
 [Desktop Entry]
 Name=Mango
 Comment=Mango window manager
-Exec=/bin/sh -c 'bash $HOME/.config/mango/autostart.sh & exec mango --config $HOME/.config/mango/config.conf'
+Exec=/etc/mango-session.sh
 Type=Application
 DesktopNames=MangoWC
 '';
+
+environment.etc."mango-session.sh" = {
+  text = ''
+    #!/bin/sh
+    bash $HOME/.config/mango/autostart.sh &
+    exec mango --config $HOME/.config/mango/config.conf
+  '';
+  mode = "0755";
+};
 
   home-manager.users.${user} = {
     home.packages = [ inputs.mangowc.packages.x86_64-linux.default ];
