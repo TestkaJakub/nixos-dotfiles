@@ -134,8 +134,6 @@ let
     ${wlPaste} --type text --watch ${cliphist} store &
     ${wlPaste} --type image --watch ${cliphist} store &
     ${config.scripts.startupBrowser}/bin/startup-browser &
-
-    exec mango --config ~/.config/mango/config.conf
   '';
 in
 {
