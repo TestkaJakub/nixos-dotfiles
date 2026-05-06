@@ -20,7 +20,7 @@
 	    cp YeetPatch.sh $out/bin/yeetpatch
 	    chmod +x $out/bin/yeetpatch
 	    wrapProgram $out/bin/yeetpatch \
-	      --prefix PATH : ${pkgs.lib.makeBinPath [ pkgs.jq pkgs.curl ]}
+	      --prefix PATH : ${pkgs.lib.makeBinPath [ pkgs.jq pkgs.curl pkgs.desync ]}
 	  '';
     })
   ];
