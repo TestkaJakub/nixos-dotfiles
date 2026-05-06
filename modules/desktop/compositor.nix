@@ -152,8 +152,8 @@ DesktopNames=MangoWC
 environment.etc."mango-session.sh" = {
   text = ''
     #!/bin/sh
-    bash $HOME/.config/mango/autostart.sh &
-    exec mango --config $HOME/.config/mango/config.conf
+    bash /home/jakub/.config/mango/autostart.sh &
+    exec mango --config /home/jakub/.config/mango/config.conf
   '';
   mode = "0755";
 };
