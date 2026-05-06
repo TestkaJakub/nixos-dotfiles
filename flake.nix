@@ -9,7 +9,10 @@
       url            = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-	mangowc.url = "github:DreamMaoMao/mangowc/42c02e3dc20eb09c0191b027e387c0268f8e0fb50";
+	mangowc = {
+		url = "github:DreamMaoMao/mangowc/42c02e3dc20eb09c0191b027e387c0268f8e0fb50";
+		imputs.nixpkgs.follows = "nixpkgs";
+	};
     #mangowc.url = "github:DreamMaoMao/mangowc/3fa306fc191fd70ea2cdb8f2328685af7d44e419";
     wrappers.url     = "github:lassulus/wrappers";
   };
@@ -46,11 +49,7 @@
       # ── Patched pkgs ────────────────────────────────────────────────────────
       pkgs = import inputs.nixpkgs {
         system = "x86_64-linux";
-        overlays = [
-        	(final: prev: {
-        		libxcb-wm = prev.libxcb-wm;
-        	})
-        ];
+        overlays = [];
         config.allowUnfree = true;
       };
 
