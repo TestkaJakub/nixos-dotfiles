@@ -18,7 +18,7 @@
  	};
   };
 
-  stdenv.hostPlatform.system.stateVersion = config.profile.stateVersion;
+  system.stateVersion = config.profile.stateVersion;
 
   # nix-ld: run unpatched dynamic binaries (e.g. VSCode extensions, JetBrains)
   programs.nix-ld = {
