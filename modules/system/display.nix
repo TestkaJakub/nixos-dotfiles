@@ -21,7 +21,6 @@ in
   services.displayManager = {
     enable = true;
     sddm = {
-      settings.Wayland.SessionDir = "/etc/sddm-wayland-sessions";
       enable        = true;
       wayland.enable = true;
       package       = pkgs.kdePackages.sddm;
