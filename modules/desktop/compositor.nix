@@ -151,7 +151,7 @@ in
       executable = true;
     };
 
-xdg.dataFile."wayland-sessions/mangowc.desktop".text = ''
+environment.etc."wayland-sessions/mangowc.desktop".text = ''
 [Desktop Entry]
 Name=MangoWC
 Comment=Mango window manager
