@@ -1,14 +1,20 @@
-pkgs.stdenv.mkDerivation {
-  pname   = "yeetpatch";
-  version = "latest";
+{ pkgs, ... }:
 
-  src = pkgs.fetchurl {
-    url    = "https://votv.dev/patcher_assets/download/YeetPatch-latest-linux.tar";
-    sha256 = pkgs.lib.fakeHash;
-  };
+{
+  environment.systemPackages = [
+    (pkgs.stdenv.mkDerivation {
+      pname   = "yeetpatch";
+      version = "latest";
 
-  installPhase = ''
-    ls -la  # remove this after first build to see the structure
-    mkdir -p $out/bin
-  '';
+      src = pkgs.fetchurl {
+        url    = "https://votv.dev/patcher_assets/download/YeetPatch-latest-linux.tar";
+        sha256 = pkgs.lib.fakeHash;
+      };
+
+      installPhase = ''
+        ls -la
+        mkdir -p $out/bin
+      '';
+    })
+  ];
 }
