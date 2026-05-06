@@ -9,7 +9,7 @@
       url            = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-	mangowc.url = "github:DreamMaoMao/mangowc/aa5b90761399709fac63c7c0143d6efb81a5846d";
+	mangowc.url = "github:DreamMaoMao/mangowc/975142d46a9d0a1a60a32727d9db52fd84555e6b";
     #mangowc.url = "github:DreamMaoMao/mangowc/3fa306fc191fd70ea2cdb8f2328685af7d44e419";
     wrappers.url     = "github:lassulus/wrappers";
   };
