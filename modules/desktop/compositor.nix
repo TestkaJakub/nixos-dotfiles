@@ -96,41 +96,40 @@ let
     bordercolor=${cfg.functions.toMango cfg.palette.secondary}
   '';
 
-  autostartScript = ''
-	  #!/usr/bin/env bash
-	  export XDG_SESSION_TYPE=wayland
-	  export XDG_CURRENT_DESKTOP=wlroots
-	  export XDG_SESSION_DESKTOP=wlroots
+autostartScript = ''
+  #!/usr/bin/env bash
+  export XDG_SESSION_TYPE=wayland
+  export XDG_CURRENT_DESKTOP=wlroots
+  export XDG_SESSION_DESKTOP=wlroots
 
-	  export WAYLAND_DISPLAY="''${WAYLAND_DISPLAY:-wayland-0}"
-	  export XDG_RUNTIME_DIR="''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+  export WAYLAND_DISPLAY="''${WAYLAND_DISPLAY:-wayland-0}"
+  export XDG_RUNTIME_DIR="''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
 
-	  # Wait for Wayland socket instead of blind sleep
-	  for i in $(seq 1 40); do
-	    [ -S "$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY" ] && break
-	    sleep 0.25
-	  done
+  # Wait for Wayland socket
+  for i in $(seq 1 40); do
+    [ -S "$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY" ] && break
+    sleep 0.25
+  done
 
-	  systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE
-	  dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE
+  systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE
+  dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE
 
-	  (
-	    sleep 2
-	    systemctl --user restart xdg-desktop-portal-wlr.service xdg-desktop-portal.service
-	  ) &
+  (
+    sleep 2
+    systemctl --user restart xdg-desktop-portal-wlr.service xdg-desktop-portal.service
+  ) &
 
-	  ${hyprpaper} --config ~/.config/hypr/hyprpaper.conf &
-      ${mako} &
-      ${waybar} &
-      ${gammastep} -m wayland -l ${toString loc.latitude}:${toString loc.longitude} -t 6000:3700 &
+  ${hyprpaper} --config ~/.config/hypr/hyprpaper.conf &
+  ${mako} &
+  ${waybar} &
+  ${gammastep} -m wayland -l ${toString loc.latitude}:${toString loc.longitude} -t 6000:3700 &
+  ${wlPaste} --type text --watch ${cliphist} store &
+  ${wlPaste} --type image --watch ${cliphist} store &
+  ${config.scripts.startupBrowser}/bin/startup-browser &
 
-      # Clipboard manager — pipe all clipboard events into cliphist
-      ${wlPaste} --type text --watch ${cliphist} store &
-      ${wlPaste} --type image --watch ${cliphist} store &
-    
-      ${config.scripts.startupBrowser}/bin/startup-browser &
-    '';
-  in
+  exec mango --config ~/.config/mango/config.conf
+'';
+in
 {
   programs.mango.enable = true;
 
@@ -148,7 +147,7 @@ let
 	  [Desktop Entry]
 	  Name=MangoWC
 	  Comment=Mango window manager
-	  Exec=bash -c 'bash ~/.config/mango/autostart.sh & exec mango --config ~/.config/mango/config.conf'
+	  Exec=bash -c 'exec bash $HOME/.config/mango/autostart.sh'
 	  Type=Application
 	  DesktopNames=MangoWC
 	'';
