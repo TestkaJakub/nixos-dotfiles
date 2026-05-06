@@ -11,6 +11,8 @@
         sha256 = "sha256-zlvwkHlixxudPagUDYnbBP/R4fFZbBE+lmS5Vngvjcs=";
       };
 
+      sourceRoot = ".";
+      
       installPhase = ''
         mkdir -p $out/bin
         cp YeetPatch.sh $out/bin/yeetpatch
