@@ -96,50 +96,60 @@ let
     bordercolor=${cfg.functions.toMango cfg.palette.secondary}
   '';
 
-autostartScript = ''
-  #!/usr/bin/env bash
-  exec > /tmp/mango-autostart.log 2>&1
-  set -x
+  autostartScript = ''
+    #!/usr/bin/env bash
+    exec > /tmp/mango-autostart.log 2>&1
+    set -x
 
-  export XDG_SESSION_TYPE=wayland
-  export XDG_CURRENT_DESKTOP=wlroots
-  export XDG_SESSION_DESKTOP=wlroots
+    export XDG_SESSION_TYPE=wayland
+    export XDG_CURRENT_DESKTOP=wlroots
+    export XDG_SESSION_DESKTOP=wlroots
 
-  export WAYLAND_DISPLAY="''${WAYLAND_DISPLAY:-wayland-0}"
-  export XDG_RUNTIME_DIR="''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+    export WAYLAND_DISPLAY="''${WAYLAND_DISPLAY:-wayland-0}"
+    export XDG_RUNTIME_DIR="''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
 
-  echo "WAYLAND_DISPLAY=$WAYLAND_DISPLAY"
-  echo "XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR"
-  echo "Socket exists: $([ -S "$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY" ] && echo yes || echo no)"
+    echo "WAYLAND_DISPLAY=$WAYLAND_DISPLAY"
+    echo "XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR"
+    echo "Socket exists: $([ -S "$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY" ] && echo yes || echo no)"
 
-  for i in $(seq 1 40); do
-    [ -S "$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY" ] && break
-    sleep 0.25
-  done
+    for i in $(seq 1 40); do
+      [ -S "$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY" ] && break
+      sleep 0.25
+    done
 
-  echo "Socket after wait: $([ -S "$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY" ] && echo yes || echo no)"
+    echo "Socket after wait: $([ -S "$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY" ] && echo yes || echo no)"
 
-  systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE
-  dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE
+    systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE
+    dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE
 
-  (
-    sleep 2
-    systemctl --user restart xdg-desktop-portal-wlr.service xdg-desktop-portal.service
-  ) &
+    (
+      sleep 2
+      systemctl --user restart xdg-desktop-portal-wlr.service xdg-desktop-portal.service
+    ) &
 
-  ${hyprpaper} --config ~/.config/hypr/hyprpaper.conf &
-  ${mako} &
-  ${waybar} &
-  ${gammastep} -m wayland -l ${toString loc.latitude}:${toString loc.longitude} -t 6000:3700 &
-  ${wlPaste} --type text --watch ${cliphist} store &
-  ${wlPaste} --type image --watch ${cliphist} store &
-  ${config.scripts.startupBrowser}/bin/startup-browser &
+    ${hyprpaper} --config ~/.config/hypr/hyprpaper.conf &
+    ${mako} &
+    ${waybar} &
+    ${gammastep} -m wayland -l ${toString loc.latitude}:${toString loc.longitude} -t 6000:3700 &
+    ${wlPaste} --type text --watch ${cliphist} store &
+    ${wlPaste} --type image --watch ${cliphist} store &
+    ${config.scripts.startupBrowser}/bin/startup-browser &
 
-  exec mango --config ~/.config/mango/config.conf
-'';
+    exec mango --config ~/.config/mango/config.conf
+  '';
 in
 {
   programs.mango.enable = true;
+
+  # System-level session file so SDDM can find it
+  environment.etc."wayland-sessions/mangowc.desktop".text = ''
+[Desktop Entry]
+Name=MangoWC
+Comment=Mango window manager
+Exec=bash -c 'exec bash $HOME/.config/mango/autostart.sh'
+Type=Application
+DesktopNames=MangoWC
+'';
 
   home-manager.users.${user} = {
     home.packages = [ inputs.mangowc.packages.x86_64-linux.default ];
@@ -150,15 +160,6 @@ in
       text       = autostartScript;
       executable = true;
     };
-
-environment.etc."wayland-sessions/mangowc.desktop".text = ''
-[Desktop Entry]
-Name=MangoWC
-Comment=Mango window manager
-Exec=bash -c 'exec bash $HOME/.config/mango/autostart.sh'
-Type=Application
-DesktopNames=MangoWC
-'';
 
     xdg.mimeApps = {
       enable = true;
