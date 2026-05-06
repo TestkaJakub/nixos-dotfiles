@@ -48,7 +48,7 @@
         system = "x86_64-linux";
         overlays = [
         	(final: prev: {
-        		libxcb-wm = prev.xcb-util-wm;
+        		libxcb-wm = prev.libxcb-wm;
         	})
         ];
         config.allowUnfree = true;
