@@ -8,7 +8,7 @@
 
       src = pkgs.fetchurl {
         url    = "https://votv.dev/patcher_assets/download/YeetPatch-latest-linux.tar";
-        sha256 = pkgs.lib.fakeHash;
+        sha256 = "sha256-zlvwkHlixxudPagUDYnbBP/R4fFZbBE+lmS5Vngvjcs=";
       };
 
       installPhase = ''
