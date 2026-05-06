@@ -12,7 +12,7 @@
       };
 
       installPhase = ''
-        ls -la
+        ls -laR .
         mkdir -p $out/bin
       '';
     })
