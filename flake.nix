@@ -45,7 +45,7 @@
 
       # ── Patched pkgs ────────────────────────────────────────────────────────
       pkgs = import inputs.nixpkgs {
-        stdenv.hostPlatform.system = "x86_64-linux";
+        system = "x86_64-linux";
         overlays = [];
         config.allowUnfree = true;
       };
