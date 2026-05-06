@@ -102,7 +102,7 @@ let
     export XDG_CURRENT_DESKTOP=wlroots
     export XDG_SESSION_DESKTOP=wlroots
 
-    export WAYLAND_DISPLAY="''${WAYLAND_DISPLAY:-wayland-1}"
+    export WAYLAND_DISPLAY="''${WAYLAND_DISPLAY:-wayland-0}"
     export XDG_RUNTIME_DIR="''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
 
     systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE
