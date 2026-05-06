@@ -144,7 +144,7 @@ environment.etc."sddm-wayland-sessions/mango.desktop".text = ''
 [Desktop Entry]
 Name=Mango
 Comment=Mango window manager
-Exec=bash -c 'bash $HOME/.config/mango/autostart.sh & exec mango --config $HOME/.config/mango/config.conf'
+Exec=/bin/sh -c 'bash $HOME/.config/mango/autostart.sh & exec mango --config $HOME/.config/mango/config.conf'
 Type=Application
 DesktopNames=MangoWC
 '';
