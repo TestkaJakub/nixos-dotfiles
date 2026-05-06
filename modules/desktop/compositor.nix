@@ -98,6 +98,9 @@ let
 
 autostartScript = ''
   #!/usr/bin/env bash
+  exec > /tmp/mango-autostart.log 2>&1
+  set -x
+
   export XDG_SESSION_TYPE=wayland
   export XDG_CURRENT_DESKTOP=wlroots
   export XDG_SESSION_DESKTOP=wlroots
@@ -105,11 +108,16 @@ autostartScript = ''
   export WAYLAND_DISPLAY="''${WAYLAND_DISPLAY:-wayland-0}"
   export XDG_RUNTIME_DIR="''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
 
-  # Wait for Wayland socket
+  echo "WAYLAND_DISPLAY=$WAYLAND_DISPLAY"
+  echo "XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR"
+  echo "Socket exists: $([ -S "$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY" ] && echo yes || echo no)"
+
   for i in $(seq 1 40); do
     [ -S "$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY" ] && break
     sleep 0.25
   done
+
+  echo "Socket after wait: $([ -S "$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY" ] && echo yes || echo no)"
 
   systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE
   dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE
