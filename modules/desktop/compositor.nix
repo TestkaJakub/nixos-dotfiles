@@ -97,35 +97,40 @@ let
   '';
 
   autostartScript = ''
-    #!/usr/bin/env bash
-    export XDG_SESSION_TYPE=wayland
-    export XDG_CURRENT_DESKTOP=wlroots
-    export XDG_SESSION_DESKTOP=wlroots
+	  #!/usr/bin/env bash
+	  export XDG_SESSION_TYPE=wayland
+	  export XDG_CURRENT_DESKTOP=wlroots
+	  export XDG_SESSION_DESKTOP=wlroots
 
-    export WAYLAND_DISPLAY="''${WAYLAND_DISPLAY:-wayland-0}"
-    export XDG_RUNTIME_DIR="''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+	  export WAYLAND_DISPLAY="''${WAYLAND_DISPLAY:-wayland-0}"
+	  export XDG_RUNTIME_DIR="''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
 
-    systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE
-    dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE
+	  # Wait for Wayland socket instead of blind sleep
+	  for i in $(seq 1 40); do
+	    [ -S "$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY" ] && break
+	    sleep 0.25
+	  done
 
-    (
-      sleep 2
-      systemctl --user restart xdg-desktop-portal-wlr.service xdg-desktop-portal.service
-    ) &
-    sleep 2
+	  systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE
+	  dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE
 
-    ${hyprpaper} --config ~/.config/hypr/hyprpaper.conf &
-    ${mako} &
-    ${waybar} &
-    ${gammastep} -m wayland -l ${toString loc.latitude}:${toString loc.longitude} -t 6000:3700 &
+	  (
+	    sleep 2
+	    systemctl --user restart xdg-desktop-portal-wlr.service xdg-desktop-portal.service
+	  ) &
 
-    # Clipboard manager — pipe all clipboard events into cliphist
-    ${wlPaste} --type text --watch ${cliphist} store &
-    ${wlPaste} --type image --watch ${cliphist} store &
+	  ${hyprpaper} --config ~/.config/hypr/hyprpaper.conf &
+      ${mako} &
+      ${waybar} &
+      ${gammastep} -m wayland -l ${toString loc.latitude}:${toString loc.longitude} -t 6000:3700 &
+
+      # Clipboard manager — pipe all clipboard events into cliphist
+      ${wlPaste} --type text --watch ${cliphist} store &
+      ${wlPaste} --type image --watch ${cliphist} store &
     
-    ${config.scripts.startupBrowser}/bin/startup-browser &
-  '';
-in
+      ${config.scripts.startupBrowser}/bin/startup-browser &
+    '';
+  in
 {
   programs.mango.enable = true;
 
@@ -139,14 +144,14 @@ in
       executable = true;
     };
 
-    xdg.dataFile."wayland-sessions/mangowc.desktop".text = ''
-      [Desktop Entry]
-      Name=MangoWC
-      Comment=Mango window manager
-      Exec=mango --config ~/.config/mango/config.conf
-      Type=Application
-      DesktopNames=MangoWC
-    '';
+	xdg.dataFile."wayland-sessions/mangowc.desktop".text = ''
+	  [Desktop Entry]
+	  Name=MangoWC
+	  Comment=Mango window manager
+	  Exec=bash -c 'bash ~/.config/mango/autostart.sh & exec mango --config ~/.config/mango/config.conf'
+	  Type=Application
+	  DesktopNames=MangoWC
+	'';
 
     xdg.mimeApps = {
       enable = true;
