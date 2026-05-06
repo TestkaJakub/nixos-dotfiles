@@ -18,6 +18,12 @@
       description = "Primary user's home directory.";
     };
 
+    system = lib.mkOption {
+      type        = lib.types.str;
+      default     = "x86_64-linux";
+      description = "Target system architecture.";
+    };
+
     stateVersion = lib.mkOption {
       type        = lib.types.str;
       default     = "25.05";
