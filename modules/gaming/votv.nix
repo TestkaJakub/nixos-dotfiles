@@ -23,6 +23,9 @@
           --replace-fail \
             'if [[ -x "$DESYNC_BIN" ]]; then' \
             'if [[ -n "$DESYNC_BIN" ]]; then'
+          --replace-fail \
+            'INSTALL_DIR=""' \
+            'INSTALL_DIR="${INSTALL_DIR:-}"'
         chmod +x $out/bin/yeetpatch
         wrapProgram $out/bin/yeetpatch \
           --prefix PATH : ${pkgs.lib.makeBinPath [ pkgs.jq pkgs.curl pkgs.desync ]}
