@@ -1,4 +1,4 @@
-{ pkgs, config, ... }:
+{ pkgs, lib, config, ... }:
 
 # ── Flutter ────────────────────────────────────────────────────────────────────
 # Flutter SDK + Android toolchain for mobile development.
@@ -43,12 +43,9 @@ in
     gradle
   ];
 
-  # Wymagane do flutter doctor — akceptacja licencji SDK
-  nixpkgs.config.android_sdk.accept_license = true;
-
   home-manager.users.${user}.home.sessionVariables = {
-    ANDROID_HOME     = "${androidSdk}/libexec/android-sdk";
-    ANDROID_SDK_ROOT = "${androidSdk}/libexec/android-sdk";
+    ANDROID_HOME     = lib.mkForce "${androidSdk}/libexec/android-sdk";
+    ANDROID_SDK_ROOT = lib.mkForce "${androidSdk}/libexec/android-sdk";
     JAVA_HOME        = "${pkgs.jdk17}";
   };
 
