@@ -17,11 +17,11 @@
 let
   user = config.profile.username;
 
-  buildToolsVersion = "34.0.0";
-
+  buildToolsVersion = "36.0.0";
+    
   androidComposition = pkgs.androidenv.composeAndroidPackages {
-    buildToolsVersions = [ buildToolsVersion "33.0.1" ];
-    platformVersions   = [ "34" "33" ];
+    buildToolsVersions = [ "36.0.0" "34.0.0" ];
+    platformVersions   = [ "36" "34" ];
     abiVersions        = [ "armeabi-v7a" "arm64-v8a" ];
     includeEmulator    = false;   # zmień na true jeśli chcesz emulator
     includeSources     = false;
