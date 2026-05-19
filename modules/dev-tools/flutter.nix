@@ -71,20 +71,23 @@ in
           fi
         done
 
-        # Licencje w katalogu który możemy pisać
-        mkdir -p "$target/licenses"
+        # Tworzy licencje tylko jeśli folder nie istnieje —
+        # żeby nie nadpisywać haszy zaakceptowanych przez sdkmanager
+        if [ ! -d "$target/licenses" ]; then
+          mkdir -p "$target/licenses"
 
-        printf '8933bad161af4178b1185d1a37fbf41ea5269c55\nd56f5187479451eabf01fb78af6dfcb131a6481e\n24333f8a63b6825ea9c5514f83c2829b004d1fee' \
-          > "$target/licenses/android-sdk-license"
+          printf '8933bad161af4178b1185d1a37fbf41ea5269c55\nd56f5187479451eabf01fb78af6dfcb131a6481e\n24333f8a63b6825ea9c5514f83c2829b004d1fee' \
+            > "$target/licenses/android-sdk-license"
 
-        printf '84831b9409646a918e30573bab4c9c91346d8abd' \
-          > "$target/licenses/android-sdk-preview-license"
+          printf '84831b9409646a918e30573bab4c9c91346d8abd' \
+            > "$target/licenses/android-sdk-preview-license"
 
-        printf '33b6937684c63422b0aeef7965571e9cb57b28f7\nd975f751698a77b662f1254ddbeed3901e976f5a' \
-          > "$target/licenses/android-googletv-license"
+          printf '33b6937684c63422b0aeef7965571e9cb57b28f7\nd975f751698a77b662f1254ddbeed3901e976f5a' \
+            > "$target/licenses/android-googletv-license"
 
-        printf 'e9acab5b5fbb560a72cfaecce8946896ff6aab9d' \
-          > "$target/licenses/mips-android-sysimage-license"
+          printf 'e9acab5b5fbb560a72cfaecce8946896ff6aab9d' \
+            > "$target/licenses/mips-android-sysimage-license"
+        fi
       '';
   };
 }
