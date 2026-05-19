@@ -64,10 +64,11 @@ in
         mkdir -p "$target"
 
         # Symlinki do wszystkich komponentów SDK poza licenses/
+        # -sfT (no-dereference) żeby nie tworzyć symlinku wewnątrz katalogu
         for item in "$sdk"/*; do
           name=$(basename "$item")
           if [ "$name" != "licenses" ]; then
-            ln -sf "$item" "$target/$name"
+            ln -sfT "$item" "$target/$name"
           fi
         done
 
