@@ -2,18 +2,19 @@
 
 # ── Flutter ────────────────────────────────────────────────────────────────────
 # Flutter SDK + Android toolchain for mobile development.
-# Android SDK is managed by Nix — no Android Studio needed.
+# Android SDK jest zarządzany przez Nix ale nix store jest read-only,
+# więc Flutter nie może zapisać licencji w $ANDROID_HOME/licenses/.
+#
+# Rozwiązanie: ANDROID_HOME wskazuje na ~/.android/sdk — katalog z symlinkami
+# do prawdziwego SDK w nix store, plus zapisywalny folder licenses/.
+# Activation script tworzy tę strukturę przy każdym rebuildie.
 #
 # Usage:
 #   flutter create my_app
-#   flutter run              # wymaga podłączonego urządzenia lub emulatora
+#   flutter run
 #   flutter build apk --release
 #
-# F-Droid: apk musi być zbudowany bez Google Play Services / Firebase.
-# Używaj wyłącznie paczek bez zamkniętych zależności.
-#
-# Emulator (opcjonalny): uruchom Android Studio raz żeby skonfigurować AVD,
-# albo użyj fizycznego urządzenia przez adb.
+# F-Droid: buduj bez Google Play Services / Firebase.
 let
   user = config.profile.username;
 
@@ -30,6 +31,7 @@ let
   };
 
   androidSdk = androidComposition.androidsdk;
+  nixSdk     = "${androidSdk}/libexec/android-sdk";
 in
 {
   environment.systemPackages = with pkgs; [
@@ -37,39 +39,52 @@ in
     dart
     jdk17
     androidSdk
-    android-tools   # adb, fastboot
+    android-tools
     gradle
   ];
 
   home-manager.users.${user} = { lib, ... }: {
+    # ANDROID_HOME wskazuje na ~/.android/sdk — writable katalog z symlinkami
     home.sessionVariables = {
-      ANDROID_HOME      = lib.mkForce "${androidSdk}/libexec/android-sdk";
-      ANDROID_SDK_ROOT  = lib.mkForce "${androidSdk}/libexec/android-sdk";
-      ANDROID_USER_HOME = "$HOME/.android";
-      JAVA_HOME         = "${pkgs.jdk17}";
+      ANDROID_HOME     = lib.mkForce "$HOME/.android/sdk";
+      ANDROID_SDK_ROOT = lib.mkForce "$HOME/.android/sdk";
+      JAVA_HOME        = "${pkgs.jdk17}";
     };
 
-    # Flutter sprawdza licencje w $ANDROID_HOME/licenses/ ale nix store
-    # jest read-only. Tworzymy pliki licencji w ~/.android/licenses/
-    # i ustawiamy ANDROID_HOME na ten katalog jako nadrzędny przez symlink
-    # w writable lokalizacji.
+    # Przy każdym rebuildie:
+    #   1. Tworzy ~/.android/sdk/ z symlinkami do komponentów w nix store
+    #   2. Tworzy ~/.android/sdk/licenses/ z plikami licencji (writable)
     #
-    # Hasze licencji pochodzą z oficjalnego Android SDK.
-    home.activation.androidLicenses =
+    # Symlinki są odświeżane przy każdym rebuildie żeby zawsze wskazywały
+    # na aktualny store path (hash zmienia się przy zmianie wersji SDK).
+    home.activation.androidSdk =
       lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-        mkdir -p "$HOME/.android/licenses"
+        sdk="${nixSdk}"
+        target="$HOME/.android/sdk"
+        mkdir -p "$target"
+
+        # Symlinki do wszystkich komponentów SDK poza licenses/
+        for item in "$sdk"/*; do
+          name=$(basename "$item")
+          if [ "$name" != "licenses" ]; then
+            ln -sf "$item" "$target/$name"
+          fi
+        done
+
+        # Licencje w katalogu który możemy pisać
+        mkdir -p "$target/licenses"
 
         printf '8933bad161af4178b1185d1a37fbf41ea5269c55\nd56f5187479451eabf01fb78af6dfcb131a6481e\n24333f8a63b6825ea9c5514f83c2829b004d1fee' \
-          > "$HOME/.android/licenses/android-sdk-license"
+          > "$target/licenses/android-sdk-license"
 
         printf '84831b9409646a918e30573bab4c9c91346d8abd' \
-          > "$HOME/.android/licenses/android-sdk-preview-license"
+          > "$target/licenses/android-sdk-preview-license"
 
         printf '33b6937684c63422b0aeef7965571e9cb57b28f7\nd975f751698a77b662f1254ddbeed3901e976f5a' \
-          > "$HOME/.android/licenses/android-googletv-license"
+          > "$target/licenses/android-googletv-license"
 
         printf 'e9acab5b5fbb560a72cfaecce8946896ff6aab9d' \
-          > "$HOME/.android/licenses/mips-android-sysimage-license"
+          > "$target/licenses/mips-android-sysimage-license"
       '';
   };
 }
