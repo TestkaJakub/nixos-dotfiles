@@ -9,9 +9,14 @@
 #   Rozwiązanie: ANDROID_HOME → ~/.android/sdk — katalog z symlinkami
 #   do komponentów SDK w nix store + zapisywalny folder licenses/.
 #
-# Activation script przy każdym rebuildie:
-#   1. Tworzy ~/.android/sdk/ z symlinkami do komponentów SDK
-#   2. Tworzy ~/.android/sdk/licenses/ z plikami licencji (jeśli nie istnieje)
+# Dwa katalogi licencji:
+#   sdkmanager zapisuje do ~/.android/licenses/
+#   Flutter szuka w   ~/.android/sdk/licenses/
+#   Rozwiązanie: ~/.android/sdk/licenses → symlink do ~/.android/licenses/
+#   Dzięki temu oba narzędzia korzystają z tego samego miejsca.
+#
+# Pierwsze użycie po rebuildie:
+#   flutter doctor --android-licenses   (wciśnij y na wszystko — jednorazowo)
 #
 # Użycie:
 #   flutter create my_app
@@ -30,6 +35,11 @@ let
     extraLicenses = [
       "android-sdk-license"
       "android-sdk-preview-license"
+      "android-googletv-license"
+      "android-sdk-arm-dbt-license"
+      "android-googlexr-license"
+      "google-gdk-license"
+      "mips-android-sysimage-license"
     ];
   };
 
@@ -65,15 +75,20 @@ in
 
     # Activation: buduje ~/.android/sdk/ przy każdym rebuildie
     #
-    # Symlinki są odświeżane (ln -sfT) żeby zawsze wskazywały na aktualny
-    # store path (hash zmienia się przy zmianie wersji SDK).
-    # Folder licenses/ tworzony tylko raz — żeby nie nadpisywać haszy
-    # zaakceptowanych przez sdkmanager.
+    # Symlinki do komponentów SDK są odświeżane (ln -sfT) żeby zawsze
+    # wskazywały na aktualny store path (hash zmienia się przy zmianie wersji).
+    #
+    # Licencje: sdkmanager zapisuje do ~/.android/licenses/, Flutter szuka
+    # w ~/.android/sdk/licenses/ — rozwiązanie: symlink między tymi dwoma.
+    # Dzięki temu flutter doctor --android-licenses działa trwale.
     home.activation.flutterAndroidSdk =
       lib.hm.dag.entryAfter [ "writeBoundary" ] ''
         sdk="${nixSdk}"
         target="$HOME/.android/sdk"
+        licenses="$HOME/.android/licenses"
+
         mkdir -p "$target"
+        mkdir -p "$licenses"
 
         # Symlinki do wszystkich komponentów SDK poza licenses/
         for item in "$sdk"/*; do
@@ -83,22 +98,9 @@ in
           fi
         done
 
-        # Licencje — tworzone tylko jeśli folder nie istnieje
-        if [ ! -d "$target/licenses" ]; then
-          mkdir -p "$target/licenses"
-
-          printf '8933bad161af4178b1185d1a37fbf41ea5269c55\nd56f5187479451eabf01fb78af6dfcb131a6481e\n24333f8a63b6825ea9c5514f83c2829b004d1fee' \
-            > "$target/licenses/android-sdk-license"
-
-          printf '84831b9409646a918e30573bab4c9c91346d8abd' \
-            > "$target/licenses/android-sdk-preview-license"
-
-          printf '33b6937684c63422b0aeef7965571e9cb57b28f7\nd975f751698a77b662f1254ddbeed3901e976f5a' \
-            > "$target/licenses/android-googletv-license"
-
-          printf 'e9acab5b5fbb560a72cfaecce8946896ff6aab9d' \
-            > "$target/licenses/mips-android-sysimage-license"
-        fi
+        # ~/.android/sdk/licenses → symlink do ~/.android/licenses/
+        # sdkmanager i Flutter korzystają z tego samego katalogu
+        ln -sfT "$licenses" "$target/licenses"
       '';
   };
 }
