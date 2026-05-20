@@ -48,6 +48,7 @@ in
     androidSdk
     pkgs.android-tools   # adb, fastboot
     pkgs.gradle
+    pkgs.mesa-demos      # eglinfo — wymagane przez flutter doctor
   ];
 
   # ── Konfiguracja użytkownika ─────────────────────────────────────────────────
@@ -55,9 +56,11 @@ in
 
     # ANDROID_HOME wskazuje na writable katalog z symlinkami do nix store
     home.sessionVariables = {
-      ANDROID_HOME     = lib.mkForce "$HOME/.android/sdk";
-      ANDROID_SDK_ROOT = lib.mkForce "$HOME/.android/sdk";
-      JAVA_HOME        = "${jdk}";
+      ANDROID_HOME       = lib.mkForce "$HOME/.android/sdk";
+      ANDROID_SDK_ROOT   = lib.mkForce "$HOME/.android/sdk";
+      JAVA_HOME          = "${jdk}";
+      # Flutter web dev — Vivaldi jest Chromium-based, więc w pełni wspierany
+      CHROME_EXECUTABLE  = "${pkgs.vivaldi}/bin/vivaldi";
     };
 
     # Activation: buduje ~/.android/sdk/ przy każdym rebuildie
