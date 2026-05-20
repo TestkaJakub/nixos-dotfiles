@@ -48,6 +48,89 @@ let
 
   # ── JDK zdefiniowany lokalnie ────────────────────────────────────────────────
   jdk = pkgs.jdk17;
+
+  # ── flutter-init: naprawia nowy projekt po flutter create ────────────────────
+  # NixOS problem: AGP (Android Gradle Plugin) hardkoduje cmake;3.22.1 i próbuje
+  # go pobrać przez sdkmanager mimo że system ma nowszy cmake w PATH.
+  # Rozwiązanie:
+  #   1. Zastąp flutter.ndkVersion konkretną wersją z ~/.android/sdk/ndk/
+  #   2. Dopisz cmake.version = "X.Y.Z+" do build.gradle.kts żeby AGP użył
+  #      systemowego cmake zamiast pobierać 3.22.1
+  #   3. Dopisz cmake.dir do local.properties
+  #
+  # Użycie:
+  #   flutter create my_app
+  #   cd my_app
+  #   flutter-init
+  #   flutter run
+  flutterInit = pkgs.writeShellScriptBin "flutter-init" ''
+    set -e
+
+    # ── Sprawdź czy jesteśmy w katalogu Flutter projektu ──────────────────────
+    if [ ! -f "pubspec.yaml" ] || [ ! -d "android" ]; then
+      echo "flutter-init: uruchom w katalogu projektu Flutter (po flutter create)"
+      exit 1
+    fi
+
+    gradle_kts="android/app/build.gradle.kts"
+    local_props="android/local.properties"
+
+    if [ ! -f "$gradle_kts" ]; then
+      echo "flutter-init: nie znaleziono $gradle_kts"
+      exit 1
+    fi
+
+    # ── 1. Znajdź zainstalowaną wersję NDK ────────────────────────────────────
+    ndk_dir="$HOME/.android/sdk/ndk"
+    if [ ! -d "$ndk_dir" ]; then
+      echo "flutter-init: brak katalogu NDK w $ndk_dir"
+      exit 1
+    fi
+
+    ndk_version=$(ls "$ndk_dir" | sort -V | tail -1)
+    if [ -z "$ndk_version" ]; then
+      echo "flutter-init: brak zainstalowanego NDK"
+      exit 1
+    fi
+    echo "  NDK: $ndk_version"
+
+    # ── 2. Znajdź wersję cmake z nix store ────────────────────────────────────
+    cmake_bin=$(command -v cmake 2>/dev/null || true)
+    if [ -z "$cmake_bin" ]; then
+      echo "flutter-init: cmake nie znaleziony w PATH"
+      exit 1
+    fi
+    cmake_version=$("$cmake_bin" --version | head -1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+    echo "  CMake: $cmake_version"
+
+    # ── 3. Zastąp flutter.ndkVersion konkretną wersją ─────────────────────────
+    if grep -q "flutter\.ndkVersion" "$gradle_kts"; then
+      sed -i "s/ndkVersion = flutter\.ndkVersion/ndkVersion = \"$ndk_version\"/" "$gradle_kts"
+      echo "  ndkVersion → $ndk_version"
+    else
+      echo "  ndkVersion już ustawiony, pomijam"
+    fi
+
+    # ── 4. Dopisz cmake.version jeśli jeszcze nie ma ──────────────────────────
+    if ! grep -q "externalNativeBuild" "$gradle_kts"; then
+      printf '\n// flutter-init: użyj systemowego cmake zamiast pobierać przez sdkmanager\nandroid.externalNativeBuild.cmake.version = "%s+"\n' "$cmake_version" >> "$gradle_kts"
+      echo "  cmake.version → $cmake_version+"
+    else
+      echo "  cmake.version już ustawiony, pomijam"
+    fi
+
+    # ── 5. Dopisz cmake.dir do local.properties jeśli jeszcze nie ma ──────────
+    cmake_dir="$HOME/.android/sdk/ndk/$ndk_version/build/cmake"
+    if ! grep -q "cmake.dir" "$local_props" 2>/dev/null; then
+      echo "cmake.dir=$cmake_dir" >> "$local_props"
+      echo "  cmake.dir → $cmake_dir"
+    else
+      echo "  cmake.dir już ustawiony, pomijam"
+    fi
+
+    echo ""
+    echo "Gotowe — możesz teraz uruchomić: flutter run"
+  '';
 in
 {
   # ── Pakiety systemowe ────────────────────────────────────────────────────────
@@ -59,6 +142,7 @@ in
     pkgs.android-tools   # adb, fastboot
     pkgs.gradle
     pkgs.mesa-demos      # eglinfo — wymagane przez flutter doctor
+    flutterInit
   ];
 
   # ── Konfiguracja użytkownika ─────────────────────────────────────────────────
