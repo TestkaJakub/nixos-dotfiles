@@ -1,23 +1,26 @@
 { pkgs, lib, config, ... }:
 
-# ── Flutter ────────────────────────────────────────────────────────────────────
-# Flutter SDK + Android toolchain for mobile development.
-# Android SDK jest zarządzany przez Nix ale nix store jest read-only,
-# więc Flutter nie może zapisać licencji w $ANDROID_HOME/licenses/.
+# ── Flutter — standalone dev environment ───────────────────────────────────────
+# Wszystkie zależności (SDK, JDK, narzędzia) są zdefiniowane i zarządzane
+# wyłącznie w tym module. Nie wymaga android.nix ani żadnego innego modułu.
 #
-# Rozwiązanie: ANDROID_HOME wskazuje na ~/.android/sdk — katalog z symlinkami
-# do prawdziwego SDK w nix store, plus zapisywalny folder licenses/.
-# Activation script tworzy tę strukturę przy każdym rebuildie.
+# Problem z nix store (read-only):
+#   Flutter wymaga katalogu $ANDROID_HOME/licenses/ z możliwością zapisu.
+#   Rozwiązanie: ANDROID_HOME → ~/.android/sdk — katalog z symlinkami
+#   do komponentów SDK w nix store + zapisywalny folder licenses/.
 #
-# Usage:
+# Activation script przy każdym rebuildie:
+#   1. Tworzy ~/.android/sdk/ z symlinkami do komponentów SDK
+#   2. Tworzy ~/.android/sdk/licenses/ z plikami licencji (jeśli nie istnieje)
+#
+# Użycie:
 #   flutter create my_app
 #   flutter run
 #   flutter build apk --release
-#
-# F-Droid: buduj bez Google Play Services / Firebase.
 let
   user = config.profile.username;
 
+  # ── Android SDK złożony w tym module ────────────────────────────────────────
   androidComposition = pkgs.androidenv.composeAndroidPackages {
     buildToolsVersions = [ "36.0.0" "35.0.0" "34.0.0" ];
     platformVersions   = [ "36" "35" "34" ];
@@ -32,39 +35,44 @@ let
 
   androidSdk = androidComposition.androidsdk;
   nixSdk     = "${androidSdk}/libexec/android-sdk";
+
+  # ── JDK zdefiniowany lokalnie ────────────────────────────────────────────────
+  jdk = pkgs.jdk17;
 in
 {
-  environment.systemPackages = with pkgs; [
-    flutter
-    dart
-    jdk17
+  # ── Pakiety systemowe ────────────────────────────────────────────────────────
+  environment.systemPackages = [
+    pkgs.flutter
+    pkgs.dart
+    jdk
     androidSdk
-    android-tools
-    gradle
+    pkgs.android-tools   # adb, fastboot
+    pkgs.gradle
   ];
 
+  # ── Konfiguracja użytkownika ─────────────────────────────────────────────────
   home-manager.users.${user} = { lib, ... }: {
-    # ANDROID_HOME wskazuje na ~/.android/sdk — writable katalog z symlinkami
+
+    # ANDROID_HOME wskazuje na writable katalog z symlinkami do nix store
     home.sessionVariables = {
-      ANDROID_HOME     = lib.mkForce "$HOME/.android/sdk";
-      ANDROID_SDK_ROOT = lib.mkForce "$HOME/.android/sdk";
-      JAVA_HOME        = "${pkgs.jdk17}";
+      ANDROID_HOME     = "$HOME/.android/sdk";
+      ANDROID_SDK_ROOT = "$HOME/.android/sdk";
+      JAVA_HOME        = "${jdk}";
     };
 
-    # Przy każdym rebuildie:
-    #   1. Tworzy ~/.android/sdk/ z symlinkami do komponentów w nix store
-    #   2. Tworzy ~/.android/sdk/licenses/ z plikami licencji (writable)
+    # Activation: buduje ~/.android/sdk/ przy każdym rebuildie
     #
-    # Symlinki są odświeżane przy każdym rebuildie żeby zawsze wskazywały
-    # na aktualny store path (hash zmienia się przy zmianie wersji SDK).
-    home.activation.androidSdk =
+    # Symlinki są odświeżane (ln -sfT) żeby zawsze wskazywały na aktualny
+    # store path (hash zmienia się przy zmianie wersji SDK).
+    # Folder licenses/ tworzony tylko raz — żeby nie nadpisywać haszy
+    # zaakceptowanych przez sdkmanager.
+    home.activation.flutterAndroidSdk =
       lib.hm.dag.entryAfter [ "writeBoundary" ] ''
         sdk="${nixSdk}"
         target="$HOME/.android/sdk"
         mkdir -p "$target"
 
         # Symlinki do wszystkich komponentów SDK poza licenses/
-        # -sfT (no-dereference) żeby nie tworzyć symlinku wewnątrz katalogu
         for item in "$sdk"/*; do
           name=$(basename "$item")
           if [ "$name" != "licenses" ]; then
@@ -72,8 +80,7 @@ in
           fi
         done
 
-        # Tworzy licencje tylko jeśli folder nie istnieje —
-        # żeby nie nadpisywać haszy zaakceptowanych przez sdkmanager
+        # Licencje — tworzone tylko jeśli folder nie istnieje
         if [ ! -d "$target/licenses" ]; then
           mkdir -p "$target/licenses"
 
