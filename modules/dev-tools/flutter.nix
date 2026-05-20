@@ -55,8 +55,8 @@ in
 
     # ANDROID_HOME wskazuje na writable katalog z symlinkami do nix store
     home.sessionVariables = {
-      ANDROID_HOME     = "$HOME/.android/sdk";
-      ANDROID_SDK_ROOT = "$HOME/.android/sdk";
+      ANDROID_HOME     = lib.mkForce "$HOME/.android/sdk";
+      ANDROID_SDK_ROOT = lib.mkForce "$HOME/.android/sdk";
       JAVA_HOME        = "${jdk}";
     };
 
