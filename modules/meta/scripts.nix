@@ -91,7 +91,7 @@ in
         set -e
 
         FLAKE="$HOME/nixos-dotfiles"
-        CURRENT_HOSTNAME=$(cat /etc/hostname | tr -d '[:space:]')
+        CURRENT_HOSTNAME=$(cat /proc/sys/kernel/hostname | tr -d '[:space:]')
         CURRENT_DMI=$(cat /sys/devices/virtual/dmi/id/product_name | tr -d '[:space:]')
 
         # ── Known configurations (generated from roles.nix) ─────────────────
@@ -160,6 +160,7 @@ in
           echo ""
           echo "Options:"
           echo "  1) Set hostname to '$REQUIRED_HOSTNAME' and continue"
+          echo "     (nixos-rebuild will make it permanent on activation)"
           echo "  2) Abort"
           echo ""
           printf "Choose [1/2]: "
@@ -167,10 +168,9 @@ in
 
           case "$choice" in
             1)
-              echo "Setting hostname to '$REQUIRED_HOSTNAME'..."
-              echo "$REQUIRED_HOSTNAME" | sudo tee /etc/hostname > /dev/null
+              echo "Setting hostname to '$REQUIRED_HOSTNAME' for this session..."
               sudo hostname "$REQUIRED_HOSTNAME"
-              echo "Hostname set. Continuing rebuild..."
+              echo "Hostname set. nixos-rebuild will persist it on activation."
               ;;
             *)
               echo "Aborted."
