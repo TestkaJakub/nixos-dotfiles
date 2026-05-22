@@ -88,7 +88,7 @@
       description = "Enables blueman and Bluetooth widget in Waybar.";
     };
 
-    # ── Display ────────────────────────────────────────────────────────────────
+    # --- Display ---
     primaryMonitor = lib.mkOption {
       type        = lib.types.str;
       default     = "eDP-1";
