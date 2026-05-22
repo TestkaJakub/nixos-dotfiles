@@ -91,8 +91,6 @@
       # Hardware files are machine-specific and passed explicitly to mkConfig.
       # The walker must never load them automatically.
       moduleBlacklist = [
-        "hardware/thinkpad.nix"
-        "hardware/desktop.nix"
         "meta/roles.nix"
       ];
 
@@ -110,13 +108,12 @@
       # hardwarePath — path to the machine's hardware.nix
       # role         — "server" | "workstation" | "personal"
       # extraModules — profile overrides (hostname, hardware flags, etc.)
-      mkConfig = hardwarePath: role: extraModules:
+      mkConfig = role: extraModules:
         inputs.nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           inherit pkgs;
           modules =
             (collectModules ./modules moduleBlacklist role)
-            ++ [ hardwarePath ]
             ++ [ inputs.home-manager.nixosModules.home-manager ]
             ++ [ inputs.mangowc.nixosModules.mango ]
             ++ extraModules;
@@ -132,7 +129,7 @@
       flake.nixosConfigurations = {
 
         # ── ThinkPad — workstation profile ──────────────────────────────────
-        nixos = mkConfig ./modules/hardware/thinkpad.nix "workstation" [{
+        nixos = mkConfig "workstation" [{
           profile.role             = data.configurations.nixos.role;
           profile.hostname         = data.configurations.nixos.hostname;
           profile.hasBattery       = true;
@@ -143,7 +140,7 @@
         }];
 
         # ── ThinkPad — server profile ───────────────────────────────────────
-        nixos-server = mkConfig ./modules/hardware/thinkpad.nix "server" [{
+        nixos-server = mkConfig "server" [{
           profile.role             = data.configurations.nixos-server.role;
           profile.hostname         = data.configurations.nixos-server.hostname;
           profile.hasBattery       = true;
@@ -155,7 +152,7 @@
 
         # ── Gigabyte desktop — always personal ──────────────────────────────
         # Gaming, entertainment, full desktop stack. Never server or workstation.
-        desktop = mkConfig ./modules/hardware/desktop.nix "personal" [{
+        desktop = mkConfig "personal" [{
           profile.role             = data.configurations.desktop.role;
           profile.hostname         = data.configurations.desktop.hostname;
           profile.hasBattery       = false;
