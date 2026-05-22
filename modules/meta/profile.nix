@@ -1,23 +1,25 @@
-{ lib, config, ... }:
+{ lib, config, roles, ... }:
 
-# --- Profile --- (Working implementation WIP)
+# ── Profile ────────────────────────────────────────────────────────────────────
 # Declares options for user identity and machine-level constants.
 # Every other module reads from config.profile rather than hardcoding values.
 #
-# role    - gates which module groups are active:
+# roles   — injected via specialArgs from flake.nix, sourced from roles.nix
+#
+# role    — gates which module groups are active:
 #             "personal"    full desktop + entertainment (Steam, Discord, etc.)
 #             "workstation" desktop + productive/dev tools, no entertainment
 #             "server"      headless, services only
 #
-# isRole  - helper function, pass a list of roles, returns bool
+# isRole  — helper function, pass a list of roles, returns bool
 #             e.g. config.profile.isRole [ "personal" "workstation" ]
 #
-# has*    - machine hardware capability flags, set per nixosConfiguration
+# has*    — machine hardware capability flags, set per nixosConfiguration
 #           in flake.nix, defaults to false so missing overrides fail safe
 {
   options.profile = {
 
-    # --- Identity ---
+    # ── Identity ───────────────────────────────────────────────────────────────
     username = lib.mkOption {
       type        = lib.types.str;
       default     = "jakub";
@@ -48,15 +50,15 @@
       description = "Machine hostname.";
     };
 
-    # --- Role ---
+    # ── Role ───────────────────────────────────────────────────────────────────
     role = lib.mkOption {
-      type        = lib.types.enum [ "personal" "workstation" "server" ];
-      default     = "personal";
+      type        = lib.types.enum roles;
+      default     = "workstation";
       description = ''
-        Machine role:
-          personal    - full desktop + entertainment (Steam, Discord, gaming)
-          workstation - desktop + productive/dev tools, no entertainment
-          server      - headless, services only, no desktop stack
+        Machine role — controls which module groups are active:
+          personal    — full desktop + entertainment (Steam, Discord, gaming)
+          workstation — desktop + productive/dev tools, no entertainment
+          server      — headless, services only, no desktop stack
       '';
     };
 
@@ -66,7 +68,7 @@
       description = "Returns true if the current role matches any role in the given list.";
     };
 
-    # --- Hardware capabilities ---
+    # ── Hardware capabilities ──────────────────────────────────────────────────
     # Set per nixosConfiguration in flake.nix.
     # Defaults to false so missing overrides fail safe.
 
@@ -88,7 +90,7 @@
       description = "Enables blueman and Bluetooth widget in Waybar.";
     };
 
-    # --- Display ---
+    # ── Display ────────────────────────────────────────────────────────────────
     primaryMonitor = lib.mkOption {
       type        = lib.types.str;
       default     = "eDP-1";
@@ -102,5 +104,6 @@
     };
   };
 
-  config.profile.isRole = roles: builtins.elem config.profile.role roles;
+  # roles' with a tick to avoid shadowing the `roles` specialArg
+  config.profile.isRole = roles': builtins.elem config.profile.role roles';
 }

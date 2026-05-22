@@ -1,18 +1,34 @@
-{ lib, pkgs, config, ... }:
+{ lib, pkgs, config, configurations, ... }:
 
 # ── User scripts ───────────────────────────────────────────────────────────────
 # Standalone binaries reachable both from the terminal and from the compositor
 # (which has no user PATH). Exposing them as config.scripts.* lets
 # compositor.nix reference the full store path directly.
 #
-# nrs / nrsr live here rather than bash.nix because they are system-management
-# binaries, not shell configuration — they need to work from fish too.
+# nrs   — smart rebuild: checks DMI + hostname, offers to fix, commits + switches
+# nrsr  — nrs + reboot on success
+# dpt   — display power toggle via wlopm
+# kbm   — cycle keyboard backlight brightness
+# cpc   — copy all .nix configs to clipboard
+# cpcs  — copy server .nix configs to clipboard over SSH
 #
-# dpt (display power toggle) turns all outputs off/on via wlopm.
-# Press super+ctrl+d once → screens off, again → screens on.
-#
-# cpcs (copy server config) SSHes into `server`, dumps all *.nix files under
-# /root/server-nixos, copies the result to the local clipboard, and notifies.
+# WARNING: always use 'nrs [configuration]' to rebuild — never nixos-rebuild
+# directly. nrs performs DMI and hostname validation before building.
+let
+  hostnameMapEntries = lib.concatStringsSep "\n" (
+    lib.mapAttrsToList
+      (cfg: v: "  [\"${cfg}\"]=\"${v.hostname}\"")
+      configurations
+  );
+
+  dmiMapEntries = lib.concatStringsSep "\n" (
+    lib.mapAttrsToList
+      (cfg: v: "  [\"${cfg}\"]=\"${v.dmi}\"")
+      configurations
+  );
+
+  configNames = lib.concatStringsSep " | " (builtins.attrNames configurations);
+in
 {
   options.scripts = {
     kbm = lib.mkOption {
@@ -71,13 +87,103 @@
         ${pkgs.libnotify}/bin/notify-send "✅ Server config copied to clipboard"
       '';
 
-      # ── nrs: commit dotfiles + rebuild ────────────────────────────────────────
       nrs = pkgs.writeShellScriptBin "nrs" ''
+        set -e
+
+        FLAKE="$HOME/nixos-dotfiles"
+        CURRENT_HOSTNAME=$(cat /etc/hostname | tr -d '[:space:]')
+        CURRENT_DMI=$(cat /sys/devices/virtual/dmi/id/product_name | tr -d '[:space:]')
+
+        # ── Known configurations (generated from roles.nix) ─────────────────
+        declare -A EXPECTED_HOSTNAME=(
+        ${hostnameMapEntries}
+        )
+
+        declare -A EXPECTED_DMI=(
+        ${dmiMapEntries}
+        )
+
+        # ── Determine target configuration ──────────────────────────────────
+        if [ -n "$1" ]; then
+          TARGET="$1"
+
+          if [ -z "''${EXPECTED_HOSTNAME[$TARGET]+_}" ]; then
+            echo "ERROR: Unknown configuration '$TARGET'."
+            echo "Known configurations: ${configNames}"
+            exit 1
+          fi
+        else
+          TARGET=""
+          for cfg in "''${!EXPECTED_HOSTNAME[@]}"; do
+            if [ "''${EXPECTED_HOSTNAME[$cfg]}" = "$CURRENT_HOSTNAME" ]; then
+              TARGET="$cfg"
+              break
+            fi
+          done
+
+          if [ -z "$TARGET" ]; then
+            echo ""
+            echo "ERROR: Could not auto-detect configuration for hostname '$CURRENT_HOSTNAME'."
+            echo "Known configurations: ${configNames}"
+            echo ""
+            echo "Either:"
+            echo "  1) Pass the configuration explicitly: nrs <configuration>"
+            echo "  2) Set the correct hostname and retry"
+            exit 1
+          fi
+
+          echo "Auto-detected configuration: $TARGET"
+        fi
+
+        # ── DMI check ────────────────────────────────────────────────────────
+        REQUIRED_DMI="''${EXPECTED_DMI[$TARGET]}"
+
+        if [ "$CURRENT_DMI" != "$REQUIRED_DMI" ]; then
+          echo ""
+          echo "❌ HARDWARE MISMATCH — ABORTING"
+          echo "   Configuration : #$TARGET"
+          echo "   Expected DMI  : $REQUIRED_DMI"
+          echo "   Current DMI   : $CURRENT_DMI"
+          echo ""
+          echo "   You are trying to build the wrong configuration for this machine."
+          echo "   This has been blocked to protect your system."
+          exit 1
+        fi
+
+        # ── Hostname check ───────────────────────────────────────────────────
+        REQUIRED_HOSTNAME="''${EXPECTED_HOSTNAME[$TARGET]}"
+
+        if [ "$CURRENT_HOSTNAME" != "$REQUIRED_HOSTNAME" ]; then
+          echo ""
+          echo "WARNING: This machine's hostname is '$CURRENT_HOSTNAME'."
+          echo "         Configuration '#$TARGET' expects hostname '$REQUIRED_HOSTNAME'."
+          echo ""
+          echo "Options:"
+          echo "  1) Set hostname to '$REQUIRED_HOSTNAME' and continue"
+          echo "  2) Abort"
+          echo ""
+          printf "Choose [1/2]: "
+          read -r choice
+
+          case "$choice" in
+            1)
+              echo "Setting hostname to '$REQUIRED_HOSTNAME'..."
+              echo "$REQUIRED_HOSTNAME" | sudo tee /etc/hostname > /dev/null
+              sudo hostname "$REQUIRED_HOSTNAME"
+              echo "Hostname set. Continuing rebuild..."
+              ;;
+            *)
+              echo "Aborted."
+              exit 1
+              ;;
+          esac
+        fi
+
+        # ── Commit dotfiles ──────────────────────────────────────────────────
         SAVED_DIR=$(pwd)
-        cd ~/nixos-dotfiles || exit 1
+        cd "$FLAKE" || exit 1
 
         if ! git rev-parse --verify development &>/dev/null; then
-          echo "Creating branch 'development'..."
           git checkout -b development || exit 1
         else
           git checkout development || exit 1
@@ -89,15 +195,16 @@
         fi
 
         git push -u origin development || exit 1
-        sudo nixos-rebuild switch --flake ~/nixos-dotfiles#nixos
+
+        # ── Rebuild ──────────────────────────────────────────────────────────
+        sudo nixos-rebuild switch --flake "$FLAKE#$TARGET"
         result=$?
         cd "$SAVED_DIR" || exit 1
         exit $result
       '';
 
-      # ── nrsr: rebuild + reboot on success ─────────────────────────────────────
       nrsr = pkgs.writeShellScriptBin "nrsr" ''
-        if nrs; then
+        if nrs "$@"; then
           echo "Rebuild succeeded. Rebooting..."
           reboot
         else
@@ -105,12 +212,6 @@
         fi
       '';
 
-      # ── dpt: display power toggle ──────────────────────────────────────────────
-      # Uses wlopm to cut power to all Wayland outputs (works on MangoWC /
-      # any wlroots compositor that implements wlr-output-power-management-v1).
-      # State is tracked via a flag file in /run/user/<uid>/ which is wiped
-      # on every reboot, so you can never get stuck with screens "thinking"
-      # they are off after a reboot.
       dpt = pkgs.writeShellScriptBin "dpt" ''
         flag="/run/user/$(id -u)/display-off"
         if [ -f "$flag" ]; then
@@ -121,7 +222,6 @@
           ${pkgs.wlopm}/bin/wlopm --off '*'
         fi
       '';
-
     };
 
     environment.systemPackages = [
