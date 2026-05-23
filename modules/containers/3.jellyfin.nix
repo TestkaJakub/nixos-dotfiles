@@ -46,7 +46,7 @@
   };
 
   systemd.services.docker-jellyfin = {
-    after    = [ "docker-network-traefik.service" "mnt-data.mount" ];
-    requires = [ "docker-network-traefik.service" "mnt-data.mount" ];
+    after    = [ "docker-network-traefik.service" ];
+    requires = [ "docker-network-traefik.service" ];
   };
 }
