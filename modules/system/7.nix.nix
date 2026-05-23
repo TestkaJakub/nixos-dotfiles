@@ -12,9 +12,9 @@ in
 
   nix = {
     settings.experimental-features = [ "nix-command" "flakes" ];
-   	extraOptions = ''
-   		  !include /etc/nix/github-token.conf
-   		'';
+   	extraOptions = lib.mkIf isNotServer ''
+      !include /etc/nix/github-token.conf
+    '';
    	gc = {
      	automatic = true;
      	dates     = "weekly";
