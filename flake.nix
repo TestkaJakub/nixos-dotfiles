@@ -34,8 +34,8 @@
       # File prefix encodes which roles load the module:
       #   1.foo.nix   → server only
       #   2.foo.nix   → workstation only
-      #   4.foo.nix   → personal only
       #   3.foo.nix   → server + workstation
+      #   4.foo.nix   → personal only
       #   5.foo.nix   → server + personal
       #   6.foo.nix   → workstation + personal
       #   7.foo.nix   → all roles (same as no prefix)
@@ -99,7 +99,7 @@
         system   = "x86_64-linux";
         overlays = [];
         config   = {
-          allowUnfree            = true;
+          allowUnfree                = true;
           android_sdk.accept_license = true;
         };
       };
