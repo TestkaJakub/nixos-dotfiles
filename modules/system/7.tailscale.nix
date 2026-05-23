@@ -1,22 +1,26 @@
 { pkgs, config, lib, ... }:
 
 # ── Tailscale ──────────────────────────────────────────────────────────────────
-# Mesh VPN for secure remote access.
-# Trayscale provides a GTK system tray GUI for connect/disconnect.
-#
-# First-time setup (run once after rebuild):
-#   sudo tailscale up
-#
-# Useful commands:
-#   tailscale status          — show connected devices
-#   tailscale ip              — show this machine's tailscale IP
+# Server advertises LAN subnet so Tailscale devices can reach 192.168.0.0/24.
+# Workstation/personal get Trayscale tray GUI for connect/disconnect.
 let
-  user = config.profile.username;
+  isServer    = config.profile.isRole [ "server" ];
+  isNotServer = !isServer;
+  user        = config.profile.username;
 in
 {
   services.tailscale = {
     enable             = true;
     useRoutingFeatures = "both";
+    extraUpFlags       = lib.mkIf isServer [
+      "--advertise-routes=192.168.0.0/24"
+      "--accept-dns=false"
+    ];
+  };
+
+  boot.kernel.sysctl = lib.mkIf isServer {
+    "net.ipv4.ip_forward"          = 1;
+    "net.ipv6.conf.all.forwarding" = 1;
   };
 
   networking.firewall = {
@@ -27,6 +31,5 @@ in
 
   environment.systemPackages = [ pkgs.tailscale ];
 
-  # Trayscale — GTK tray GUI for Tailscale
-  home-manager.users.${user}.home.packages = [ pkgs.trayscale ];
+  home-manager.users.${user}.home.packages = lib.mkIf isNotServer [ pkgs.trayscale ];
 }
