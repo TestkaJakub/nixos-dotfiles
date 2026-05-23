@@ -53,7 +53,6 @@
     # ── Role ───────────────────────────────────────────────────────────────────
     role = lib.mkOption {
       type        = lib.types.enum roles;
-      default     = "workstation";
       description = ''
         Machine role — controls which module groups are active:
           personal    — full desktop + entertainment (Steam, Discord, gaming)
@@ -71,6 +70,10 @@
     # ── Hardware capabilities ──────────────────────────────────────────────────
     # Set per nixosConfiguration in flake.nix.
     # Defaults to false so missing overrides fail safe.
+    lanInterface = lib.mkOption {
+      type        = lib.types.str;
+      description = "LAN-facing network interface name.";
+    };
 
     hasBattery = lib.mkOption {
       type        = lib.types.bool;

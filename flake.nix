@@ -132,6 +132,7 @@
         nixos = mkConfig "workstation" [{
           profile.role             = data.configurations.nixos.role;
           profile.hostname         = data.configurations.nixos.hostname;
+          profile.lanInterface     = "enp5s0";
           profile.hasBattery       = true;
           profile.hasBacklight     = true;
           profile.hasBluetooth     = true;
@@ -143,6 +144,7 @@
         nixos-server = mkConfig "server" [{
           profile.role             = data.configurations.nixos-server.role;
           profile.hostname         = data.configurations.nixos-server.hostname;
+          profile.lanInterface     = "enp5s0";
           profile.hasBattery       = true;
           profile.hasBacklight     = true;
           profile.hasBluetooth     = true;
@@ -155,6 +157,7 @@
         desktop = mkConfig "personal" [{
           profile.role             = data.configurations.desktop.role;
           profile.hostname         = data.configurations.desktop.hostname;
+          profile.lanInterface     = "enp6s0";
           profile.hasBattery       = false;
           profile.hasBacklight     = false;
           profile.hasBluetooth     = false;
