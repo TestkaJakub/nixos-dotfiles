@@ -32,19 +32,20 @@ in
       }];
     };
 
-    firewall = if isServer then {
+    firewall = {
       enable          = true;
-      allowedTCPPorts = [ 53 445 139 22 ];
-      allowedUDPPorts = [ 53 137 138 ];
+      allowedTCPPorts = if isServer then [ 53 445 139 22 ] else [];
+      allowedUDPPorts = if isServer then [ 53 137 138 ] else [];
 
-      interfaces = {
+      interfaces =  lib.mkIf isServer {
         tailscale0.allowedTCPPorts                     = [ 80 443 8080 8053 9000 ];
         ${config.profile.lanInterface}.allowedTCPPorts = [ 53 445 139 ];
       };
-    } else {
-      enable = true;
-      allowedTCPPorts = [];
-      allowedUDPPorts = [];
+
+      extraCommands = lib.mkIf isThinkpad ''
+        iptables -I INPUT -i docker0 -p tcp --dport 9000 -j ACCEPT
+        iptables -I INPUT -i br+ -p tcp --dport 9000 -j ACCEPT
+      '';
     };
 
     hosts = lib.mkIf isWorkstation {
