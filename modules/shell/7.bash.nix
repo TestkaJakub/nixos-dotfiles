@@ -9,7 +9,7 @@
 #
 # Screenshots  → desktop/screenshots.nix
 # nrs / nrsr   → meta/scripts.nix
-# Common aliases (nmc, nhc, vnc) live in shell/aliases.nix — do not redeclare.
+# Common aliases live in shell/aliases.nix — do not redeclare.
 let
   user = config.profile.username;
   kbm  = config.scripts.kbm;
@@ -88,8 +88,7 @@ in
       enable           = true;
       enableCompletion = false;
 
-      # Shell-specific alias — cd override lives in zoxide.nix.
-      # Common aliases (nmc, nhc, vnc) come from shell/aliases.nix.
+      # Shell-specific alias only — common aliases come from shell/aliases.nix.
       shellAliases = {};
 
       initExtra = ''

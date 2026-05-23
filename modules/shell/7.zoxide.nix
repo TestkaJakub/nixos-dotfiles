@@ -12,8 +12,10 @@ in
     programs.zoxide = {
       enable                = true;
       enableBashIntegration = true;
+      enableFishIntegration = true;
     };
 
     programs.bash.shellAliases.cd = "z";
+    programs.fish.shellAliases.cd = "z";
   };
 }

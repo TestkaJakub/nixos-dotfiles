@@ -8,8 +8,8 @@
 # programs.fish.enable must be set at system level so NixOS adds fish to
 # /etc/shells, which is required for it to be a valid login shell.
 #
-# Common aliases (nmc, nhc, vnc) live in shell/aliases.nix and are merged in
-# automatically — do not redeclare them here.
+# Common aliases live in shell/aliases.nix and are merged in automatically —
+# do not redeclare them here.
 let
   user = config.profile.username;
   p    = config.theme.palette;
@@ -22,9 +22,7 @@ in
       enable = true;
 
       # Shell-specific alias only — common aliases come from shell/aliases.nix.
-      shellAliases = {
-        cd = "z";
-      };
+      shellAliases = {};
 
       # ── Prompt ────────────────────────────────────────────────────────────
       # Mirrors the bash PS1: user@host date path >
@@ -53,11 +51,6 @@ in
         set -g fish_color_operator       '${p.shellOperator}'
         set -g fish_color_end            '${p.shellOperator}'
       '';
-    };
-
-    programs.zoxide = {
-      enable                = true;
-      enableFishIntegration = true;
     };
   };
 }
