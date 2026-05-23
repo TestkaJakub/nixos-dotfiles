@@ -132,14 +132,12 @@
       "docker-immich-db.service"
       "docker-immich-redis.service"
       "docker-immich-machine-learning.service"
-      "mnt-data.mount"
     ];
     requires = [
       "docker-network-traefik.service"
       "docker-immich-db.service"
       "docker-immich-redis.service"
       "docker-immich-machine-learning.service"
-      "mnt-data.mount"
     ];
     serviceConfig = {
       ExecStartPre = "${pkgs.coreutils}/bin/sleep 10";
