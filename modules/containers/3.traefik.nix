@@ -21,8 +21,7 @@ let
   stepCert = "/home/${user}/.step/certs/root_ca.crt";
 
   # dynamic.yml — server gets cctv and pihole routers, workstation doesn't
-  dynamicYml = if isServer then ''
-http:
+  dynamicYml = if isServer then ''http:
   routers:
     cctv:
       rule: "Host(`cctv.home`)"
@@ -73,8 +72,7 @@ http:
       loadBalancer:
         servers:
           - url: "http://172.17.0.1:8053"
-  '' else ''
-http:
+  '' else ''http:
   routers:
     ping:
       rule: "Host(`traefik.home`) && Path(`/ping`)"
@@ -98,8 +96,7 @@ http:
         permanent: true
   '';
 
-  traefikYml = ''
-api:
+  traefikYml = ''api:
   dashboard: true
   insecure: false
 
