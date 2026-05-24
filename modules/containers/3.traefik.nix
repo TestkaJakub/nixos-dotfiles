@@ -99,7 +99,7 @@ let
   '';
 
   traefikYml = ''
-    api:
+api:
       dashboard: true
       insecure: false
 
