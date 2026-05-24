@@ -22,120 +22,120 @@ let
 
   # dynamic.yml — server gets cctv and pihole routers, workstation doesn't
   dynamicYml = if isServer then ''
-    http:
-      routers:
-        cctv:
-          rule: "Host(`cctv.home`)"
-          entryPoints:
-            - websecure
-          tls:
-            certResolver: step
-          service: cctv
-        pihole:
-          rule: "Host(`pihole.home`)"
-          entryPoints:
-            - websecure
-          middlewares:
-            - pihole-slash
-          tls:
-            certResolver: step
-          service: pihole
-        ping:
-          rule: "Host(`traefik.home`) && Path(`/ping`)"
-          entryPoints:
-            - websecure
-          tls:
-            certResolver: step
-          service: ping@internal
-        http-catchall:
-          rule: "HostRegexp(`{host:.+}`)"
-          entryPoints:
-            - web
-          priority: 1
-          middlewares:
-            - https-redirect
-          service: noop@internal
+http:
+  routers:
+    cctv:
+      rule: "Host(`cctv.home`)"
+      entryPoints:
+        - websecure
+      tls:
+        certResolver: step
+      service: cctv
+    pihole:
+      rule: "Host(`pihole.home`)"
+      entryPoints:
+        - websecure
       middlewares:
-        pihole-slash:
-          redirectRegex:
-            regex: "^https://pihole\\.home/?$"
-            replacement: "https://pihole.home/admin/"
-        https-redirect:
-          redirectScheme:
-            scheme: https
-            permanent: true
-      services:
-        cctv:
-          loadBalancer:
-            servers:
-              - url: "http://192.168.0.253:80"
-        pihole:
-          loadBalancer:
-            servers:
-              - url: "http://172.17.0.1:8053"
+        - pihole-slash
+      tls:
+        certResolver: step
+      service: pihole
+    ping:
+      rule: "Host(`traefik.home`) && Path(`/ping`)"
+      entryPoints:
+        - websecure
+      tls:
+        certResolver: step
+      service: ping@internal
+    http-catchall:
+      rule: "HostRegexp(`{host:.+}`)"
+      entryPoints:
+        - web
+      priority: 1
+      middlewares:
+        - https-redirect
+      service: noop@internal
+  middlewares:
+    pihole-slash:
+      redirectRegex:
+        regex: "^https://pihole\\.home/?$"
+        replacement: "https://pihole.home/admin/"
+    https-redirect:
+      redirectScheme:
+        scheme: https
+        permanent: true
+  services:
+    cctv:
+      loadBalancer:
+        servers:
+          - url: "http://192.168.0.253:80"
+    pihole:
+      loadBalancer:
+        servers:
+          - url: "http://172.17.0.1:8053"
   '' else ''
-    http:
-      routers:
-        ping:
-          rule: "Host(`traefik.home`) && Path(`/ping`)"
-          entryPoints:
-            - websecure
-          tls:
-            certResolver: step
-          service: ping@internal
-        http-catchall:
-          rule: "HostRegexp(`{host:.+}`)"
-          entryPoints:
-            - web
-          priority: 1
-          middlewares:
-            - https-redirect
-          service: noop@internal
+http:
+  routers:
+    ping:
+      rule: "Host(`traefik.home`) && Path(`/ping`)"
+      entryPoints:
+        - websecure
+      tls:
+        certResolver: step
+      service: ping@internal
+    http-catchall:
+      rule: "HostRegexp(`{host:.+}`)"
+      entryPoints:
+        - web
+      priority: 1
       middlewares:
-        https-redirect:
-          redirectScheme:
-            scheme: https
-            permanent: true
+        - https-redirect
+      service: noop@internal
+  middlewares:
+    https-redirect:
+      redirectScheme:
+        scheme: https
+        permanent: true
   '';
 
   traefikYml = ''
 api:
-      dashboard: true
-      insecure: false
+  dashboard: true
+  insecure: false
 
-    ping: {}
+ping: {}
 
-    log:
-      level: INFO
+log:
+  level: INFO
 
-    entryPoints:
-      web:
-        address: ":80"
-      websecure:
-        address: ":443"
+entryPoints:
+  web:
+    address: ":80"
+  websecure:
+    address: ":443"
 
-    providers:
-      docker:
-        endpoint: "unix:///var/run/docker.sock"
-        exposedByDefault: false
-      file:
-        filename: "/traefik-dynamic.yml"
-        watch: true
+providers:
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+    exposedByDefault: false
+  file:
+    filename: "/traefik-dynamic.yml"
+    watch: true
 
-    certificatesResolvers:
-      step:
-        acme:
-          email: "jakub@home.local"
-          storage: "/acme/acme.json"
-          caServer: "https://host.docker.internal:9000/acme/acme/directory"
-          certificatesDuration: 24
-          httpChallenge:
-            entryPoint: web
+certificatesResolvers:
+  step:
+    acme:
+      email: "jakub@home.local"
+      storage: "/acme/acme.json"
+      caServer: "https://host.docker.internal:9000/acme/acme/directory"
+      certificatesDuration: 24
+      httpChallenge:
+        entryPoint: web
 
-    serversTransport:
-      rootCAs:
-        - "/certs/root_ca.crt"
-  '';
+serversTransport:
+  rootCAs:
+    - "/certs/root_ca.crt"
+'';
 in
 {
   # ── Docker network ───────────────────────────────────────────────────────────
