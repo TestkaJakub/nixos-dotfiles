@@ -156,11 +156,11 @@ in
   system.activationScripts.traefikConfig = {
     text = ''
       mkdir -p ${dataDir} ${acmeDir}
-      cat > ${dataDir}/traefik.yml << 'EOF'
-      ${traefikYml}
+cat > ${dataDir}/traefik.yml << 'EOF'
+${traefikYml}
 EOF
-      cat > ${dataDir}/dynamic.yml << 'EOF'
-      ${dynamicYml}
+cat > ${dataDir}/dynamic.yml << 'EOF'
+${dynamicYml}
 EOF
       chown ${user}:${user} ${dataDir}/traefik.yml ${dataDir}/dynamic.yml
     '';
