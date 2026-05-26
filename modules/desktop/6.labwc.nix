@@ -49,18 +49,19 @@ let
 in
 {
   # ── labwc package ──────────────────────────────────────────────────────────
-  environment.systemPackages = [
-    pkgs.labwc
-	(pkgs.runCommand "labwc-session" {} ''
-	  mkdir -p $out/share/wayland-sessions
-	  cat > $out/share/wayland-sessions/labwc.desktop <<EOF
-	  [Desktop Entry]
-	  Name=Labwc
-	  Comment=Stacking Wayland compositor
-	  Exec=labwc
-	  Type=Application
-	  EOF
-	'')
+  # in 6.labwc.nix, replace the writeTextDir approach with:
+  services.displayManager.sessionPackages = [
+    (pkgs.runCommand "labwc-session" {} ''
+      mkdir -p $out/share/wayland-sessions
+      cat > $out/share/wayland-sessions/labwc.desktop << 'EOF'
+      [Desktop Entry]
+      Name=Labwc
+      Comment=Stacking Wayland compositor
+      Exec=labwc
+      Type=Application
+      DesktopNames=Labwc
+      EOF
+    '')
   ];
 
   home-manager.users.${user} = {
