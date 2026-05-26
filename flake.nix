@@ -96,6 +96,7 @@
         config   = {
           allowUnfree                = true;
           android_sdk.accept_license = true;
+          nvidia.acceptLicense       = true;
         };
       };
 
