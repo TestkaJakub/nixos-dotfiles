@@ -49,19 +49,16 @@ let
 in
 {
   # ── labwc package ──────────────────────────────────────────────────────────
-  environment.systemPackages = [ pkgs.labwc ];
-
-  # ── Wayland session ────────────────────────────────────────────────────────
-  # Creates /usr/share/wayland-sessions/labwc.desktop so SDDM lists it.
-  # NixOS doesn't have a programs.labwc module yet, so we write the session
-  # entry manually.
-  environment.etc."wayland-sessions/labwc.desktop".text = ''
-    [Desktop Entry]
-    Name=Labwc
-    Comment=Stacking Wayland compositor
-    Exec=labwc
-    Type=Application
-  '';
+  environment.systemPackages = [ 
+    pkgs.labwc
+    (pkgs.writeTextDir "share/wayland-sessions/labwc.desktop" ''
+      [Desktop Entry]
+      Name=Labwc
+      Comment=Stacking Wayland compositor
+      Exec=labwc
+      Type=Application
+    '')
+  ];
 
   home-manager.users.${user} = {
 
