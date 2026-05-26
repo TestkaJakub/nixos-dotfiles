@@ -13,5 +13,5 @@
     # GTX 660 (GK106) needs the 470.xx legacy driver
   };
 
-  environment.systemPackages = [ pkgs.nvtopPackages.nvidia ];
+  environment.systemPackages = [ pkgs.nvtopPackages.full ];
 }
