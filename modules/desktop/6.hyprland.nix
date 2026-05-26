@@ -1,4 +1,4 @@
-{ pkgs, config, ... }:
+{ pkgs, config, inputs, ... }:
 
 # ── Hyprland — backup compositor ───────────────────────────────────────────────
 let
@@ -20,6 +20,19 @@ let
   terminal    = "${meta.terminalPackage}/bin/${meta.terminal}";
   fileManager = "${meta.fileManagerPackage}/bin/${meta.fileManager}";
   fuzzel      = "${meta.fuzzel}/bin/fuzzel";
+
+  isPersonal = config.profile.isRole [ "personal" ];
+    nvidiaPatch = if isPersonal then ''
+      # ── Nvidia (GTX 660, legacy 470 driver) ──────────────────────────────────
+      env = LIBVA_DRIVER_NAME,nvidia
+      env = __GLX_VENDOR_LIBRARY_NAME,nvidia
+      env = NVD_BACKEND,direct
+      env = GBM_BACKEND,nvidia-drm
+      env = __NV_PRIME_RENDER_OFFLOAD,1
+      cursor {
+        no_hardware_cursors = true
+      }
+    '' else "";
 in
 {
   programs.hyprland.enable = true;
@@ -32,6 +45,7 @@ in
     };
 
     xdg.configFile."hypr/hyprland.conf".text = ''
+      ${nvidiaPatch}
       # ── Monitors ────────────────────────────────────────────────────────────
       monitor = ,preferred,auto,1
 

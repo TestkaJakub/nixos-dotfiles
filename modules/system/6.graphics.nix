@@ -1,16 +1,14 @@
-{ pkgs, ... }:
-
-# ── Graphics ───────────────────────────────────────────────────────────────────
-# Single authoritative graphics config for AMD hardware.
-# gaming/steam.nix adds its own extraPackages on top via mkMerge semantics.
+{ pkgs, config, ... }:
+let
+  isPersonal = config.profile.isRole [ "personal" ];
+in
 {
   hardware.graphics = {
     enable      = true;
     enable32Bit = true;
-    extraPackages = with pkgs; [
+    extraPackages = with pkgs; (if isPersonal then [] else [
       mesa
-      #amdvlk
-      libdrm  # low-level DRM access
-    ];
+      libdrm
+    ]);
   };
 }
