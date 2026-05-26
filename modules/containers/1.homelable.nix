@@ -14,7 +14,7 @@ in
 {
   systemd.tmpfiles.rules = [
     "d /home/${user}/docker-data/homelable 0755 ${user} ${user} -"
-    "d /opt/homelable                       0755 ${user} ${user} -"
+    "d /opt/homelable                       0755 root root -"
   ];
 
   # ── Build service ────────────────────────────────────────────────────────────
@@ -34,8 +34,6 @@ in
       User            = "root";
       ExecStart = pkgs.writeShellScript "build-homelable" ''
         set -e
-
-        ${pkgs.git}/bin/git config --global --add safe.directory /opt/homelable
 
         if ! ${pkgs.docker}/bin/docker image inspect homelable-backend:local >/dev/null 2>&1 || \
            ! ${pkgs.docker}/bin/docker image inspect homelable-frontend:local >/dev/null 2>&1; then
