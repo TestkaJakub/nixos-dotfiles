@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, ... }:
 
 # ── Boot & locale ──────────────────────────────────────────────────────────────
 # Reads: config.locale.{consoleKeyMap, keyboardLayout, timezone,
@@ -13,7 +13,7 @@
 
   console.keyMap = config.locale.consoleKeyMap;
 
-  services.xserver.xkb = lib.mkIf (config.profile.isRole ["workstation" "personal"]) {
+  services.xserver.xkb = {
     layout  = config.locale.keyboardLayout;
     variant = "";
   };
