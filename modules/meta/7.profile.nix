@@ -67,6 +67,13 @@
       description = "Returns true if the current role matches any role in the given list.";
     };
 
+	# Peripherals
+	hasTablet = lib.mkOption {
+	  type        = lib.types.bool;
+	  default     = false;
+	  description = "Enables OpenTabletDriver and uinput for graphics tablet support.";
+	};
+
     # ── Hardware capabilities ──────────────────────────────────────────────────
     # Set per nixosConfiguration in flake.nix.
     # Defaults to false so missing overrides fail safe.
@@ -91,19 +98,6 @@
       type        = lib.types.bool;
       default     = false;
       description = "Enables blueman and Bluetooth widget in Waybar.";
-    };
-
-    # ── Display ────────────────────────────────────────────────────────────────
-    primaryMonitor = lib.mkOption {
-      type        = lib.types.str;
-      default     = "eDP-1";
-      description = "Primary monitor identifier used in compositor and Hyprland configs.";
-    };
-
-    secondaryMonitor = lib.mkOption {
-      type        = lib.types.str;
-      default     = "HDMI-A-1";
-      description = "Secondary monitor identifier.";
     };
   };
 

@@ -92,7 +92,7 @@ in
 
         FLAKE="$HOME/nixos-dotfiles"
         CURRENT_HOSTNAME=$(cat /proc/sys/kernel/hostname | tr -d '[:space:]')
-        CURRENT_DMI=$(cat /sys/devices/virtual/dmi/id/product_name | tr -d '[:space:]')
+        CURRENT_DMI=$(cat /sys/devices/virtual/dmi/id/board_name | tr -d '[:space:]')
 
         # ── Known configurations (generated from roles.nix) ─────────────────
         declare -A EXPECTED_HOSTNAME=(
