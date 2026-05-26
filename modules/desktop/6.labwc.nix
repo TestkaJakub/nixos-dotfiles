@@ -49,15 +49,18 @@ let
 in
 {
   # ── labwc package ──────────────────────────────────────────────────────────
-  environment.systemPackages = [ 
+  environment.systemPackages = [
     pkgs.labwc
-    (pkgs.writeTextDir "share/wayland-sessions/labwc.desktop" ''
-      [Desktop Entry]
-      Name=Labwc
-      Comment=Stacking Wayland compositor
-      Exec=labwc
-      Type=Application
-    '')
+	(pkgs.runCommand "labwc-session" {} ''
+	  mkdir -p $out/share/wayland-sessions
+	  cat > $out/share/wayland-sessions/labwc.desktop <<EOF
+	  [Desktop Entry]
+	  Name=Labwc
+	  Comment=Stacking Wayland compositor
+	  Exec=labwc
+	  Type=Application
+	  EOF
+	'')
   ];
 
   home-manager.users.${user} = {
