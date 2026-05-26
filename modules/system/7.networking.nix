@@ -79,9 +79,14 @@ in
     fallbackDns = lib.mkIf isNotServer [ "1.1.1.1" ];
     extraConfig =
       if isServer then "DNSStubListener=no"
-      else ''
-        DNS=${if isWorkstation then "127.0.0.1" else "192.168.0.252"}
+      else if isWorkstation then ''
+        DNS=127.0.0.1
         Domains=~.
+      ''
+      else ''
+        DNS=192.168.0.252
+        Domains=~.
+        MulticastDNS=no
       '';
   };
 
