@@ -42,7 +42,7 @@ in
       home.stateVersion = config.profile.stateVersion;
 
       # ── Secret sync — server only ──────────────────────────────────────────
-      # home.activation = lib.mkIf isServer {
+      home.activation = lib.mkIf isServer {
       #  syncAuthorizedKeys = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       #    secrets="$HOME/secrets/ssh-authorized-keys"
       #    dest="$HOME/.ssh/authorized_keys"
