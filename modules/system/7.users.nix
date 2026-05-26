@@ -8,6 +8,9 @@ let
 in
 {
   users.users.${user} = {
+  	openssh.authorizedKeys.keys = lib.mkIf isServer [
+  		"ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL1JpnJBPj+kVzwsUdDEwu0vVnCj6R/+7BUc8iaWLzs8 desktop"	
+  	];
     isNormalUser = true;
     group        = user;
     extraGroups  = [ "wheel" "docker" ]
@@ -39,18 +42,18 @@ in
       home.stateVersion = config.profile.stateVersion;
 
       # ── Secret sync — server only ──────────────────────────────────────────
-      home.activation = lib.mkIf isServer {
-        syncAuthorizedKeys = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-          secrets="$HOME/secrets/ssh-authorized-keys"
-          dest="$HOME/.ssh/authorized_keys"
-          mkdir -p "$HOME/.ssh"
-          chmod 700 "$HOME/.ssh"
-          if [ -f "$secrets" ]; then
-            install -m 600 "$secrets" "$dest"
-          else
-            echo "WARNING: $secrets not found — authorized_keys not updated"
-          fi
-        '';
+      # home.activation = lib.mkIf isServer {
+      #  syncAuthorizedKeys = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      #    secrets="$HOME/secrets/ssh-authorized-keys"
+      #    dest="$HOME/.ssh/authorized_keys"
+      #    mkdir -p "$HOME/.ssh"
+      #    chmod 700 "$HOME/.ssh"
+      #    if [ -f "$secrets" ]; then
+      #      install -m 600 "$secrets" "$dest"
+      #    else
+      #      echo "WARNING: $secrets not found — authorized_keys not updated"
+      #    fi
+      #  '';
 
         syncGithubKey = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
           key="$HOME/secrets/github-ssh-key"
