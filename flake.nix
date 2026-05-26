@@ -10,11 +10,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    mangowc = {
-      url                    = "github:mangowm/mango/42c02e3dc20eb09c0191b027e387c0268f8e0fb5";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     wrappers.url = "github:lassulus/wrappers";
   };
 
@@ -115,7 +110,6 @@
           modules =
             (collectModules ./modules moduleBlacklist role)
             ++ [ inputs.home-manager.nixosModules.home-manager ]
-            ++ [ inputs.mangowc.nixosModules.mango ]
             ++ extraModules;
           specialArgs = {
             inherit inputs;
