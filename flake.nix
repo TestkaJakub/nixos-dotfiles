@@ -136,8 +136,6 @@
           profile.hasBattery       = true;
           profile.hasBacklight     = true;
           profile.hasBluetooth     = true;
-          profile.primaryMonitor   = "eDP-1";
-          profile.secondaryMonitor = "HDMI-A-1";
         }];
 
         # ── ThinkPad — server profile ───────────────────────────────────────
@@ -148,8 +146,6 @@
           profile.hasBattery       = true;
           profile.hasBacklight     = true;
           profile.hasBluetooth     = true;
-          profile.primaryMonitor   = "eDP-1";
-          profile.secondaryMonitor = "HDMI-A-1";
         }];
 
         # ── Gigabyte desktop — always personal ──────────────────────────────
@@ -161,8 +157,6 @@
           profile.hasBattery       = false;
           profile.hasBacklight     = false;
           profile.hasBluetooth     = false;
-          profile.primaryMonitor   = "DP-1";
-          profile.secondaryMonitor = "HDMI-A-1";
         }];
 
       };
