@@ -51,7 +51,9 @@ in
   # ── labwc package ──────────────────────────────────────────────────────────
   # in 6.labwc.nix, replace the writeTextDir approach with:
   services.displayManager.sessionPackages = [
-    (pkgs.runCommand "labwc-session" {} ''
+    (pkgs.runCommand "labwc-session" {
+      passthru.providedSessions = [ "labwc" ];
+    } ''
       mkdir -p $out/share/wayland-sessions
       cat > $out/share/wayland-sessions/labwc.desktop << 'EOF'
       [Desktop Entry]
