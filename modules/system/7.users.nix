@@ -15,7 +15,7 @@ in
     group        = user;
     extraGroups  = [ "wheel" "docker" ]
       ++ lib.optionals isNotServer [
-        "dialout" "libvirtd" "adbusers" "scanner" "lp" "video" "render"
+        "dialout" "libvirtd" "adbusers" "scanner" "lp" "video" "render" "seat"
       ];
     shell = if isServer then pkgs.bash else pkgs.fish;
   };
