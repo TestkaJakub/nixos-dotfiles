@@ -103,7 +103,7 @@ in
     # Qt platform theme — let KDE handle it
     qt = {
       enable        = true;
-      platformTheme = { name = "kde"; };
+      platformTheme = { name = lib.mkForce "kde"; };
     };
 
     # Autostart apps that KDE doesn't manage itself
