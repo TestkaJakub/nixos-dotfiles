@@ -215,7 +215,7 @@ in
       <?xml version="1.0"?>
       <labwc_outputs>
         <output>
-          <name>*</name>
+          <name>HDMI-A-1</name>
           <mode>
             <width>1920</width>
             <height>1080</height>
