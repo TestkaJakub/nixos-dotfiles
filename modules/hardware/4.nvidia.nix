@@ -15,4 +15,6 @@
   };
 
   environment.systemPackages = [ pkgs.nvtopPackages.full ];
+
+  boot.kernelParams = [ "nvidia-drm.modset=1" ]
 }

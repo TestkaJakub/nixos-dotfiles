@@ -209,5 +209,21 @@ in
       XCURSOR_SIZE=24
       XKB_DEFAULT_LAYOUT=${loc.keyboardLayout}
     '';
+
+    # ── outputs — monitor resolution ──────────────────────────────────────
+    xdg.configFile."labwc/outputs.xml".text = ''
+      <?xml version="1.0"?>
+      <labwc_outputs>
+        <output>
+          <name>*</name>
+          <mode>
+            <width>1920</width>
+            <height>1080</height>
+            <rate>60</rate>
+          </mode>
+          <scale>1.0</scale>
+        </output>
+      </labwc_outputs>
+    '';
   };
 }

@@ -49,8 +49,14 @@ in
   };
 
   environment.sessionVariables = {
-    NIXOS_OZONE_WL = "1";
-    MOZ_ENABLE_WAYLAND = "1";
-    OZONE_PLATFORM = "wayland";
+    NIXOS_OZONE_WL            = "1";
+    MOZ_ENABLE_WAYLAND        = "1";
+    OZONE_PLATFORM            = "wayland";
+  } // lib.optionalAttrs (config.profile.isRole [ "personal" ]) {
+    LIBVA_DRIVER_NAME         = "nvidia";
+    __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+    GBM_BACKEND               = "nvidia-drm";
+    __NV_PRIME_RENDER_OFFLOAD = "1";
+    NVD_BACKEND               = "direct";
   };
 }
