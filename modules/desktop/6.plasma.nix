@@ -100,12 +100,6 @@ in
       };
     };
 
-    # Qt platform theme — let KDE handle it
-    qt = {
-      enable        = true;
-      platformTheme = { name = lib.mkForce "kde"; };
-    };
-
     # Autostart apps that KDE doesn't manage itself
     xdg.configFile = {
       # EasyEffects (audio effects) — already has its own systemd unit in
