@@ -1,67 +1,16 @@
 { pkgs, lib, config, ... }:
 
 # ── Display & session ──────────────────────────────────────────────────────────
-let
-  t = config.theme;
-
-  sddm-theme = pkgs.sddm-astronaut.override {
-    themeConfig = {
-      AccentColor          = t.palette.primary;
-      BackgroundColor      = t.palette.secondary;
-      HoverColor           = t.functions.lighten t.palette.secondary 0.05;
-      FontColor            = t.functions.textcolor t.palette.secondary;
-      PlaceholderColor     = t.functions.darken t.palette.primary 0.2;
-      FormPosition         = "center";
-      HideCompletePassword = false;
-      Background           = config.meta.defaults.wallpaper;
-    };
-  };
-in
+# KDE Plasma 6 takes over most of what this file used to configure.
+# The plasma.nix module sets up SDDM and the Wayland session.
+#
+# What remains here: dconf enable (for GTK apps), and the Nvidia env vars
+# for the personal/desktop role (GTX 660 legacy 470 driver).
+#
+# The sddm-astronaut custom theme, xdg-desktop-portal-wlr, and the
+# systemd override for the wlr portal have been removed — KDE ships its
+# own portal (xdg-desktop-portal-kde) and its own login theme.
 {
-  services = {
-    displayManager = {
-      enable = true;
-      sddm = {
-        enable        = true;
-        wayland.enable = true;
-        package       = pkgs.kdePackages.sddm;
-        theme         = "sddm-astronaut-theme";
-        extraPackages = [
-          sddm-theme
-          pkgs.kdePackages.qtmultimedia
-          pkgs.kdePackages.qtsvg
-        ];
-      };
-    };
-    dbus.packages = [ pkgs.dconf ];
-  };
-
-  programs.dconf.enable = true;
-
-  environment.systemPackages = [ sddm-theme ];
-
-  xdg.portal = {
-    enable       = true;
-    extraPortals = with pkgs; [
-      xdg-desktop-portal-wlr
-      xdg-desktop-portal-gtk
-    ];
-  };
-
-  systemd.user.services.xdg-desktop-portal-wlr = {
-    overrideStrategy                = "asDropin";
-    unitConfig.ConditionEnvironment = lib.mkForce "";
-  };
-
-  environment.sessionVariables = {
-    NIXOS_OZONE_WL            = "1";
-    MOZ_ENABLE_WAYLAND        = "1";
-    OZONE_PLATFORM            = "wayland";
-  } // lib.optionalAttrs (config.profile.isRole [ "personal" ]) {
-    LIBVA_DRIVER_NAME         = "nvidia";
-    __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-    GBM_BACKEND               = "nvidia-drm";
-    __NV_PRIME_RENDER_OFFLOAD = "1";
-    NVD_BACKEND               = "direct";
-  };
+  services.dbus.packages = [ pkgs.dconf ];
+  programs.dconf.enable  = true;
 }
