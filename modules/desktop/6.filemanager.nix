@@ -23,19 +23,6 @@ in
         name    = "Adwaita-dark";
         package = pkgs.gnome-themes-extra;
       };
-      gtk3.extraCss = ''
-        * {
-          --accent-bg-color: ${accent};
-          --accent-color: ${accent};
-          --accent-fg-color: ${bg};
-        }
-        .view:selected,
-        row:selected,
-        .nemo-window .nemo-places-sidebar row:selected {
-          background-color: ${accent};
-          color: ${bg};
-        }
-      '';
     };
 
     qt = {
