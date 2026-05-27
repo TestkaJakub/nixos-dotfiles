@@ -22,7 +22,7 @@ in
     enable = true;
     sddm = {
       enable        = true;
-      wayland.enable = true;
+      wayland.enable = lib.mkDefault (!config.profile.isRole [ "personal" ]);
       package       = pkgs.kdePackages.sddm;
       theme         = "sddm-astronaut-theme";
       extraPackages = [
