@@ -46,26 +46,30 @@ let
     ${wlPaste} --type image --watch ${cliphist} store &
     ${config.scripts.startupBrowser}/bin/startup-browser &
   '';
+
+  labwcWrapper = pkgs.writeShellScriptBin "labwc-session" ''
+    unset WAYLAND_DISPLAY
+    unset DISPLAY
+    exec ${pkgs.labwc}/bin/labwc "$@"
+  '';
 in
 {
-  # ── labwc package ──────────────────────────────────────────────────────────
-  # in 6.labwc.nix, replace the writeTextDir approach with:
   services.displayManager.sessionPackages = [
-    (pkgs.runCommand "labwc-session" {
+    (pkgs.runCommand "labwc-session-pkg" {
       passthru.providedSessions = [ "labwc" ];
     } ''
       mkdir -p $out/share/wayland-sessions
-      cat > $out/share/wayland-sessions/labwc.desktop << 'EOF'
+      cat > $out/share/wayland-sessions/labwc.desktop << EOF
       [Desktop Entry]
       Name=Labwc
       Comment=Stacking Wayland compositor
-      Exec=env -u WAYLAND_DISPLAY -u DISPLAY ${pkgs.labwc}/bin/labwc
+      Exec=${labwcWrapper}/bin/labwc-session
       Type=Application
       DesktopNames=Labwc
       EOF
     '')
   ];
-
+  
   home-manager.users.${user} = {
 
     # ── rc.xml — main labwc config ─────────────────────────────────────────
