@@ -132,7 +132,7 @@ in
           <!-- window management -->
           <keybind key="W-e"><action name="Close"/></keybind>
           <keybind key="W-x"><action name="ToggleMaximize"/></keybind>
-          <keybind key="W-v"><action name="Fullscreen"><value>toggle</value></action></keybind>
+          <keybind key="W-v"><action name="ToggleFullscreen"/></keybind>
           <keybind key="W-c"><action name="ToggleAlwaysOnTop"/></keybind>
 
           <!-- focus -->
