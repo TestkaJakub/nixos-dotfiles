@@ -32,7 +32,7 @@ in
           pkgs.kdePackages.qtsvg
         ];
       };
-    }:
+    };
     dbus.packages = [ pkgs.dconf ];
   };
 
