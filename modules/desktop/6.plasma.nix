@@ -91,13 +91,10 @@ in
       x11.enable = true;
     };
 
-    # GTK dark theme so non-KDE apps match
-    gtk = {
-      enable = true;
-      theme = {
-        name    = "Adwaita-dark";
-        package = pkgs.gnome-themes-extra;
-      };
+    # Qt platform theme — let KDE handle it
+    qt = {
+      enable        = true;
+      platformTheme = { name = lib.mkForce "kde"; };
     };
 
     # Autostart apps that KDE doesn't manage itself
