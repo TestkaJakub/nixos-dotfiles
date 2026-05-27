@@ -59,7 +59,7 @@ in
       [Desktop Entry]
       Name=Labwc
       Comment=Stacking Wayland compositor
-      Exec=${pkgs.labwc}/bin/labwc
+      Exec=env -u WAYLAND_DISPLAY -u DISPLAY ${pkgs.labwc}/bin/labwc
       Type=Application
       DesktopNames=Labwc
       EOF
