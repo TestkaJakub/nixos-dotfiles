@@ -30,19 +30,6 @@ let
   user = config.profile.username;
 in
 {
-  # ── System-level Plasma enable ─────────────────────────────────────────────
-  services.desktopManager.plasma6.enable = true;
-
-  # ── Display manager ────────────────────────────────────────────────────────
-  # SDDM is the recommended DM for Plasma; wayland session is default.
-  services.displayManager = {
-    sddm = {
-      enable         = true;
-      wayland.enable = true;
-      package        = pkgs.kdePackages.sddm;
-    };
-    defaultSession = "plasma";
-  };
 
   # ── Wayland session variables ───────────────────────────────────────────────
   # KWin sets most of these itself; keep Ozone for Electron/Chromium apps.
