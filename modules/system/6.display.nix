@@ -18,20 +18,25 @@ let
   };
 in
 {
-  services.displayManager = {
-    enable = true;
-    sddm = {
-      enable        = true;
-      wayland.enable = true;
-      package       = pkgs.kdePackages.sddm;
-      theme         = "sddm-astronaut-theme";
-      extraPackages = [
-        sddm-theme
-        pkgs.kdePackages.qtmultimedia
-        pkgs.kdePackages.qtsvg
-      ];
-    };
+  services = {
+    displayManager = {
+      enable = true;
+      sddm = {
+        enable        = true;
+        wayland.enable = true;
+        package       = pkgs.kdePackages.sddm;
+        theme         = "sddm-astronaut-theme";
+        extraPackages = [
+          sddm-theme
+          pkgs.kdePackages.qtmultimedia
+          pkgs.kdePackages.qtsvg
+        ];
+      };
+    }:
+    dbus.packages = [ pkgs.dconf ];
   };
+
+  programs.dconf.enable = true;
 
   environment.systemPackages = [ sddm-theme ];
 
