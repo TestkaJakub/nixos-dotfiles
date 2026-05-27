@@ -16,5 +16,5 @@
 
   environment.systemPackages = [ pkgs.nvtopPackages.full ];
 
-  boot.kernelParams = [ "nvidia-drm.modeset=1" ]
+  boot.kernelParams = [ "nvidia-drm.modeset=1" ];
 }
