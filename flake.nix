@@ -25,6 +25,7 @@
       # server      = 1
       # workstation = 2
       # personal    = 4
+      # testing     = 8
       #
       # File prefix encodes which roles load the module:
       #   1.foo.nix   → server only
@@ -34,11 +35,13 @@
       #   5.foo.nix   → server + personal
       #   6.foo.nix   → workstation + personal
       #   7.foo.nix   → all roles (same as no prefix)
+      #   8.foo.nix   → testing
       #   foo.nix     → all roles (no prefix = 7, emits a warning)
       roleBits = {
         server      = 1;
         workstation = 2;
         personal    = 4;
+        testing    = 8;
       };
 
       # ── Recursive module walker ─────────────────────────────────────────────
@@ -148,6 +151,15 @@
         desktop = mkConfig "personal" [{
           profile.role             = data.configurations.desktop.role;
           profile.hostname         = data.configurations.desktop.hostname;
+          profile.lanInterface     = "enp6s0";
+          profile.hasBattery       = false;
+          profile.hasBacklight     = false;
+          profile.hasBluetooth     = false;
+        }];
+
+        testing = mkConfig "testing" [{
+          profile.role             = data.configurations.testing.role;
+          profile.hostname         = data.configurations.testing.hostname;
           profile.lanInterface     = "enp6s0";
           profile.hasBattery       = false;
           profile.hasBacklight     = false;

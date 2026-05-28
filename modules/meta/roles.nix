@@ -10,7 +10,7 @@
 # To add a new machine: add an entry here and a corresponding
 # nixosConfiguration in flake.nix.
 {
-  roles = [ "server" "workstation" "personal" ];
+  roles = [ "server" "workstation" "personal" "test"];
 
   configurations = {
     nixos = {
@@ -26,6 +26,11 @@
     desktop = {
       role     = "personal";
       hostname = "desktop";
+      dmi      = "Z77X-UD3H";
+    };
+    testing = {
+      role     = "test";
+      hostname = "test";
       dmi      = "Z77X-UD3H";
     };
   };
