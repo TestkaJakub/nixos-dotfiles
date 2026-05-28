@@ -7,7 +7,7 @@
   environment.systemPackages = [
     (pkgs.vivaldi.override {
       commandLineArgs = [
-        "--ozone-platform=auto"
+        "--ozone-platform-hint=auto"
         "--enable-features=WaylandWindowDecorations,UseOzonePlatform"
       ];
     })
