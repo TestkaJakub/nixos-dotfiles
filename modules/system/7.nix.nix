@@ -36,5 +36,5 @@ in
   };
 
   services.dbus.packages = lib.optionals (!isServer) [ pkgs.dconf ];
-  programs.dconf.enable  = lib.mkIf true;
+  programs.dconf.enable  = lib.mkIf (!isServer) true;
 }
