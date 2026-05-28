@@ -29,9 +29,12 @@ in
   environment = {
     systemPackages   = lib.optionals (!isServer) [ pkgs.nvtopPackages.full ];
     sessionVariables = lib.mkIf isDesktop {
-      NVD_BACKEND       = "direct";
-      LIBVA_DRIVER_NAME = "nvidia";
-      NIXOS_OZONE_WL       = "1";
+      NVD_BACKEND              = "direct";
+      LIBVA_DRIVER_NAME        = "nvidia";
+      NIXOS_OZONE_WL           = "1";
+      # These two are needed so KWin uses the NVIDIA GBM backend
+      GBM_BACKEND              = "nvidia-drm";
+      __GLX_VENDOR_LIBRARY_NAME = "nvidia";
     };
   };
 

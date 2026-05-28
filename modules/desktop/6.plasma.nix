@@ -1,12 +1,16 @@
-{ pkgs, ... }:
-
+{ pkgs, lib, config, ... }:
+let
+  isDesktop = config.profile.isRole [ "personal" ];
+in
 {
   services.seatd.enable = true;
   services.xserver.enable = true;
   services = {
     desktopManager.plasma6.enable = true;
     displayManager.sddm.enable = true;
-    displayManager.sddm.wayland.enable = true;
+    # Keep SDDM on X11 — it can still launch Wayland sessions from the menu
+    # and is far more stable with NVIDIA 470 than SDDM-Wayland
+    displayManager.sddm.wayland.enable = lib.mkDefault false;
   };
 
   environment = { 
@@ -31,8 +35,5 @@
     	vlc # Media player
     	xclip
  	 ];
- 	 variables = {
- 	 	KWIN_DRM_DEVICES = "/dev/dri/card1";
- 	 };
   };
 }
