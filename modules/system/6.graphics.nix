@@ -1,12 +1,12 @@
 { pkgs, config, ... }:
 let
-  isPersonal = config.profile.isRole [ "personal" ];
+  isServer = config.profile.isRole [ "server" ];
 in
 {
   hardware.graphics = {
     enable      = true;
     enable32Bit = true;
-    extraPackages = with pkgs; (if isPersonal then [] else [
+    extraPackages = with pkgs; (if isServer then [] else [
       mesa
       libdrm
     ]);
