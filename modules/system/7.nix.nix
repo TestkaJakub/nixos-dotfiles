@@ -35,4 +35,7 @@ in
     enable = true;
     binfmt = true;
   };
+
+  services.dbus.packages = lib.mkIf isNotServer [ pkgs.dconf ];
+  programs.dconf.enable  = lib.mkIf true;
 }
