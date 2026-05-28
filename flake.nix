@@ -157,7 +157,7 @@
           profile.hasBluetooth     = false;
         }];
 
-        test = mkConfig "testin" [{
+        test = mkConfig "testing" [{
           profile.role             = data.configurations.test.role;
           profile.hostname         = data.configurations.test.hostname;
           profile.lanInterface     = "enp6s0";
