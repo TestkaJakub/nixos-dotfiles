@@ -36,7 +36,7 @@ in
   home-manager = {
     useGlobalPkgs       = true;
     useUserPackages     = true;
-    backupFileExtension = "bak";
+    backupFileExtension = "bak-$(date +%Y%m%d%H%M%S)";
 
     users.${user} = { lib, ... }: {
       home.stateVersion = config.profile.stateVersion;
