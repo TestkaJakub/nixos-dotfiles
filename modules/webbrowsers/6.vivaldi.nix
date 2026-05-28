@@ -7,6 +7,7 @@
   environment.systemPackages = [
     (pkgs.vivaldi.override {
       commandLineArgs = [
+        "--ozone-platform-hint=auto"
         "--gtk-version=4"
       ];
     })
