@@ -76,8 +76,13 @@ in
 
       cpc = pkgs.writeShellScriptBin "cpc" ''
         echo "Copying .nix configs to clipboard..."
-        find ~/nixos-dotfiles -type f -name '*.nix' \
-          -exec echo "===== {} =====" \; -exec cat {} \; | ${pkgs.wl-clipboard}/bin/wl-copy
+        if [ -n "$WAYLAND_DISPLAY" ]; then
+          find ~/nixos-dotfiles -type f -name '*.nix' \
+            -exec echo "===== {} =====" \; -exec cat {} \; | ${pkgs.wl-clipboard}/bin/wl-copy
+        else
+          find ~/nixos-dotfiles -type f -name '*.nix' \
+            -exec echo "===== {} =====" \; -exec cat {} \; | ${pkgs.xclip}/bin/xclip -selection clipboard
+        fi
         ${pkgs.libnotify}/bin/notify-send "✅ Config copied to clipboard"
       '';
 
