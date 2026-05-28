@@ -33,7 +33,6 @@ in
       hyprpaper
       gammastep
       libnotify
-      xclip
       kbm
       cpc
       cpcs

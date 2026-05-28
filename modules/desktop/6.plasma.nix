@@ -29,9 +29,10 @@
     	wayland-utils # Wayland diagnostic tools
     	wl-clipboard # Wayland copy/paste support
     	vlc # Media player
+    	xclip
  	 ];
  	 variables = {
- 	 	KWIN_DRM_DEVICES = "dev/dri/card1";
+ 	 	KWIN_DRM_DEVICES = "/dev/dri/card1";
  	 };
   };
 }
