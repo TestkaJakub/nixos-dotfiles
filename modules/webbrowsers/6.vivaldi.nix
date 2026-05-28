@@ -9,6 +9,7 @@
       commandLineArgs = [
         "--ozone-platform-hint=auto"
         "--enable-features=WaylandWindowDecorations,UseOzonePlatform"
+        "--gtk-version=4"
       ];
     })
   ];
