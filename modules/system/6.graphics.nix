@@ -31,6 +31,7 @@ in
     sessionVariables = lib.mkIf isDesktop {
       NVD_BACKEND       = "direct";
       LIBVA_DRIVER_NAME = "nvidia";
+      NIXOS_OZONE       = "1";
     };
   };
 
