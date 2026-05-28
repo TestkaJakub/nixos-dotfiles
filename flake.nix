@@ -157,9 +157,9 @@
           profile.hasBluetooth     = false;
         }];
 
-        testing = mkConfig "test" [{
-          profile.role             = data.configurations.testing.role;
-          profile.hostname         = data.configurations.testing.hostname;
+        test = mkConfig "testin" [{
+          profile.role             = data.configurations.test.role;
+          profile.hostname         = data.configurations.test.hostname;
           profile.lanInterface     = "enp6s0";
           profile.hasBattery       = false;
           profile.hasBacklight     = false;
