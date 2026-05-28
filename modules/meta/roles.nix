@@ -30,7 +30,7 @@
     };
     testing = {
       role     = "test";
-      hostname = "test";
+      hostname = "testing";
       dmi      = "Z77X-UD3H";
     };
   };

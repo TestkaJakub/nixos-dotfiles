@@ -41,7 +41,7 @@
         server      = 1;
         workstation = 2;
         personal    = 4;
-        test    = 8;
+        test        = 8;
       };
 
       # ── Recursive module walker ─────────────────────────────────────────────
