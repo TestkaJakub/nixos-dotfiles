@@ -10,7 +10,7 @@ in
     displayManager.sddm.enable = true;
     # Keep SDDM on X11 — it can still launch Wayland sessions from the menu
     # and is far more stable with NVIDIA 470 than SDDM-Wayland
-    displayManager.sddm.wayland.enable = lib.mkDefault false;
+    displayManager.sddm.wayland.enable = lib.mkForce false;
   };
 
   environment = { 
