@@ -25,13 +25,13 @@ in
 {
   home-manager.users.${user} = {
     home.packages = with pkgs; [
-      wl-clipboard
-      grim
-      slurp
+      xclip          # X11 clipboard (replaces wl-clipboard)
       pamixer
-      wayvnc
-      hyprpaper
-      gammastep
+      # grim, slurp removed — Wayland screenshot tools (replaced in screenshots.nix)
+      # wl-clipboard removed — Wayland only
+      # wayvnc removed — Wayland VNC (use x11vnc separately if needed)
+      # hyprpaper removed — Wayland wallpaper (KDE handles wallpaper on X11)
+      gammastep      # Works on X11
       libnotify
       kbm
       cpc

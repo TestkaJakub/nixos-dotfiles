@@ -74,21 +74,28 @@ in
         echo "$val" > "$path"
       '';
 
+      dpt = pkgs.writeShellScriptBin "dpt" ''
+        flag="/run/user/$(id -u)/display-off"
+        if [ -f "$flag" ]; then
+          rm -f "$flag"
+          ${pkgs.xorg.xset}/bin/xset dpms force on
+        else
+          touch "$flag"
+          ${pkgs.xorg.xset}/bin/xset dpms force off
+        fi
+      '';
+
       cpc = pkgs.writeShellScriptBin "cpc" ''
         echo "Copying .nix configs to clipboard..."
-        if [ -n "$WAYLAND_DISPLAY" ]; then
-          find ~/nixos-dotfiles -type f -name '*.nix' \
-            -exec echo "===== {} =====" \; -exec cat {} \; | ${pkgs.wl-clipboard}/bin/wl-copy
-        else
-          find ~/nixos-dotfiles -type f -name '*.nix' \
-            -exec echo "===== {} =====" \; -exec cat {} \; | ${pkgs.xclip}/bin/xclip -selection clipboard
-        fi
+        find ~/nixos-dotfiles -type f -name '*.nix' \
+          -exec echo "===== {} =====" \; -exec cat {} \; \
+          | ${pkgs.xclip}/bin/xclip -selection clipboard
         ${pkgs.libnotify}/bin/notify-send "✅ Config copied to clipboard"
       '';
 
       cpcs = pkgs.writeShellScriptBin "cpcs" ''
         echo "Copying server .nix configs to clipboard..."
-        ssh server cpc | ${pkgs.wl-clipboard}/bin/wl-copy
+        ssh server cpc | ${pkgs.xclip}/bin/xclip -selection clipboard
         ${pkgs.libnotify}/bin/notify-send "✅ Server config copied to clipboard"
       '';
 
@@ -214,17 +221,6 @@ in
           reboot
         else
           echo "Rebuild failed, NOT rebooting."
-        fi
-      '';
-
-      dpt = pkgs.writeShellScriptBin "dpt" ''
-        flag="/run/user/$(id -u)/display-off"
-        if [ -f "$flag" ]; then
-          rm -f "$flag"
-          ${pkgs.wlopm}/bin/wlopm --on '*'
-        else
-          touch "$flag"
-          ${pkgs.wlopm}/bin/wlopm --off '*'
         fi
       '';
     };
