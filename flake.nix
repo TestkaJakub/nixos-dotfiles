@@ -41,7 +41,6 @@
         server      = 1;
         workstation = 2;
         personal    = 4;
-        test        = 8;
       };
 
       # ── Recursive module walker ─────────────────────────────────────────────
@@ -156,16 +155,6 @@
           profile.hasBacklight     = false;
           profile.hasBluetooth     = false;
         }];
-
-        test = mkConfig "testing" [{
-          profile.role             = data.configurations.test.role;
-          profile.hostname         = data.configurations.test.hostname;
-          profile.lanInterface     = "enp6s0";
-          profile.hasBattery       = false;
-          profile.hasBacklight     = false;
-          profile.hasBluetooth     = false;
-        }];
-
       };
     });
 }

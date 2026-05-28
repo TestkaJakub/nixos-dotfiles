@@ -28,10 +28,5 @@
       hostname = "desktop";
       dmi      = "Z77X-UD3H";
     };
-    testing = {
-      role     = "test";
-      hostname = "testing";
-      dmi      = "Z77X-UD3H";
-    };
   };
 }
