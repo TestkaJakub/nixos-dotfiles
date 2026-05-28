@@ -32,9 +32,6 @@ in
       NVD_BACKEND              = "direct";
       LIBVA_DRIVER_NAME        = "nvidia";
       NIXOS_OZONE_WL           = "1";
-      # These two are needed so KWin uses the NVIDIA GBM backend
-      GBM_BACKEND              = "nvidia-drm";
-      __GLX_VENDOR_LIBRARY_NAME = "nvidia";
     };
   };
 
