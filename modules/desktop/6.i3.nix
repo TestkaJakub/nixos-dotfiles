@@ -106,16 +106,16 @@ in
       exec        --no-startup-id ${pkgs.udiskie}/bin/udiskie --tray &
 
       # ── Key bindings ─────────────────────────────────────────────────────
-      bindsym $mod+Return      exec ${meta.terminalPackage}/bin/${meta.terminal}
-      bindsym $mod+d           exec ${pkgs.rofi}/bin/rofi -show drun
+      bindsym $mod+q      exec ${meta.terminalPackage}/bin/${meta.terminal}
+      bindsym $mod+f           exec ${pkgs.rofi}/bin/rofi -show drun
       bindsym $mod+b           exec ${meta.browserPackage}/bin/${meta.browser}
-      bindsym $mod+e           exec ${meta.fileManagerPackage}/bin/${meta.fileManager}
-      bindsym $mod+Shift+q     kill
-      bindsym $mod+l           exec ${pkgs.i3lock}/bin/i3lock -c ${lib.strings.removePrefix "#" bg}
-      bindsym $mod+f           fullscreen toggle
+      bindsym $mod+n           exec ${meta.fileManagerPackage}/bin/${meta.fileManager}
+      bindsym $mod+e     kill
+      bindsym $mod+Alt+l           exec ${pkgs.i3lock}/bin/i3lock -c ${lib.strings.removePrefix "#" bg}
+      bindsym $mod+v           fullscreen toggle
 
       # Toggle floating/tiling
-      bindsym $mod+Shift+space floating toggle
+      bindsym $mod+Alt floating toggle
 
       # Focus
       bindsym $mod+h focus left
@@ -169,16 +169,16 @@ in
 
       # Resize mode
       mode "resize" {
-        bindsym h resize shrink width  20px
-        bindsym j resize grow   height 20px
-        bindsym k resize shrink height 20px
-        bindsym l resize grow   width  20px
-        bindsym Left  resize shrink width  20px
-        bindsym Down  resize grow   height 20px
-        bindsym Up    resize shrink height 20px
-        bindsym Right resize grow   width  20px
-        bindsym Return mode "default"
-        bindsym Escape mode "default"
+        bindsym $mod+Space+h resize shrink width  20px
+        bindsym $mod+Space+j resize grow   height 20pxh
+        bindsym $mod+Space+k resize shrink height 20px
+        bindsym $mod+Space+l resize grow   width  20px
+        bindsym $mod+Space+Left  resize shrink width  20px
+        bindsym $mod+Space+Down  resize grow   height 20px
+        bindsym $mod+Space+Up    resize shrink height 20px
+        bindsym $mod+Space+Right resize grow   width  20px
+        bindsym $mod+Space+Return mode "default"
+        bindsym $mod+Space+Escape mode "default"
       }
       bindsym $mod+r mode "resize"
 
@@ -219,7 +219,7 @@ in
       tray-padding     = 4
       cursor-click     = pointer
       wm-restack       = i3
-      override-redirect = true
+      override-redirect = false
 
       [module/i3]
       type                        = internal/i3
