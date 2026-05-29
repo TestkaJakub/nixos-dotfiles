@@ -10,7 +10,6 @@
     lxqt.lximage-qt
     lxqt.qps
     lxqt.screengrab
-    lxqt.lxqt-bluetooth
     lxqt.lxqt-powermanagement
     libsForQt5.qt5ct
     vlc
