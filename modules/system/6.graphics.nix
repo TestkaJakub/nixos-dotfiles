@@ -24,6 +24,9 @@ in
   services.xserver = lib.mkIf isDesktop {
     enable       = true;
     videoDrivers = [ "nvidia" ];
+    deviceSection = ''
+      Option "Coolbits" "4"
+    '';
   };
 
   environment = {
