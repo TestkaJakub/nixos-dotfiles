@@ -9,6 +9,10 @@
       url                    = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    vscode-server = {
+      url = "github:nix-community/nixos-vscode-server";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     wrappers.url = "github:lassulus/wrappers";
   };
@@ -113,6 +117,7 @@
           modules =
             (collectModules ./modules moduleBlacklist role)
             ++ [ inputs.home-manager.nixosModules.home-manager ]
+            ++ [ inputs.vscode-server.nixosModules.default ]
             ++ extraModules;
           specialArgs = {
             inherit inputs;

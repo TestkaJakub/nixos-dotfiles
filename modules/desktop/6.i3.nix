@@ -115,7 +115,7 @@ in
       bindsym $mod+v           fullscreen toggle
 
       # Toggle floating/tiling
-      bindsym $mod+Shift+s floating toggle
+      bindsym $mod+Shift+s   floating toggle
 
       # Focus
       bindsym $mod+h focus left
