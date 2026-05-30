@@ -16,13 +16,12 @@
   fileSystems."/" = { 
     device = "/dev/disk/by-uuid/f7cb761f-7588-47bc-a969-998b441e5db0";
     fsType = "ext4";
-    options = [ "x-gvfs-show" "x-gvfs-name=Storage" ];
   };
 
   fileSystems."/boot" = {
     device = "/dev/disk/by-uuid/DE39-0227";
     fsType = "vfat";
-    options = [ "fmask=0022" "dmask=0022"  "x-gvfs-show" "x-gvfs-name=Storage" ];
+    options = [ "fmask=0022" "dmask=0022"];
   };
   
   fileSystems."/home/jakub/data" = {
