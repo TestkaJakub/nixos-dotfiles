@@ -10,6 +10,8 @@ in
       enable32Bit = true;
       extraPackages = lib.optionals isDesktop (with pkgs; [
         nvidia-vaapi-driver
+        vaapiVdpau
+        libvdpau-va-gl
       ]);
     };
     nvidia = lib.mkIf isDesktop {
