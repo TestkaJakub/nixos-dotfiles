@@ -51,7 +51,7 @@ in
   serviceConfig = {
     Type      = "oneshot";
     RemainAfterExit = true;
-    ExecStart = "${pkgs.glibc}/sbin/ldconfig -C /etc/ld.so.cache";
+    ExecStart = "${pkgs.glibc}/bin/ldconfig -C /etc/ld.so.cache";
   };
 };
 }
