@@ -44,4 +44,8 @@ in
         fi
       '';
   };
+
+  environment.sessionVariables = {
+    STEAM_COMPAT_MOUNTS = "/run/opengl-driver:/run/opengl-driver-32";
+  };
 }
