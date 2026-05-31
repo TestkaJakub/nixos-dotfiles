@@ -1,7 +1,6 @@
 { pkgs, config, lib, ... }:
 let
   isDesktop = config.profile.isRole [ "personal" ];
-  isServer  = config.profile.isRole [ "server" ];
 in
 {
   hardware = {
@@ -31,9 +30,9 @@ in
     '';
   };
 
-  environment = {
-    systemPackages   = lib.optionals (!isServer) [ pkgs.nvtopPackages.full ];
-    sessionVariables = lib.mkIf isDesktop {
+  environment = lib.mkIf isDesktop {
+    systemPackages   = [ pkgs.nvtopPackages.full ];
+    sessionVariables = {
       NVD_BACKEND              = "direct";
       LIBVA_DRIVER_NAME        = "nvidia";
     };
