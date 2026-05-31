@@ -36,6 +36,10 @@ in
       NVD_BACKEND              = "direct";
       LIBVA_DRIVER_NAME        = "nvidia";
     };
+    etc."ld.so.conf.d/nixos-opengl.conf".text = ''
+      /run/opengl-driver/lib
+      /run/opengl-driver-32/lib
+    '';
   };
 
   boot.kernelParams = lib.mkIf isDesktop [ "nvidia-drm.modeset=1" ];

@@ -17,10 +17,14 @@ in
     dedicatedServer.openFirewall = true;
     package = pkgs.steam.override {
       extraPkgs = p: with p; [ mesa libdrm SDL2 openal faudio gamemode ];
+      extraProfile = ''
+        export LD_LIBRARY_PATH=/run/opengl-driver/lib:/run/opengl-driver-32/lib:$LD_LIBRARY_PATH
+      '';
     };
 
     extraCompatPackages = [ pkgs.proton-ge-bin ];
   };
+  
 
   # Install GE-Proton into Steam's compatibility tools directory.
   # The sentinel check skips unpacking when the version is already present,
