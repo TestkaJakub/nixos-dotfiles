@@ -336,8 +336,8 @@ in
       opacity-rule = [
         "85:class_g = 'Alacritty'",
         "85:class_g = 'org.wezfurlong.wezterm'",
-        "100:class_g = 'firefox'",
-        "100:class_g = 'Vivaldi-stable'"
+        "90:class_g = 'VSCodium'"
+        "90:class_g = 'firefox'",
       ];
 
       # Fading
