@@ -43,4 +43,15 @@ in
   };
 
   boot.kernelParams = lib.mkIf isDesktop [ "nvidia-drm.modeset=1" ];
+
+  systemd.services.ldconfig-steam = lib.mkIf isDesktop {
+  description = "Generate ldconfig cache for Steam/pressure-vessel";
+  wantedBy    = [ "multi-user.target" ];
+  after       = [ "systemd-tmpfiles-setup.service" ];
+  serviceConfig = {
+    Type      = "oneshot";
+    RemainAfterExit = true;
+    ExecStart = "${pkgs.glibc}/sbin/ldconfig -C /etc/ld.so.cache";
+  };
+};
 }
