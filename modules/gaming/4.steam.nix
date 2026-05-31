@@ -19,7 +19,7 @@ in
       extraPkgs = p: with p; [ mesa libdrm SDL2 openal faudio gamemode ];
     };
 
-    extraCompactPackages = [ pkgs.proton-ge-bin ];
+    extraCompatPackages = [ pkgs.proton-ge-bin ];
   };
 
   # Install GE-Proton into Steam's compatibility tools directory.
