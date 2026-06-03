@@ -33,7 +33,7 @@ let
   border  = p.border;
 
   wallpaper = meta.wallpaper;
-  polybar = pkgs.polybar.override { i3Support = true; pulseaudioSupport = true; };
+  polybar = pkgs.polybar.override { i3Support = true; pulseSupport = true; };
 in
 {
   services.xserver.enable                        = true;
