@@ -53,9 +53,7 @@ in
     xdotool      # used by some polybar modules
     vlc
     hardinfo2
-    kdiff3
-    lxqt.lximage-qt   # image viewer — still useful standalone
-    lxqt.lxqt-archiver
+    imv
   ];
 
   home-manager.users.${user} = { lib, ... }: {
