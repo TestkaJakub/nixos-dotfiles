@@ -43,7 +43,7 @@ in
   };
 
   environment.systemPackages = with pkgs; [
-    polybar
+    (polybar.override { i3Support = true; })
     rofi
     picom
     feh
@@ -169,16 +169,16 @@ in
 
       # Resize mode
       mode "resize" {
-        bindsym $mod+Space+h resize shrink width  20px
-        bindsym $mod+Space+j resize grow   height 20pxh
-        bindsym $mod+Space+k resize shrink height 20px
-        bindsym $mod+Space+l resize grow   width  20px
-        bindsym $mod+Space+Left  resize shrink width  20px
-        bindsym $mod+Space+Down  resize grow   height 20px
-        bindsym $mod+Space+Up    resize shrink height 20px
-        bindsym $mod+Space+Right resize grow   width  20px
-        bindsym $mod+Space+Return mode "default"
-        bindsym $mod+Space+Escape mode "default"
+        bindsym h resize shrink width  20px
+        bindsym j resize grow   height 20px
+        bindsym k resize shrink height 20px
+        bindsym l resize grow   width  20px
+        bindsym Left  resize shrink width  20px
+        bindsym Down  resize grow   height 20px
+        bindsym Up    resize shrink height 20px
+        bindsym Right resize grow   width  20px
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
       }
       bindsym $mod+r mode "resize"
 
@@ -218,7 +218,6 @@ in
       tray-position    = right
       tray-padding     = 4
       cursor-click     = pointer
-      wm-restack       = i3
       override-redirect = false
 
       [module/i3]
