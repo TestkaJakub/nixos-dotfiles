@@ -33,7 +33,7 @@ let
   border  = p.border;
 
   wallpaper = meta.wallpaper;
-  polybar = pkgs.polybar.override { i3Support = true; };
+  polybar = pkgs.polybar.override { i3Support = true; pulseaudioSupport = true; };
 in
 {
   services.xserver.enable                        = true;
@@ -216,8 +216,6 @@ in
       modules-left     = i3
       modules-center   = date
       modules-right    = volume memory cpu network tray
-      tray-position    = right
-      tray-padding     = 4
       cursor-click     = pointer
       override-redirect = false
 
