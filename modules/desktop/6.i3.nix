@@ -33,6 +33,7 @@ let
   border  = p.border;
 
   wallpaper = meta.wallpaper;
+  polybar = pkgs.polybar.override { i3Support = true; };
 in
 {
   services.xserver.enable                        = true;
@@ -43,7 +44,7 @@ in
   };
 
   environment.systemPackages = with pkgs; [
-    (polybar.override { i3Support = true; })
+    polybar
     rofi
     picom
     feh
@@ -102,7 +103,7 @@ in
       # ── Autostart ────────────────────────────────────────────────────────
       exec_always --no-startup-id ${pkgs.feh}/bin/feh --bg-scale ${wallpaper}
       exec_always --no-startup-id ${pkgs.picom}/bin/picom --daemon
-      exec_always --no-startup-id ${pkgs.polybar}/bin/polybar main &
+      exec_always --no-startup-id ${polybar}/bin/polybar main &
       exec        --no-startup-id ${pkgs.udiskie}/bin/udiskie --tray &
 
       # ── Key bindings ─────────────────────────────────────────────────────
