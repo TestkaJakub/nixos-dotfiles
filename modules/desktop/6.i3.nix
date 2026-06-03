@@ -104,7 +104,7 @@ in
       # ── Autostart ────────────────────────────────────────────────────────
       exec_always --no-startup-id ${pkgs.feh}/bin/feh --bg-scale ${wallpaper}
       exec_always --no-startup-id ${pkgs.picom}/bin/picom --daemon
-      exec_always --no-startup-id bash -c 'until [ -S /run/user/$(id -u)/i3/ipc-socket.* ] 2>/dev/null; do sleep 0.1; done; ${polybar}/bin/polybar main'
+      exec        --no-startup-id bash -c 'until [ -S /run/user/$(id -u)/i3/ipc-socket.* ] 2>/dev/null; do sleep 0.1; done; ${polybar}/bin/polybar main'
       exec        --no-startup-id ${pkgs.udiskie}/bin/udiskie --tray &
       exec        --no-startup-id ${pkgs.dunst}/bin/dunst &
       # ── Key bindings ─────────────────────────────────────────────────────
