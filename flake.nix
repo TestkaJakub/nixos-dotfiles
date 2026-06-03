@@ -1,4 +1,24 @@
 {
+  # Welcome to my flakes,
+  #
+  # !!!This project is constantly evolving as it's deployed on a living computer system!!!
+  #
+  # Following dotfiles use dendritic pattern with flake-parts.
+  # Additionally they use home-manager and wrappers.
+  #
+  # There is a custom bitmask based environment dependant files separation,
+  # as well as custom functions that allow for separating parts of a given dotfiles in contrast to separating whole dotfile file.
+  #
+  # Environments further called roles are currently hardware bound to ensure proper hardware.nix is loaded,
+  # but I plan to separate them in the future.
+  # 
+  # Module walker imports each flake in the dotfiles codebase,
+  # unless it's blacklisted.
+
+  # TODO:
+  # * Separate the roles from the hardware
+  # * Update comments in the whole dotfiles codebase
+
   description = "Jakub's NixOS configuration";
 
   inputs = {
@@ -20,44 +40,41 @@
   outputs = inputs:
     inputs.flake-parts.lib.mkFlake { inherit inputs; } ({ lib, ... }:
     let
-      # ── Roles and configurations ────────────────────────────────────────────
-      # Single source of truth — imported by profile.nix and scripts.nix
-      # via specialArgs. Add new machines here only.
+      # Roles and configurations
+      # Each role and configuration is stored in the ./modules/meta/roles.nix
+
       data = import ./modules/meta/roles.nix;
 
-      # ── Role bitmask ────────────────────────────────────────────────────────
+      # Role bitmask
       # server      = 1
       # workstation = 2
       # personal    = 4
-      # testing     = 8
       #
       # File prefix encodes which roles load the module:
-      #   1.foo.nix   → server only
-      #   2.foo.nix   → workstation only
-      #   3.foo.nix   → server + workstation
-      #   4.foo.nix   → personal only
-      #   5.foo.nix   → server + personal
-      #   6.foo.nix   → workstation + personal
-      #   7.foo.nix   → all roles (same as no prefix)
-      #   8.foo.nix   → testing
-      #   foo.nix     → all roles (no prefix = 7, emits a warning)
+      #   1.foo.nix   -> server only
+      #   2.foo.nix   -> workstation only
+      #   3.foo.nix   -> server + workstation
+      #   4.foo.nix   -> personal only
+      #   5.foo.nix   -> server + personal
+      #   6.foo.nix   -> workstation + personal
+      #   7.foo.nix   -> all roles (same as no prefix)
+      #   foo.nix     -> all roles (no prefix = 7, emits a warning)
+
       roleBits = {
         server      = 1;
         workstation = 2;
         personal    = 4;
       };
 
-      # ── Recursive module walker ─────────────────────────────────────────────
-      # Accepts the target role string and filters files by bitmask prefix.
-      # Files without a numeric prefix are included for all roles but emit
-      # a warning so uncategorized modules are easy to spot and migrate.
+      # Module walker
+      # Walks over the modules in the dotfiles codebase,
+      # loads only those modules that correspond to the current role.
+      # If a module name doesn't start with the bitmask prefix,
+      # it get's loaded for all the roles and produces a warning.
+
       collectModules = dir: blacklist: role:
         let
           bit = roleBits.${role};
-
-          # Returns the bitmask encoded in the filename prefix, or 7 if absent.
-          # Filename format: "<digits>.<rest>.nix" — prefix must be all digits.
-          # Unprefixed files emit a warning and default to 7 (all roles).
           fileMask = name:
             let
               m = builtins.match "^([0-9]+)\\..*\\.nix$" name;
@@ -88,14 +105,13 @@
         in
           walk "" (builtins.readDir dir);
 
-      # ── Blacklist ───────────────────────────────────────────────────────────
-      # Hardware files are machine-specific and passed explicitly to mkConfig.
-      # The walker must never load them automatically.
+      # Blacklist
+      # Files specified bellow will be omitted by the automatic walker.
+
       moduleBlacklist = [
         "meta/roles.nix"
       ];
 
-      # ── Patched pkgs ────────────────────────────────────────────────────────
       pkgs = import inputs.nixpkgs {
         system   = "x86_64-linux";
         overlays = [];
@@ -106,10 +122,10 @@
         };
       };
 
-      # ── Base configuration factory ──────────────────────────────────────────
-      # hardwarePath — path to the machine's hardware.nix
-      # role         — "server" | "workstation" | "personal"
-      # extraModules — profile overrides (hostname, hardware flags, etc.)
+      # Configuration
+      # role         - "server" | "workstation" | "personal"
+      # extraModules - profile overrides (hostname, hardware flags, etc.)
+
       mkConfig = role: extraModules:
         inputs.nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
@@ -130,7 +146,8 @@
 
       flake.nixosConfigurations = {
 
-        # ── ThinkPad — workstation profile ──────────────────────────────────
+        # Workstation profile
+
         nixos = mkConfig "workstation" [{
           profile.role             = data.configurations.nixos.role;
           profile.hostname         = data.configurations.nixos.hostname;
@@ -140,7 +157,8 @@
           profile.hasBluetooth     = true;
         }];
 
-        # ── ThinkPad — server profile ───────────────────────────────────────
+        # Server profile
+
         nixos-server = mkConfig "server" [{
           profile.role             = data.configurations.nixos-server.role;
           profile.hostname         = data.configurations.nixos-server.hostname;
@@ -150,8 +168,8 @@
           profile.hasBluetooth     = true;
         }];
 
-        # ── Gigabyte desktop — always personal ──────────────────────────────
-        # Gaming, entertainment, full desktop stack. Never server or workstation.
+        # Desktop profile
+        
         desktop = mkConfig "personal" [{
           profile.role             = data.configurations.desktop.role;
           profile.hostname         = data.configurations.desktop.hostname;
