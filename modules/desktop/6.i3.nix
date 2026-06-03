@@ -111,7 +111,7 @@ in
       bindsym $mod+b           exec ${meta.browserPackage}/bin/${meta.browser}
       bindsym $mod+n           exec ${meta.fileManagerPackage}/bin/${meta.fileManager}
       bindsym $mod+e     kill
-      bindsym $mod+Alt+l           exec ${pkgs.i3lock}/bin/i3lock -c ${lib.strings.removePrefix "#" bg}
+      bindsym $mod+Alt+l       exec ${pkgs.i3lock}/bin/i3lock -c ${lib.strings.removePrefix "#" bg}
       bindsym $mod+v           fullscreen toggle
 
       # Toggle floating/tiling
@@ -347,9 +347,8 @@ in
       fade-delta    = 5;
 
       # Backend
-      backend    = "glx";
-      vsync      = true;
-      glx-no-stencil = true;
+      backend    = "xrender";
+      vsync      = false;
     '';
   };
 }
