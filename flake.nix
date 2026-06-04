@@ -132,38 +132,40 @@
             (collectModules ./modules moduleBlacklist cfg.bitmaskvalue)
             ++ [ inputs.home-manager.nixosModules.home-manager ]
             ++ [ inputs.vscode-server.nixosModules.default ]
-            ++ [{ profile.hostname = hostname; }]
+            ++ [{ 
+              profile.hostname = hostname;
+              profile.role     = hostname;
+            }]
             ++ extraModules;
           specialArgs = {
             inherit inputs;
             inherit (data) configurations;
           };
         };
+  in {
+    systems = [ "x86_64-linux" ];
 
-    in {
-      systems = [ "x86_64-linux" ];
+    flake.nixosConfigurations = builtins.mapAttrs mkConfig {
+      server = [{
+        profile.lanInterface = "enp5s0";
+        profile.hasBattery   = true;
+        profile.hasBacklight = true;
+        profile.hasBluetooth = true;
+      }];
 
-      flake.nixosConfigurations = builtins.mapAttrs mkConfig {
-        server = [{
-          profile.lanInterface = "enp5s0";
-          profile.hasBattery   = true;
-          profile.hasBacklight = true;
-          profile.hasBluetooth = true;
-        }];
+      workstation = [{
+        profile.lanInterface = "enp5s0";
+        profile.hasBattery   = true;
+        profile.hasBacklight = true;
+        profile.hasBluetooth = true;
+      }];
 
-        workstation = [{
-          profile.lanInterface = "enp5s0";
-          profile.hasBattery   = true;
-          profile.hasBacklight = true;
-          profile.hasBluetooth = true;
-        }];
-
-        desktop = [{
-          profile.lanInterface = "enp6s0";
-          profile.hasBattery   = false;
-          profile.hasBacklight = false;
-          profile.hasBluetooth = false;
-        }];
-      };
-    });
+      desktop = [{
+        profile.lanInterface = "enp6s0";
+        profile.hasBattery   = false;
+        profile.hasBacklight = false;
+        profile.hasBluetooth = false;
+      }];
+    };
+  });
 }
