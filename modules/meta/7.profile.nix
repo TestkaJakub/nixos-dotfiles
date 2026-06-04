@@ -6,16 +6,17 @@
 #
 # configurations — injected via specialArgs from flake.nix, sourced from roles.nix
 #
-# role    — gates which module groups are active:
-#             "desktop"     full desktop + entertainment (Steam, Discord, etc.)
-#             "workstation" desktop + productive/dev tools, no entertainment
-#             "server"      headless, services only
+# hostname — serves as both the machine hostname and the role identifier.
+#            Gates which module groups are active:
+#              "desktop"     full desktop + entertainment (Steam, Discord, etc.)
+#              "workstation" desktop + productive/dev tools, no entertainment
+#              "server"      headless, services only
 #
-# isRole  — helper function, pass a list of roles, returns bool
+# isRole  — helper function, pass a list of hostnames/roles, returns bool
 #             e.g. config.profile.isRole [ "desktop" "workstation" ]
 #
-# has*    — machine hardware capability flags, set per nixosConfiguration
-#           in flake.nix, defaults to false so missing overrides fail safe
+# has*    — machine hardware capability flags, sourced from roles.nix,
+#           defaults to false so missing overrides fail safe
 {
   options.profile = {
 
@@ -45,16 +46,10 @@
     };
 
     hostname = lib.mkOption {
-      type        = lib.types.str;
-      default     = "nixos";
-      description = "Machine hostname.";
-    };
-
-    # ── Role ───────────────────────────────────────────────────────────────────
-    role = lib.mkOption {
       type        = lib.types.enum (builtins.attrNames configurations);
       description = ''
-        Machine role — controls which module groups are active:
+        Machine hostname — also serves as the role identifier.
+        Controls which module groups are active:
           desktop     — full desktop + entertainment (Steam, Discord, gaming)
           workstation — desktop + productive/dev tools, no entertainment
           server      — headless, services only, no desktop stack
@@ -64,7 +59,7 @@
     isRole = lib.mkOption {
       type        = lib.types.functionTo lib.types.bool;
       readOnly    = true;
-      description = "Returns true if the current role matches any role in the given list.";
+      description = "Returns true if the current hostname matches any entry in the given list.";
     };
 
     # ── Peripherals ────────────────────────────────────────────────────────────
@@ -75,7 +70,7 @@
     };
 
     # ── Hardware capabilities ──────────────────────────────────────────────────
-    # Set per nixosConfiguration in flake.nix.
+    # Sourced from roles.nix via flake.nix.
     # Defaults to false so missing overrides fail safe.
     lanInterface = lib.mkOption {
       type        = lib.types.str;
@@ -101,5 +96,5 @@
     };
   };
 
-  config.profile.isRole = roles: builtins.elem config.profile.role roles;
+  config.profile.isRole = roles: builtins.elem config.profile.hostname roles;
 }

@@ -135,7 +135,6 @@
               ++ [ inputs.vscode-server.nixosModules.default ]
               ++ [{
                 profile.hostname     = hostname;
-                profile.role         = hostname;
                 profile.lanInterface = cfg.lanInterface;
                 profile.hasBattery   = cfg.hasBattery;
                 profile.hasBacklight = cfg.hasBacklight;
