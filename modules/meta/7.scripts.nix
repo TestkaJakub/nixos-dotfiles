@@ -7,7 +7,7 @@
 #
 # nrs   — smart rebuild: checks DMI + hostname, offers to fix, commits + switches
 # nrsr  — nrs + reboot on success
-# dpt   — display power toggle via wlopm
+# dpt   — display power toggle via xset
 # kbm   — cycle keyboard backlight brightness
 # cpc   — copy all .nix configs to clipboard
 # cpcs  — copy server .nix configs to clipboard over SSH
@@ -17,13 +17,13 @@
 let
   hostnameMapEntries = lib.concatStringsSep "\n" (
     lib.mapAttrsToList
-      (cfg: v: "  [\"${cfg}\"]=\"${v.hostname}\"")
+      (hostname: _: "  [\"${hostname}\"]=\"${hostname}\"")
       configurations
   );
 
   dmiMapEntries = lib.concatStringsSep "\n" (
     lib.mapAttrsToList
-      (cfg: v: "  [\"${cfg}\"]=\"${v.dmi}\"")
+      (hostname: v: "  [\"${hostname}\"]=\"${v.dmi}\"")
       configurations
   );
 
@@ -59,7 +59,7 @@ in
     dpt = lib.mkOption {
       type        = lib.types.package;
       readOnly    = true;
-      description = "Toggle all displays on/off via wlopm.";
+      description = "Toggle all displays on/off via xset.";
     };
   };
 

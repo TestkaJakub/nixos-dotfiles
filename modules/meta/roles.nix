@@ -1,32 +1,34 @@
-# ── Roles and configurations ────────────────────────────────────────────────
-# Single source of truth for roles, hostnames and hardware identifiers.
-# Imported by flake.nix and passed to modules via specialArgs as:
-#   { roles, configurations }
+# Configurations
+# This dotfile defines a set of roles (roles are explained in flake.nix) used throughout the system.
 #
-# dmi — DMI product name, used in hardware/assertions.nix to prevent
-#        building the wrong configuration on the wrong physical machine.
-#        Find yours with: cat /sys/devices/virtual/dmi/id/product_name
+# Each configuration is identified by its hostname (the attrset key),
+# which is used as the single source of truth for bitmask and hardware identity.
 #
-# To add a new machine: add an entry here and a corresponding
-# nixosConfiguration in flake.nix.
-{
-  roles = [ "server" "workstation" "personal" "test"];
+# Bitmask values correspond to the role prefix system described in flake.nix:
+#   server      = 1
+#   workstation = 2
+#   desktop    = 4
+#
+# Currently DMI is used to identify hardware.
+# You can find yours by running:
+#   cat /sys/devices/virtual/dmi/id/product_name
+#
+# To add a new machine,
+# add an entry here and a corresponding nixosConfiguration in flake.nix.
 
+{
   configurations = {
-    nixos = {
-      role     = "workstation";
-      hostname = "nixos";
-      dmi      = "20XLS0KB02";
+    server = {
+      dmi          = "20XLS0KB02";
+      bitmaskvalue = 1;
     };
-    nixos-server = {
-      role     = "server";
-      hostname = "nixos-server";
-      dmi      = "20XLS0KB02";
+    workstation = {
+      dmi          = "20XLS0KB02";
+      bitmaskvalue = 2;
     };
     desktop = {
-      role     = "personal";
-      hostname = "desktop";
-      dmi      = "Z77X-UD3H";
+      dmi          = "Z77X-UD3H";
+      bitmaskvalue = 4;
     };
   };
 }

@@ -40,41 +40,36 @@
   outputs = inputs:
     inputs.flake-parts.lib.mkFlake { inherit inputs; } ({ lib, ... }:
     let
-      # Roles and configurations
-      # Each role and configuration is stored in the ./modules/meta/roles.nix
+      # Configurations
+      # Each configuration is stored in ./modules/meta/roles.nix
+      # and identified by its hostname (the attrset key).
 
       data = import ./modules/meta/roles.nix;
 
       # Role bitmask
-      # server      = 1
-      # workstation = 2
-      # personal    = 4
+      # Bitmask values are defined per-configuration in roles.nix:
+      #   server      = 1
+      #   workstation = 2
+      #   desktop     = 4
       #
       # File prefix encodes which roles load the module:
       #   1.foo.nix   -> server only
       #   2.foo.nix   -> workstation only
       #   3.foo.nix   -> server + workstation
-      #   4.foo.nix   -> personal only
-      #   5.foo.nix   -> server + personal
-      #   6.foo.nix   -> workstation + personal
+      #   4.foo.nix   -> desktop only
+      #   5.foo.nix   -> server + desktop
+      #   6.foo.nix   -> workstation + desktop
       #   7.foo.nix   -> all roles (same as no prefix)
       #   foo.nix     -> all roles (no prefix = 7, emits a warning)
 
-      roleBits = {
-        server      = 1;
-        workstation = 2;
-        personal    = 4;
-      };
-
       # Module walker
       # Walks over the modules in the dotfiles codebase,
-      # loads only those modules that correspond to the current role.
+      # loads only those modules that correspond to the current bitmask value.
       # If a module name doesn't start with the bitmask prefix,
-      # it get's loaded for all the roles and produces a warning.
+      # it gets loaded for all roles and produces a warning.
 
-      collectModules = dir: blacklist: role:
+      collectModules = dir: blacklist: bit:
         let
-          bit = roleBits.${role};
           fileMask = name:
             let
               m = builtins.match "^([0-9]+)\\..*\\.nix$" name;
@@ -82,7 +77,7 @@
               if m != null
               then lib.toInt (builtins.head m)
               else builtins.trace
-                "WARNING: module '${name}' has no role prefix — loaded for all roles. Consider prefixing with a bitmask (1=server, 2=workstation, 4=personal)."
+                "WARNING: module '${name}' has no role prefix — loaded for all roles. Consider prefixing with a bitmask (1=server, 2=workstation, 4=desktop)."
                 7;
 
           walk = prefix: entries:
@@ -106,7 +101,7 @@
           walk "" (builtins.readDir dir);
 
       # Blacklist
-      # Files specified bellow will be omitted by the automatic walker.
+      # Files specified below will be omitted by the automatic walker.
 
       moduleBlacklist = [
         "meta/roles.nix"
@@ -122,61 +117,52 @@
         };
       };
 
-      # Configuration
-      # role         - "server" | "workstation" | "personal"
-      # extraModules - profile overrides (hostname, hardware flags, etc.)
+      # mkConfig
+      # Called via builtins.mapAttrs - hostname is taken from the attrset key,
+      # extraModules is the corresponding value (profile overrides: hardware flags, etc.)
 
-      mkConfig = role: extraModules:
+      mkConfig = hostname: extraModules:
+        let
+          cfg = data.configurations.${hostname};
+        in
         inputs.nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           inherit pkgs;
           modules =
-            (collectModules ./modules moduleBlacklist role)
+            (collectModules ./modules moduleBlacklist cfg.bitmaskvalue)
             ++ [ inputs.home-manager.nixosModules.home-manager ]
             ++ [ inputs.vscode-server.nixosModules.default ]
+            ++ [{ profile.hostname = hostname; }]
             ++ extraModules;
           specialArgs = {
             inherit inputs;
-            inherit (data) roles configurations;
+            inherit (data) configurations;
           };
         };
 
     in {
       systems = [ "x86_64-linux" ];
 
-      flake.nixosConfigurations = {
-
-        # Workstation profile
-
-        nixos = mkConfig "workstation" [{
-          profile.role             = data.configurations.nixos.role;
-          profile.hostname         = data.configurations.nixos.hostname;
-          profile.lanInterface     = "enp5s0";
-          profile.hasBattery       = true;
-          profile.hasBacklight     = true;
-          profile.hasBluetooth     = true;
+      flake.nixosConfigurations = builtins.mapAttrs mkConfig {
+        server = [{
+          profile.lanInterface = "enp5s0";
+          profile.hasBattery   = true;
+          profile.hasBacklight = true;
+          profile.hasBluetooth = true;
         }];
 
-        # Server profile
-
-        nixos-server = mkConfig "server" [{
-          profile.role             = data.configurations.nixos-server.role;
-          profile.hostname         = data.configurations.nixos-server.hostname;
-          profile.lanInterface     = "enp5s0";
-          profile.hasBattery       = true;
-          profile.hasBacklight     = true;
-          profile.hasBluetooth     = true;
+        workstation = [{
+          profile.lanInterface = "enp5s0";
+          profile.hasBattery   = true;
+          profile.hasBacklight = true;
+          profile.hasBluetooth = true;
         }];
 
-        # Desktop profile
-        
-        desktop = mkConfig "personal" [{
-          profile.role             = data.configurations.desktop.role;
-          profile.hostname         = data.configurations.desktop.hostname;
-          profile.lanInterface     = "enp6s0";
-          profile.hasBattery       = false;
-          profile.hasBacklight     = false;
-          profile.hasBluetooth     = false;
+        desktop = [{
+          profile.lanInterface = "enp6s0";
+          profile.hasBattery   = false;
+          profile.hasBacklight = false;
+          profile.hasBluetooth = false;
         }];
       };
     });

@@ -1,18 +1,18 @@
-{ lib, config, roles, ... }:
+{ lib, config, configurations, ... }:
 
 # ── Profile ────────────────────────────────────────────────────────────────────
 # Declares options for user identity and machine-level constants.
 # Every other module reads from config.profile rather than hardcoding values.
 #
-# roles   — injected via specialArgs from flake.nix, sourced from roles.nix
+# configurations — injected via specialArgs from flake.nix, sourced from roles.nix
 #
 # role    — gates which module groups are active:
-#             "personal"    full desktop + entertainment (Steam, Discord, etc.)
+#             "desktop"     full desktop + entertainment (Steam, Discord, etc.)
 #             "workstation" desktop + productive/dev tools, no entertainment
 #             "server"      headless, services only
 #
 # isRole  — helper function, pass a list of roles, returns bool
-#             e.g. config.profile.isRole [ "personal" "workstation" ]
+#             e.g. config.profile.isRole [ "desktop" "workstation" ]
 #
 # has*    — machine hardware capability flags, set per nixosConfiguration
 #           in flake.nix, defaults to false so missing overrides fail safe
@@ -52,10 +52,10 @@
 
     # ── Role ───────────────────────────────────────────────────────────────────
     role = lib.mkOption {
-      type        = lib.types.enum roles;
+      type        = lib.types.enum (builtins.attrNames configurations);
       description = ''
         Machine role — controls which module groups are active:
-          personal    — full desktop + entertainment (Steam, Discord, gaming)
+          desktop     — full desktop + entertainment (Steam, Discord, gaming)
           workstation — desktop + productive/dev tools, no entertainment
           server      — headless, services only, no desktop stack
       '';
@@ -67,12 +67,12 @@
       description = "Returns true if the current role matches any role in the given list.";
     };
 
-	# Peripherals
-	hasTablet = lib.mkOption {
-	  type        = lib.types.bool;
-	  default     = false;
-	  description = "Enables OpenTabletDriver and uinput for graphics tablet support.";
-	};
+    # ── Peripherals ────────────────────────────────────────────────────────────
+    hasTablet = lib.mkOption {
+      type        = lib.types.bool;
+      default     = false;
+      description = "Enables OpenTabletDriver and uinput for graphics tablet support.";
+    };
 
     # ── Hardware capabilities ──────────────────────────────────────────────────
     # Set per nixosConfiguration in flake.nix.
@@ -101,6 +101,5 @@
     };
   };
 
-  # roles' with a tick to avoid shadowing the `roles` specialArg
-  config.profile.isRole = roles': builtins.elem config.profile.role roles';
+  config.profile.isRole = roles: builtins.elem config.profile.role roles;
 }
