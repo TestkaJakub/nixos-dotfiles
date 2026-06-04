@@ -1,6 +1,6 @@
 { pkgs, config, lib, ... }:
 let
-  isDesktop = config.profile.isRole [ "personal" ];
+  isDesktop = config.profile.isRole [ "desktop" ];
 in
 {
   hardware = {

@@ -1,26 +1,25 @@
 { lib, config, configurations, ... }:
 
-# ── Profile ────────────────────────────────────────────────────────────────────
+# Profile
 # Declares options for user identity and machine-level constants.
 # Every other module reads from config.profile rather than hardcoding values.
 #
-# configurations — injected via specialArgs from flake.nix, sourced from roles.nix
+# configurations - injected via specialArgs from flake.nix, sourced from roles.nix
 #
-# hostname — serves as both the machine hostname and the role identifier.
-#            Gates which module groups are active:
+# hostname - identifies the machine and gates which module groups are active:
 #              "desktop"     full desktop + entertainment (Steam, Discord, etc.)
 #              "workstation" desktop + productive/dev tools, no entertainment
 #              "server"      headless, services only
 #
-# isRole  — helper function, pass a list of hostnames/roles, returns bool
+# isRole  - helper function, pass a list of hostnames, returns bool
 #             e.g. config.profile.isRole [ "desktop" "workstation" ]
 #
-# has*    — machine hardware capability flags, sourced from roles.nix,
+# has*    - machine hardware capability flags, sourced from configurations in roles.nix,
 #           defaults to false so missing overrides fail safe
 {
   options.profile = {
 
-    # ── Identity ───────────────────────────────────────────────────────────────
+    # Identity
     username = lib.mkOption {
       type        = lib.types.str;
       default     = "jakub";
@@ -62,14 +61,14 @@
       description = "Returns true if the current hostname matches any entry in the given list.";
     };
 
-    # ── Peripherals ────────────────────────────────────────────────────────────
+    # Peripherals
     hasTablet = lib.mkOption {
       type        = lib.types.bool;
       default     = false;
       description = "Enables OpenTabletDriver and uinput for graphics tablet support.";
     };
 
-    # ── Hardware capabilities ──────────────────────────────────────────────────
+    # Hardware capabilities
     # Sourced from roles.nix via flake.nix.
     # Defaults to false so missing overrides fail safe.
     lanInterface = lib.mkOption {

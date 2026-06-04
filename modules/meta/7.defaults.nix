@@ -1,13 +1,7 @@
 { lib, config, pkgs, ... }:
 
-# ── Meta / default applications ────────────────────────────────────────────────
+# Meta / default applications
 # Single place to change which app opens for each role.
-# Values flow into:
-#   - xdg.mimeApps           (what opens when you click a file/link)
-#   - desktop/compositor.nix (keybinds: super+b, super+q, super+e)
-#   - desktop/wallpaper.nix  (hyprpaper config)
-#   - desktop/display.nix    (SDDM theme background)
-#   - desktop/bar.nix        (network widget click)
 #
 # Wallpaper: committed to the repo at wallpapers/AkuNoHana.jpg and referenced
 # as a relative path so it is store-backed, portable, and reproducible.

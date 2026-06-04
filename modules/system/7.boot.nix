@@ -13,7 +13,7 @@
 
   console.keyMap = config.locale.consoleKeyMap;
 
-  services.xserver.xkb = lib.mkIf (config.profile.isRole [ "workstation" "personal" ]) {
+  services.xserver.xkb = lib.mkIf (config.profile.isRole [ "workstation" "desktop" ]) {
     layout  = config.locale.keyboardLayout;
     variant = "";
   };

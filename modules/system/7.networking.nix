@@ -2,9 +2,9 @@
 let
   isServer      = config.profile.isRole [ "server" ];
   isWorkstation = config.profile.isRole [ "workstation" ];
-  isPersonal    = config.profile.isRole [ "personal" ];
-  isNotServer   = isWorkstation || isPersonal;
-  isThinkpad   = isWorkstation || isServer;
+  isDesktop    = config.profile.isRole [ "desktop" ];
+  isNotServer   = isWorkstation || isDesktop;
+  isNotDesktop   = isWorkstation || isServer;
 in
 {
   networking = {
@@ -17,7 +17,7 @@ in
     };
 
     nameservers =
-      if isThinkpad then [ "127.0.0.1" "1.1.1.1" ]
+      if isNotDesktop then [ "127.0.0.1" "1.1.1.1" ]
       else [ "192.168.0.252" "1.1.1.1" ];
     
     defaultGateway = lib.mkIf isServer {
@@ -42,7 +42,7 @@ in
         ${config.profile.lanInterface}.allowedTCPPorts = [ 53 445 139 ];
       };
 
-      extraCommands = lib.mkIf isThinkpad ''
+      extraCommands = lib.mkIf isNotDesktop ''
         iptables -I INPUT -i docker0 -p tcp --dport 9000 -j ACCEPT
         iptables -I INPUT -i br+ -p tcp --dport 9000 -j ACCEPT
       '';
