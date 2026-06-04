@@ -7,7 +7,7 @@
 # Bitmask values correspond to the role prefix system described in flake.nix:
 #   server      = 1
 #   workstation = 2
-#   desktop    = 4
+#   desktop     = 4
 #
 # Currently DMI is used to identify hardware.
 # You can find yours by running:
@@ -21,14 +21,26 @@
     server = {
       dmi          = "20XLS0KB02";
       bitmaskvalue = 1;
+      lanInterface = "enp5s0";
+      hasBattery   = true;
+      hasBacklight = true;
+      hasBluetooth = true;
     };
     workstation = {
       dmi          = "20XLS0KB02";
       bitmaskvalue = 2;
+      lanInterface = "enp5s0";
+      hasBattery   = true;
+      hasBacklight = true;
+      hasBluetooth = true;
     };
     desktop = {
       dmi          = "Z77X-UD3H";
       bitmaskvalue = 4;
+      lanInterface = "enp6s0";
+      hasBattery   = false;
+      hasBacklight = false;
+      hasBluetooth = false;
     };
   };
 }

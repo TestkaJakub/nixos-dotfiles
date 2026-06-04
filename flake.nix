@@ -11,8 +11,8 @@
   #
   # Environments further called roles are currently hardware bound to ensure proper hardware.nix is loaded,
   # but I plan to separate them in the future.
-  # 
-  # Module walker imports each flake in the dotfiles codebase,
+  #
+  # Module walker imports each module in the dotfiles codebase,
   # unless it's blacklisted.
 
   # TODO:
@@ -23,18 +23,18 @@
 
   inputs = {
     flake-parts.url  = "github:hercules-ci/flake-parts";
+    wrappers.url     = "github:lassulus/wrappers";
     nixpkgs.url      = "github:NixOS/nixpkgs/nixos-25.11";
 
     home-manager = {
       url                    = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
     vscode-server = {
-      url = "github:nix-community/nixos-vscode-server";
+      url                    = "github:nix-community/nixos-vscode-server";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    wrappers.url = "github:lassulus/wrappers";
   };
 
   outputs = inputs:
@@ -43,6 +43,7 @@
       # Configurations
       # Each configuration is stored in ./modules/meta/roles.nix
       # and identified by its hostname (the attrset key).
+      # To add a new machine, add an entry to roles.nix — no changes needed here.
 
       data = import ./modules/meta/roles.nix;
 
@@ -118,54 +119,37 @@
       };
 
       # mkConfig
-      # Called via builtins.mapAttrs - hostname is taken from the attrset key,
-      # extraModules is the corresponding value (profile overrides: hardware flags, etc.)
+      # Builds a nixosSystem for the given hostname.
+      # All configuration is sourced from data.configurations.${hostname} in roles.nix.
 
-      mkConfig = hostname: extraModules:
+      mkConfig = hostname: _:
         let
           cfg = data.configurations.${hostname};
         in
-        inputs.nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          inherit pkgs;
-          modules =
-            (collectModules ./modules moduleBlacklist cfg.bitmaskvalue)
-            ++ [ inputs.home-manager.nixosModules.home-manager ]
-            ++ [ inputs.vscode-server.nixosModules.default ]
-            ++ [{ 
-              profile.hostname = hostname;
-              profile.role     = hostname;
-            }]
-            ++ extraModules;
-          specialArgs = {
-            inherit inputs;
-            inherit (data) configurations;
+          inputs.nixpkgs.lib.nixosSystem {
+            system = "x86_64-linux";
+            inherit pkgs;
+            modules =
+              (collectModules ./modules moduleBlacklist cfg.bitmaskvalue)
+              ++ [ inputs.home-manager.nixosModules.home-manager ]
+              ++ [ inputs.vscode-server.nixosModules.default ]
+              ++ [{
+                profile.hostname     = hostname;
+                profile.role         = hostname;
+                profile.lanInterface = cfg.lanInterface;
+                profile.hasBattery   = cfg.hasBattery;
+                profile.hasBacklight = cfg.hasBacklight;
+                profile.hasBluetooth = cfg.hasBluetooth;
+              }];
+            specialArgs = {
+              inherit inputs;
+              inherit (data) configurations;
+            };
           };
-        };
-  in {
-    systems = [ "x86_64-linux" ];
 
-    flake.nixosConfigurations = builtins.mapAttrs mkConfig {
-      server = [{
-        profile.lanInterface = "enp5s0";
-        profile.hasBattery   = true;
-        profile.hasBacklight = true;
-        profile.hasBluetooth = true;
-      }];
+    in {
+      systems = [ "x86_64-linux" ];
 
-      workstation = [{
-        profile.lanInterface = "enp5s0";
-        profile.hasBattery   = true;
-        profile.hasBacklight = true;
-        profile.hasBluetooth = true;
-      }];
-
-      desktop = [{
-        profile.lanInterface = "enp6s0";
-        profile.hasBattery   = false;
-        profile.hasBacklight = false;
-        profile.hasBluetooth = false;
-      }];
-    };
-  });
+      flake.nixosConfigurations = builtins.mapAttrs mkConfig data.configurations;
+    });
 }
