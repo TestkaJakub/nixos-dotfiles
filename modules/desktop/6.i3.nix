@@ -100,7 +100,7 @@ in
       client.urgent           #e06c75  #e06c75  $fg     #e06c75   #e06c75
 
       # ── Autostart ────────────────────────────────────────────────────────
-      exec_always --no-startup-id ${pkgs.feh}/bin/feh --bg-scale ${wallpaper}
+      exec_always --no-startup-id ${config.scripts.wallpaperInit}/bin/wallpaper-init
       exec_always --no-startup-id ${pkgs.picom}/bin/picom --daemon
       exec_always --no-startup-id bash -c 'pkill polybar; until [ -S /run/user/$(id -u)/i3/ipc-socket.* ] 2>/dev/null; do sleep 0.1; done; ${polybar}/bin/polybar main'
       exec        --no-startup-id ${pkgs.udiskie}/bin/udiskie --tray &
