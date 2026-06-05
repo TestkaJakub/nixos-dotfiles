@@ -201,7 +201,8 @@ EOF
         fi
 
         # ── Extract colors via pywal ──────────────────────────────────────────
-        ${pkgs.pywal}/bin/wal -i "$WALLPAPER" -n -q
+        RESOLVED=$(readlink -f "$WALLPAPER")
+        ${pkgs.pywal}/bin/wal -i "$RESOLVED" -n -q
 
         # ── Load extracted colors ─────────────────────────────────────────────
         . "$HOME/.cache/wal/colors.sh"
