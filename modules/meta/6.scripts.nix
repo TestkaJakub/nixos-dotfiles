@@ -58,7 +58,6 @@ in
           SOURCE=$(${pkgs.zenity}/bin/zenity \
             --file-selection \
             --title="Select wallpaper" \
-            --filename="$HOME/.config/wallpaper/collection/" \
             --file-filter="Images|*.jpg *.jpeg *.png *.bmp *.gif *.tiff *.webp" \
             2>/dev/null) || { echo "Cancelled."; exit 0; }
 
