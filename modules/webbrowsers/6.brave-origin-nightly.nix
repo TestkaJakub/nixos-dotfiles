@@ -56,8 +56,11 @@ let
       mkdir -p $out/bin
       mkdir -p $out/opt/brave.com
       mkdir -p $out/share/applications
+      mkdir -p $out/share/icons/hicolor/256x256/apps
       chmod -R +x opt/brave.com/brave-origin-nightly
       cp -r opt/brave.com/brave-origin-nightly $out/opt/brave.com/brave-origin-nightly
+      cp opt/brave.com/brave-origin-nightly/product_logo_256_nightly.png \
+        $out/share/icons/hicolor/256x256/apps/brave-origin-nightly.png
       makeWrapper $out/opt/brave.com/brave-origin-nightly/brave-origin-nightly \
         $out/bin/brave-origin-nightly \
         --prefix LD_LIBRARY_PATH : "${lib.makeLibraryPath [ pkgs.libGL pkgs.vulkan-loader ]}"
