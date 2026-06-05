@@ -71,7 +71,7 @@ let
     pihole:
       loadBalancer:
         servers:
-          - url: "http://172.17.0.1:8053"
+          - url: "http://host.docker.internal:8053"
   '' else ''http:
   routers:
     ping:
