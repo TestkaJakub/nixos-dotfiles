@@ -14,6 +14,15 @@ let
 
     nativeBuildInputs = [ pkgs.dpkg pkgs.makeWrapper pkgs.autoPatchelfHook ];
 
+    autoPatchelfIgnoreMissingDeps = [
+      "libQt5Core.so.5"
+      "libQt5Gui.so.5"
+      "libQt5Widgets.so.5"
+      "libQt6Core.so.6"
+      "libQt6Gui.so.6"
+      "libQt6Widgets.so.6"
+    ];
+
     buildInputs = with pkgs; [
       # Chromium-based browser runtime deps
       glib
@@ -39,8 +48,6 @@ let
       cairo
       gtk3
       wayland
-      qt5.qtbase
-      qt6.qtbase
     ];
 
     unpackPhase = ''
