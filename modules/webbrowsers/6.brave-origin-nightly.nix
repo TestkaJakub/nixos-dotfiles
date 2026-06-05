@@ -42,7 +42,7 @@ let
     ];
 
     unpackPhase = ''
-      dpkg-deb -x $src $out
+      dpkg-deb --fsys-tarfile $src | tar -x --no-same-permissions --no-same-owner
     '';
 
     installPhase = ''
