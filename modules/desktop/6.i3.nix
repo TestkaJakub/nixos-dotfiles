@@ -326,19 +326,6 @@ in
       shadow-offset-y = -4;
       shadow-exclude  = [ "class_g = 'i3-frame'" ];
 
-      # Transparency
-      inactive-opacity         = 0.92;
-      active-opacity           = 1.0;
-      frame-opacity            = 1.0;
-      inactive-opacity-override = false;
-
-      opacity-rule = [
-        "85:class_g = 'Alacritty'",
-        "85:class_g = 'org.wezfurlong.wezterm'",
-        "90:class_g = 'VSCodium'",
-        "90:class_g = 'firefox'"
-      ];
-
       # Fading
       fading        = true;
       fade-in-step  = 0.05;
