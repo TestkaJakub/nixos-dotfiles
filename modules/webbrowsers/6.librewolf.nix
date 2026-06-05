@@ -23,7 +23,7 @@
         Locked = true;
       };
       Preferences = {
-        "layout.css.prefers-color-scheme.content-override" = 1;
+        "layout.css.prefers-color-scheme.content-override" = 0;
         "privacy.fingerprintingProtection" = true;
         "signon.rememberSignons" = {
           Value = true;
