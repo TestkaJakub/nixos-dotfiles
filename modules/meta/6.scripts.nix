@@ -60,6 +60,11 @@ in
             --title="Select wallpaper" \
             --file-filter="Images|*.jpg *.jpeg *.png *.bmp *.gif *.tiff *.webp" \
             2>/dev/null) || { echo "Cancelled."; exit 0; }
+
+          if [ -z "$SOURCE" ]; then
+            echo "No file selected."
+            exit 0
+          fi
         fi
 
         if [ ! -f "$SOURCE" ]; then
