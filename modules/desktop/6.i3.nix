@@ -5,34 +5,40 @@
 # Bar:         polybar
 # Launcher:    rofi
 # Compositor:  picom
-# Wallpaper:   feh
+# Wallpaper:   feh via wallpaper-init
 # DM:          LightDM (unchanged)
 #
+# Colors:
+#   Polybar reads from ~/.cache/wal/colors-polybar.ini at runtime (pywal).
+#   i3 window colors use the Nix-generated palette as they require a rebuild
+#   to change. Rofi and picom also use the Nix-generated palette.
+#   Run theme-apply <wallpaper> to update polybar and terminal colors.
+#
 # Key bindings:
-#   Super+Enter       terminal
-#   Super+D           rofi launcher
+#   Super+Q           terminal
+#   Super+F           rofi launcher
 #   Super+B           browser
-#   Super+E           file manager
-#   Super+Shift+Q     close window
-#   Super+Shift+Space toggle floating/tiling
-#   Super+F           fullscreen
+#   Super+N           file manager
+#   Super+E           close window
+#   Super+Alt+L       lock screen
+#   Super+V           fullscreen
+#   Super+Shift+S     toggle floating/tiling
+#   Super+R           resize mode
 #   Super+1..9        switch workspace
 #   Super+Shift+1..9  move window to workspace
 #   Print             screenshot region
 #   Super+Print       screenshot full
-#   Super+L           lock screen
 let
   user    = config.profile.username;
   t       = config.theme;
   p       = t.palette;
   meta    = config.meta.defaults;
 
-  bg      = p.secondary;   # #1f1f1f
-  fg      = p.primary;     # #b1b1b1
+  bg      = p.secondary;
+  fg      = p.primary;
   accent  = t.functions.complement p.primary;
   border  = p.border;
 
-  wallpaper = meta.wallpaper;
   polybar = pkgs.polybar.override { i3Support = true; pulseSupport = true; };
 in
 {
@@ -50,7 +56,7 @@ in
     picom
     feh
     xclip
-    xdotool      # used by some polybar modules
+    xdotool
     vlc
     hardinfo2
     imv
@@ -63,7 +69,7 @@ in
       # ── Mod key (Super) ──────────────────────────────────────────────────────
       set $mod Mod4
 
-      # ── Colors from theme.palette ─────────────────────────────────────────
+      # ── Colors from theme.palette (Nix-generated, static) ────────────────
       set $bg      ${bg}
       set $fg      ${fg}
       set $accent  ${accent}
@@ -73,49 +79,48 @@ in
       font pango:JetBrains Mono 10
 
       # ── Floating by default ───────────────────────────────────────────────
-      # All windows float unless explicitly tiled
       for_window [class=".*"] floating enable
 
       # ── Apps that should always float ─────────────────────────────────────
-      for_window [class="Pavucontrol"]         floating enable
+      for_window [class="Pavucontrol"]          floating enable
       for_window [class="Nm-connection-editor"] floating enable
-      for_window [title="File Transfer*"]      floating enable
-      for_window [class="Steam" title="Steam"] floating enable
+      for_window [title="File Transfer*"]       floating enable
+      for_window [class="Steam" title="Steam"]  floating enable
 
-      # ── Gaps ─────────────────────────────────────────────────────────────
+      # ── Gaps ──────────────────────────────────────────────────────────────
       gaps inner 8
       gaps outer 4
       smart_gaps on
 
-      # ── Borders ──────────────────────────────────────────────────────────
+      # ── Borders ───────────────────────────────────────────────────────────
       default_floating_border pixel 2
       default_border           pixel 2
       hide_edge_borders        smart
 
-      # ── Window colors ─────────────────────────────────────────────────────
+      # ── Window colors (static — requires rebuild to change) ───────────────
       # class                 border   backgr.  text    indicator child_border
       client.focused          $accent  $bg      $fg     $accent   $accent
       client.unfocused        $border  $bg      $fg     $border   $border
       client.focused_inactive $border  $bg      $fg     $border   $border
       client.urgent           #e06c75  #e06c75  $fg     #e06c75   #e06c75
 
-      # ── Autostart ────────────────────────────────────────────────────────
+      # ── Autostart ─────────────────────────────────────────────────────────
       exec_always --no-startup-id ${config.scripts.wallpaperInit}/bin/wallpaper-init
       exec_always --no-startup-id ${pkgs.picom}/bin/picom --daemon
       exec_always --no-startup-id bash -c 'pkill polybar; until [ -S /run/user/$(id -u)/i3/ipc-socket.* ] 2>/dev/null; do sleep 0.1; done; ${polybar}/bin/polybar main'
       exec        --no-startup-id ${pkgs.udiskie}/bin/udiskie --tray &
       exec        --no-startup-id ${pkgs.dunst}/bin/dunst &
-      # ── Key bindings ─────────────────────────────────────────────────────
-      bindsym $mod+q      exec ${meta.terminalPackage}/bin/${meta.terminal}
-      bindsym $mod+f           exec ${pkgs.rofi}/bin/rofi -show drun
-      bindsym $mod+b           exec ${meta.browserPackage}/bin/${meta.browser}
-      bindsym $mod+n           exec ${meta.fileManagerPackage}/bin/${meta.fileManager}
-      bindsym $mod+e     kill
-      bindsym $mod+Alt+l       exec ${pkgs.i3lock}/bin/i3lock -c ${lib.strings.removePrefix "#" bg}
-      bindsym $mod+v           fullscreen toggle
 
-      # Toggle floating/tiling
-      bindsym $mod+Shift+s   floating toggle
+      # ── Key bindings ──────────────────────────────────────────────────────
+      bindsym $mod+q     exec ${meta.terminalPackage}/bin/${meta.terminal}
+      bindsym $mod+f     exec ${pkgs.rofi}/bin/rofi -show drun
+      bindsym $mod+b     exec ${meta.browserPackage}/bin/${meta.browser}
+      bindsym $mod+n     exec ${meta.fileManagerPackage}/bin/${meta.fileManager}
+      bindsym $mod+e     kill
+      bindsym $mod+Alt+l exec ${pkgs.i3lock}/bin/i3lock -c ${lib.strings.removePrefix "#" bg}
+      bindsym $mod+v     fullscreen toggle
+
+      bindsym $mod+Shift+s floating toggle
 
       # Focus
       bindsym $mod+h focus left
@@ -192,6 +197,8 @@ in
     '';
 
     # ── Polybar ───────────────────────────────────────────────────────────────
+    # Colors are loaded at runtime from ~/.cache/wal/colors-polybar.ini
+    # generated by theme-apply. Falls back to Nix palette if file is missing.
     xdg.configFile."polybar/config.ini".text = ''
       [colors]
       bg      = ${bg}
@@ -199,6 +206,8 @@ in
       accent  = ${accent}
       dimmed  = ${t.functions.darken bg 0.05}
       urgent  = #e06c75
+
+      include-file = /home/${user}/.cache/wal/colors-polybar.ini
 
       [bar/main]
       width            = 100%
@@ -226,7 +235,7 @@ in
       index-sort                  = true
       label-focused               = %index%
       label-focused-background    = ''${colors.accent}
-      label-focused-foreground    = ${bg}
+      label-focused-foreground    = ''${colors.bg}
       label-focused-padding       = 2
       label-unfocused             = %index%
       label-unfocused-padding     = 2
