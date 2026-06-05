@@ -11,17 +11,27 @@
         "cookiebanners.service.mode" = 2; # Block cookie banners
         "privacy.donottrackheader.enabled" = true;
         "privacy.fingerprintingProtection" = true;
+        "privacy.clearOnShutdown.history" = false;
         "privacy.resistFingerprinting" = false;
         "privacy.trackingprotection.emailtracking.enabled" = true;
         "privacy.trackingprotection.enabled" = true;
         "privacy.trackingprotection.fingerprinting.enabled" = true;
         "privacy.trackingprotection.socialtracking.enabled" = true;
         "layout.css.prefers-color-scheme.content-override" = 1;
-        "extensions.activeThemeID" = "firefox-compact-dark@mozilla.org";
         "browser.theme.toolbar-theme" = 0; 
         "browser.theme.content-theme" = 0;
-        "signon.rememberSignons" = true;
-        "signon.autofillForms" = true;
+        "signon.rememberSignons" = {
+          Value = true;
+          Status = "user";
+        };
+        "signon.autofillForms" = {
+          Value = true;
+          Status = "user";
+        };
+        "extensions.activeThemeID" = {
+          Value = "firefox-compact-dark@mozilla.org";
+          Status = "user";
+        };
       };
       ExtensionSettings = {
         "jid1-ZAdIEUB7XOzOJw@jetpack" = {
