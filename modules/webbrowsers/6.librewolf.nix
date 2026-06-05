@@ -24,6 +24,10 @@
           Value = true;
           Status = "user";
         };
+        "signon.formlessCapture.enabled" = {
+          Value = true;
+          Status = "user";
+        };
         "ui.systemUsesDarkTheme" = {
           Value = 1;
           Status = "user";
