@@ -78,9 +78,6 @@ in
       # ── Font ──────────────────────────────────────────────────────────────
       font pango:JetBrains Mono 10
 
-      # ── Floating by default ───────────────────────────────────────────────
-      for_window [class=".*"] floating enable
-
       # ── Apps that should always float ─────────────────────────────────────
       for_window [class="Pavucontrol"]          floating enable
       for_window [class="Nm-connection-editor"] floating enable
