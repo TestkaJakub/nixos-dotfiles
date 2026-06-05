@@ -47,13 +47,13 @@ in
   environment.etc."firefox/policies/policies.json".target = "librewolf/policies/policies.json";
 
   home-manager.users.${user}.home.file.".librewolf/librewolf.overrides.cfg".text = ''
-    defaultPref("signon.rememberSignons", true);
-    defaultPref("signon.autofillForms", true);
-    defaultPref("signon.formlessCapture.enabled", true);
-    defaultPref("privacy.resistFingerprinting", false);
-    defaultPref("extensions.activeThemeID", "firefox-compact-dark@mozilla.org");
-    defaultPref("ui.systemUsesDarkTheme", 1);
-    defaultPref("browser.theme.toolbar-theme", 0);
-    defaultPref("browser.theme.content-theme", 0);
+    pref("signon.rememberSignons", true);
+    pref("signon.autofillForms", true);
+    pref("signon.formlessCapture.enabled", true);
+    pref("privacy.resistFingerprinting", false);
+    pref("extensions.activeThemeID", "firefox-compact-dark@mozilla.org");
+    pref("ui.systemUsesDarkTheme", 1);
+    pref("browser.theme.toolbar-theme", 0);
+    pref("browser.theme.content-theme", 0);
   '';
 }
