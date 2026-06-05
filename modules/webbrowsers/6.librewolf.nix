@@ -6,6 +6,7 @@
     policies = {
       DisableTelemetry = true;
       DisableFirefoxStudies = true;
+      OfferToSaveLogins = true;
       Preferences = {
         "cookiebanners.service.mode.privateBrowsing" = 2; # Block cookie banners in private browsing
         "cookiebanners.service.mode" = 2; # Block cookie banners
@@ -18,14 +19,24 @@
         "privacy.trackingprotection.fingerprinting.enabled" = true;
         "privacy.trackingprotection.socialtracking.enabled" = true;
         "layout.css.prefers-color-scheme.content-override" = 1;
-        "browser.theme.toolbar-theme" = 0; 
-        "browser.theme.content-theme" = 0;
         "signon.rememberSignons" = {
           Value = true;
           Status = "user";
         };
         "signon.autofillForms" = {
           Value = true;
+          Status = "user";
+        };
+        "ui.systemUsesDarkTheme" = {
+          Value = 1;
+          Status = "user";
+        };
+        "browser.theme.toolbar-theme" = {
+          Value = 0;
+          Status = "user";
+        };
+        "browser.theme.content-theme" = {
+          Value = 0;
           Status = "user";
         };
         "extensions.activeThemeID" = {
@@ -49,6 +60,5 @@
       };
     };
   };
-
   environment.etc."firefox/policies/policies.json".target = "librewolf/policies/policies.json";
 }
