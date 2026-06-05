@@ -16,9 +16,8 @@
 #                    polybar, dunst, alacritty, wezterm, and terminals.
 #
 # Hook:
-#   If ~/.config/wallpaper/on-change exists and is executable, it is called
-#   after every wallpaper change with the new wallpaper path as argument.
-#   Use this for future theme extraction / color scheme switching.
+#   ~/.config/wallpaper/on-change is installed via home activation and calls
+#   theme-apply automatically after every wallpaper change.
 let
   user        = config.profile.username;
   defaultWall = config.meta.defaults.wallpaper;
@@ -279,13 +278,28 @@ EOF
       '';
     };
 
-    home-manager.users.${user}.home.packages = [
-      config.scripts.wallpaperSet
-      config.scripts.wallpaperNext
-      config.scripts.wallpaperInit
-      config.scripts.themeApply
-      pkgs.zenity
-      pkgs.pywal
-    ];
+    home-manager.users.${user} = { lib, ... }: {
+      home.packages = [
+        config.scripts.wallpaperSet
+        config.scripts.wallpaperNext
+        config.scripts.wallpaperInit
+        config.scripts.themeApply
+        pkgs.zenity
+        pkgs.pywal
+      ];
+
+      # ── Install on-change hook ─────────────────────────────────────────────
+      # Installed via activation so the store path of theme-apply is always
+      # up to date after every rebuild.
+      home.activation.installWallpaperHook =
+        lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+          mkdir -p "$HOME/.config/wallpaper"
+          cat > "$HOME/.config/wallpaper/on-change" << 'EOF'
+#!/bin/sh
+${config.scripts.themeApply}/bin/theme-apply "$1"
+EOF
+          chmod +x "$HOME/.config/wallpaper/on-change"
+        '';
+    };
   };
 }
