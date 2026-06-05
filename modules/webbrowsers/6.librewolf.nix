@@ -13,6 +13,15 @@
         Fingerprinting = true;
         EmailTracking = true;
       };
+      SanitizeOnShutdown = {
+        Cache = false;
+        Cookies = false;
+        History = true;
+        FormData = false;
+        Sessions = false;
+        SiteSettings = false;
+        Locked = true;
+      };
       Preferences = {
         "layout.css.prefers-color-scheme.content-override" = 1;
         "privacy.fingerprintingProtection" = true;
