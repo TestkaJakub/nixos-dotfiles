@@ -4,13 +4,15 @@
 # Desktop-specific binaries exposed via config.scripts.* so compositor and
 # other desktop modules can reference their store paths directly.
 #
-# wallpaper-set    — set a wallpaper by path, or open a GUI picker (yad)
+# wallpaper-set    — set a wallpaper by path, or open a GUI picker (zenity)
 #                    if no argument is given. Copies to collection/, updates
 #                    the current symlink, applies via feh, runs hook if present.
 # wallpaper-next   — advance to the next wallpaper in collection/, wrapping
 #                    around. Foundation for future slideshow support.
 # wallpaper-init   — apply current wallpaper on login, falling back to the
 #                    store-backed default if no current wallpaper is set.
+# theme-apply      — extract colors from wallpaper via pywal and apply to
+#                    polybar, dunst, alacritty, wezterm, and terminals.
 #
 # Hook:
 #   If ~/.config/wallpaper/on-change exists and is executable, it is called
@@ -19,6 +21,7 @@
 let
   user        = config.profile.username;
   defaultWall = config.meta.defaults.wallpaper;
+  polybar     = pkgs.polybar.override { i3Support = true; pulseSupport = true; };
 in
 {
   options.scripts = {
@@ -36,6 +39,11 @@ in
       type        = lib.types.package;
       readOnly    = true;
       description = "Apply current wallpaper on login, falling back to store default.";
+    };
+    themeApply = lib.mkOption {
+      type        = lib.types.package;
+      readOnly    = true;
+      description = "Extract colors from wallpaper via pywal and apply to all apps.";
     };
   };
 
@@ -58,6 +66,7 @@ in
           SOURCE=$(${pkgs.zenity}/bin/zenity \
             --file-selection \
             --title="Select wallpaper" \
+            --filename="$HOME/data/Pictures/" \
             --file-filter="Images|*.jpg *.jpeg *.png *.bmp *.gif *.tiff *.webp" \
             2>/dev/null) || { echo "Cancelled."; exit 0; }
 
@@ -154,13 +163,107 @@ in
           ${pkgs.feh}/bin/feh --bg-scale "${defaultWall}"
         fi
       '';
+
+      themeApply = pkgs.writeShellScriptBin "theme-apply" ''
+        set -e
+
+        WALLPAPER="$1"
+
+        if [ -z "$WALLPAPER" ]; then
+          echo "Usage: theme-apply <wallpaper-path>"
+          exit 1
+        fi
+
+        if [ ! -f "$WALLPAPER" ]; then
+          echo "ERROR: File not found: $WALLPAPER"
+          exit 1
+        fi
+
+        # ── Extract colors via pywal ──────────────────────────────────────────
+        ${pkgs.pywal}/bin/wal -i "$WALLPAPER" -n -q
+
+        # ── Load extracted colors ─────────────────────────────────────────────
+        . "$HOME/.cache/wal/colors.sh"
+
+        # ── Write polybar colors ──────────────────────────────────────────────
+        mkdir -p "$HOME/.cache/wal"
+        cat > "$HOME/.cache/wal/colors-polybar.ini" << EOF
+        [colors]
+        bg      = $color0
+        fg      = $color7
+        accent  = $color1
+        dimmed  = $color8
+        urgent  = $color9
+        EOF
+
+        # ── Restart polybar ───────────────────────────────────────────────────
+        pkill polybar 2>/dev/null || true
+        sleep 0.3
+        ${polybar}/bin/polybar main &
+
+        # ── Reload dunst ──────────────────────────────────────────────────────
+        systemctl --user restart dunst 2>/dev/null || true
+
+        # ── Write alacritty colors ────────────────────────────────────────────
+        mkdir -p "$HOME/.config/alacritty"
+        cat > "$HOME/.config/alacritty/colors.toml" << EOF
+        [colors.primary]
+        background = "$color0"
+        foreground = "$color7"
+
+        [colors.normal]
+        black   = "$color0"
+        red     = "$color1"
+        green   = "$color2"
+        yellow  = "$color3"
+        blue    = "$color4"
+        magenta = "$color5"
+        cyan    = "$color6"
+        white   = "$color7"
+
+        [colors.bright]
+        black   = "$color8"
+        red     = "$color9"
+        green   = "$color10"
+        yellow  = "$color11"
+        blue    = "$color12"
+        magenta = "$color13"
+        cyan    = "$color14"
+        white   = "$color15"
+        EOF
+
+        # ── Write wezterm colors ──────────────────────────────────────────────
+        mkdir -p "$HOME/.config/wezterm"
+        cat > "$HOME/.config/wezterm/colors.toml" << EOF
+        [colors]
+        background = "$color0"
+        foreground = "$color7"
+
+        ansi = [
+          "$color0", "$color1", "$color2", "$color3",
+          "$color4", "$color5", "$color6", "$color7"
+        ]
+
+        brights = [
+          "$color8",  "$color9",  "$color10", "$color11",
+          "$color12", "$color13", "$color14", "$color15"
+        ]
+        EOF
+
+        # ── Apply terminal colors immediately via sequences ───────────────────
+        ${pkgs.pywal}/bin/wal -R -q 2>/dev/null || true
+
+        echo "Theme applied from: $(basename "$WALLPAPER")"
+      '';
     };
 
     home-manager.users.${user}.home.packages = [
       config.scripts.wallpaperSet
       config.scripts.wallpaperNext
       config.scripts.wallpaperInit
+      config.scripts.themeApply
       pkgs.zenity
+      pkgs.pywal
     ];
   };
 }
