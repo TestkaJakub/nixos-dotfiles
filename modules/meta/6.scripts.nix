@@ -272,9 +272,6 @@ brights = [
 ]
 EOF
 
-        # ── Apply terminal colors immediately via sequences ───────────────────
-        ${pkgs.pywal}/bin/wal -R -q -e 2>/dev/null || true
-
         echo "Theme applied from: $(basename "$WALLPAPER")"
       '';
     };
