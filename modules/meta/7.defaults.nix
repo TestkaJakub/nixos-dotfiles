@@ -10,19 +10,19 @@
   options.meta.defaults = {
     browser = lib.mkOption {
       type        = lib.types.str;
-      default     = "firefox";
+      default     = "librewolf";
       description = "Binary name of the default web browser.";
     };
 
     browserDesktop = lib.mkOption {
       type        = lib.types.str;
-      default     = "firefox.desktop";
+      default     = "librewolf.desktop";
       description = "Desktop entry name for the default web browser (used by xdg-open).";
     };
 
     browserPackage = lib.mkOption {
       type        = lib.types.package;
-      default     = pkgs.firefox;
+      default     = pkgs.librewolf;
       description = "Package for the default web browser.";
     };
 
