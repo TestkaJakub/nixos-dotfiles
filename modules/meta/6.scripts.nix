@@ -55,7 +55,7 @@ in
         if [ -n "$1" ]; then
           SOURCE="$1"
         else
-          SOURCE=$(${pkgs.yad}/bin/yad \
+          SOURCE=$(${pkgs.zenity}/bin/zenity \
             --file-selection \
             --title="Select wallpaper" \
             --file-filter="Images|*.jpg *.jpeg *.png *.bmp *.gif *.tiff *.webp" \
@@ -160,7 +160,7 @@ in
       config.scripts.wallpaperSet
       config.scripts.wallpaperNext
       config.scripts.wallpaperInit
-      pkgs.yad
+      pkgs.zenity
     ];
   };
 }
