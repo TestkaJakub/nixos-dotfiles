@@ -47,11 +47,12 @@ let
 
     installPhase = ''
       mkdir -p $out/bin
-      chmod +x opt/brave.com/brave-origin-nightly/brave-origin-nightly
-      makeWrapper opt/brave.com/brave-origin-nightly/brave-origin-nightly \
+      mkdir -p $out/opt/brave.com
+      chmod -R +x opt/brave.com/brave-origin-nightly
+      cp -r opt/brave.com/brave-origin-nightly $out/opt/brave.com/brave-origin-nightly
+      makeWrapper $out/opt/brave.com/brave-origin-nightly/brave-origin-nightly \
         $out/bin/brave-origin-nightly \
         --prefix LD_LIBRARY_PATH : "${lib.makeLibraryPath [ pkgs.libGL pkgs.vulkan-loader ]}"
-      cp -r opt/brave.com/brave-origin-nightly $out/opt/brave.com/brave-origin-nightly
     '';
 
     # autoPatchelfHook rewrites ELF rpath entries so NixOS can run
