@@ -17,6 +17,11 @@
         "privacy.trackingprotection.fingerprinting.enabled" = true;
         "privacy.trackingprotection.socialtracking.enabled" = true;
         "layout.css.prefers-color-scheme.content-override" = 1;
+        "extensions.activeThemeID" = "firefox-compact-dark@mozilla.org";
+        "browser.theme.toolbar-theme" = 0; 
+        "browser.theme.content-theme" = 0;
+        "signon.rememberSignons" = true;
+        "signon.autofillForms" = true;
       };
       ExtensionSettings = {
         "jid1-ZAdIEUB7XOzOJw@jetpack" = {
