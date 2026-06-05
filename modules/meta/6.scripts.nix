@@ -28,6 +28,26 @@ let
   accent      = t.functions.complement p.primary;
   dimmed      = t.functions.darken p.secondary 0.05;
   polybar     = pkgs.polybar.override { i3Support = true; pulseSupport = true; };
+
+  # Shim: ImageMagick v7 deprecated the standalone `convert` binary in favour
+  # of `magick convert`. pywal still calls `convert` internally, producing
+  # walls of deprecation warnings. This shim silences them by forwarding every
+  # `convert` invocation to `magick convert`.
+  convertShim = pkgs.writeShellScriptBin "convert" ''
+    exec ${pkgs.imagemagick}/bin/magick convert "$@"
+  '';
+
+  # Wrap pywal so the shim is first on PATH and pywal never sees the real
+  # deprecated `convert` binary.
+  pywalWrapped = pkgs.symlinkJoin {
+    name = "pywal";
+    paths = [ pkgs.pywal ];
+    buildInputs = [ pkgs.makeWrapper ];
+    postBuild = ''
+      wrapProgram $out/bin/wal \
+        --prefix PATH : ${convertShim}/bin
+    '';
+  };
 in
 {
   options.scripts = {
@@ -202,7 +222,7 @@ EOF
 
         # ── Extract colors via pywal ──────────────────────────────────────────
         RESOLVED=$(readlink -f "$WALLPAPER")
-        ${pkgs.pywal}/bin/wal -i "$RESOLVED" -n -q
+        ${pywalWrapped}/bin/wal -i "$RESOLVED" -n -q
 
         # ── Load extracted colors ─────────────────────────────────────────────
         . "$HOME/.cache/wal/colors.sh"
@@ -283,7 +303,7 @@ EOF
         config.scripts.wallpaperInit
         config.scripts.themeApply
         pkgs.zenity
-        pkgs.pywal
+        pywalWrapped
       ];
 
       # ── Install on-change hook ─────────────────────────────────────────────
