@@ -39,6 +39,8 @@ let
       cairo
       gtk3
       wayland
+      qt5.qtbase
+      qt6.qtbase
     ];
 
     unpackPhase = ''
