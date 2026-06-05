@@ -1,11 +1,4 @@
 { lib, config, pkgs, ... }:
-
-# Meta / default applications
-# Single place to change which app opens for each role.
-#
-# Wallpaper: committed to the repo at wallpapers/AkuNoHana.jpg and referenced
-# as a relative path so it is store-backed, portable, and reproducible.
-# To swap wallpapers, commit a new image and update the path below.
 {
   options.meta.defaults = {
     browser = lib.mkOption {
@@ -38,9 +31,6 @@
       description = "Package for the default terminal emulator.";
     };
 
-    # Full prefix for spawning a command inside the terminal, e.g.:
-    #   "${meta.defaults.terminalRun} nmtui"
-    # Kept as a string because the sub-command syntax differs per terminal.
     terminalRun = lib.mkOption {
       type        = lib.types.str;
       default     = "${pkgs.wezterm}/bin/wezterm start --";
@@ -80,6 +70,17 @@
         To change wallpapers: commit the new image to that directory and
         update the default here.
       '';
+    };
+  };
+
+  config.home-manager.users.${config.profile.username}.xdg.mimeApps = {
+    enable = true;
+    defaultApplications = {
+      "text/html"                = config.meta.defaults.browserDesktop;
+      "x-scheme-handler/http"   = config.meta.defaults.browserDesktop;
+      "x-scheme-handler/https"  = config.meta.defaults.browserDesktop;
+      "x-scheme-handler/about"  = config.meta.defaults.browserDesktop;
+      "x-scheme-handler/unknown" = config.meta.defaults.browserDesktop;
     };
   };
 }
