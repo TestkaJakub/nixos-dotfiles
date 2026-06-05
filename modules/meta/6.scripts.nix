@@ -156,6 +156,20 @@ in
 
       wallpaperInit = pkgs.writeShellScriptBin "wallpaper-init" ''
         CURRENT="$HOME/.config/wallpaper/current"
+        WAL_COLORS="$HOME/.cache/wal/colors-polybar.ini"
+
+        # Write fallback polybar colors if pywal hasn't run yet
+        if [ ! -f "$WAL_COLORS" ]; then
+          mkdir -p "$HOME/.cache/wal"
+          cat > "$WAL_COLORS" << EOF
+        [colors]
+        bg      = ${bg}
+        fg      = ${fg}
+        accent  = ${accent}
+        dimmed  = ${t.functions.darken bg 0.05}
+        urgent  = #e06c75
+        EOF
+        fi
 
         if [ -L "$CURRENT" ] && [ -f "$CURRENT" ]; then
           ${pkgs.feh}/bin/feh --bg-scale "$CURRENT"
