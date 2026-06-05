@@ -7,18 +7,15 @@
       DisableTelemetry = true;
       DisableFirefoxStudies = true;
       OfferToSaveLogins = true;
+      EnableTrackingProtection = {
+        Value = true;
+        Cryptomining = true;
+        Fingerprinting = true;
+        EmailTracking = true;
+      };
       Preferences = {
-        "cookiebanners.service.mode.privateBrowsing" = 2; # Block cookie banners in private browsing
-        "cookiebanners.service.mode" = 2; # Block cookie banners
-        "privacy.donottrackheader.enabled" = true;
-        "privacy.fingerprintingProtection" = true;
-        "privacy.clearOnShutdown.history" = false;
-        "privacy.resistFingerprinting" = false;
-        "privacy.trackingprotection.emailtracking.enabled" = true;
-        "privacy.trackingprotection.enabled" = true;
-        "privacy.trackingprotection.fingerprinting.enabled" = true;
-        "privacy.trackingprotection.socialtracking.enabled" = true;
         "layout.css.prefers-color-scheme.content-override" = 1;
+        "privacy.fingerprintingProtection" = true;
         "signon.rememberSignons" = {
           Value = true;
           Status = "user";
