@@ -31,6 +31,28 @@ in
     step-ca
   ];
 
+  home-manager.users.${user} = { lib, ... }: {
+    home.activation.stepCaBundle =
+      lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        ca_json="${stepDir}/config/ca.json"
+        root_crt="${stepDir}/certs/root_ca.crt"
+        inter_crt="${stepDir}/certs/intermediate_ca.crt"
+
+        if [ -f "$ca_json" ] && [ -f "$root_crt" ] && [ -f "$inter_crt" ]; then
+          bundle="${stepDir}/certs/bundle.crt"
+          cat "$inter_crt" "$root_crt" > "$bundle"
+
+          if ! ${pkgs.gnugrep}/bin/grep -q "federatedRoots" "$ca_json"; then
+            ${pkgs.jq}/bin/jq \
+              --arg bundle "$bundle" \
+              '.tls.storeType = "default" | .federatedRoots = [$bundle]' \
+              "$ca_json" > "$ca_json.tmp" && mv "$ca_json.tmp" "$ca_json"
+            systemctl restart step-ca || true
+          fi
+        fi
+      '';
+  };
+
   systemd.services.step-ca = {
     description = "step-ca local ACME certificate authority";
     wantedBy    = [ "multi-user.target" ];
