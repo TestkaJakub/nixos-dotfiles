@@ -17,7 +17,7 @@
 {
   systemd.tmpfiles.rules = [
     "d /home/jakub/docker-data/freshrss-config 0755 jakub jakub -"
-    "d /home/jakub/docker-data/freshrss-data   0755 jakub jakub -"
+    "d /home/jakub/docker-data/freshrss-data   0775 33 33 -"
   ];
 
   virtualisation.oci-containers.containers.freshrss = {
