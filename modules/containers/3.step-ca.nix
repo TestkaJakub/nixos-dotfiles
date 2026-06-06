@@ -59,7 +59,7 @@ in
           --offline \
           --ca-url https://localhost:9000 \
           --root ${stepDir}/certs/root_ca.crt
-        systemctl restart step-ca
+        systemctl kill -s HUP step-ca
       '';
     };
   };
@@ -71,4 +71,10 @@ in
       Persistent = true;
     };
   };
+
+  systemd.tmpfiles.rules = [
+    "d ${dataDir} 0755 ${user} ${user} -"
+    "d ${acmeDir} 0700 ${user} ${user} -"
+    "f ${acmeDir}/acme.json 0600 ${user} ${user} -"  # add this
+  ];
 }
