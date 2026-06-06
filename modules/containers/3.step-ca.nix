@@ -71,10 +71,4 @@ in
       Persistent = true;
     };
   };
-
-  systemd.tmpfiles.rules = [
-    "d ${dataDir} 0755 ${user} ${user} -"
-    "d ${acmeDir} 0700 ${user} ${user} -"
-    "f ${acmeDir}/acme.json 0600 ${user} ${user} -"  # add this
-  ];
 }
