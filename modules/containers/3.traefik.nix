@@ -124,7 +124,7 @@ certificatesResolvers:
     acme:
       email: "jakub@home.local"
       storage: "/acme/acme.json"
-      caServer: "https://host.docker.internal:9000/acme/acme/directory"
+      caServer: "https://host.docker.internal:9000/acme/acme-1/directory"
       certificatesDuration: 24
       httpChallenge:
         entryPoint: web
