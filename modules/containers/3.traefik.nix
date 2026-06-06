@@ -126,6 +126,7 @@ certificatesResolvers:
       storage: "/acme/acme.json"
       caServer: "https://host.docker.internal:9000/acme/acme-1/directory"
       certificatesDuration: 24
+      keyType: EC256
       tlsChallenge: {}
 
 serversTransport:
