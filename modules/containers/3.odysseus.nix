@@ -57,6 +57,7 @@ in
     ];
 
     extraOptions = [
+      "--add-host=host.docker.internal:host-gateway"
       "--network=traefik"
       "--label=traefik.enable=true"
       "--label=traefik.http.routers.odysseus.rule=Host(`odysseus.home`)"
