@@ -1,30 +1,59 @@
-{ ... }:
+{ pkgs, config, ... }:
 
-# ── Odysseus AI — self-hosted AI workspace ─────────────────────────────────────
+# ── Odysseus AI ────────────────────────────────────────────────────────────────
+# Built from source — no pre-built image is published yet.
 # Web UI: https://odysseus.home
-#
-# To add DNS record:
-#   echo "192.168.0.252 odysseus.home" >> /home/jakub/docker-data/pihole/pihole/custom.list
-#   docker exec pihole pihole reloaddns
-#
-# First login: check logs for the generated admin password:
-#   docker compose logs odysseus | grep -i password
-# Default username: admin
+let
+  user = config.profile.username;
+in
 {
   systemd.tmpfiles.rules = [
-    "d /home/jakub/docker-data/odysseus 0755 jakub jakub -"
+    "d /home/${user}/docker-data/odysseus 0755 ${user} ${user} -"
+    "d /opt/odysseus                       0755 root root -"
   ];
 
+  systemd.services.odysseus-build = {
+    description = "Clone and build Odysseus AI Docker image";
+    wantedBy    = [ "multi-user.target" ];
+    after       = [ "docker.service" "network-online.target" ];
+    requires    = [ "docker.service" ];
+    before      = [ "docker-odysseus.service" ];
+
+    serviceConfig = {
+      Type            = "oneshot";
+      RemainAfterExit = true;
+      User            = "root";
+      ExecStart = pkgs.writeShellScript "build-odysseus" ''
+        set -e
+        if ! ${pkgs.docker}/bin/docker image inspect odysseus:local >/dev/null 2>&1; then
+          echo "Cloning Odysseus..."
+          if [ -d /opt/odysseus/.git ]; then
+            cd /opt/odysseus && ${pkgs.git}/bin/git pull
+          else
+            ${pkgs.git}/bin/git clone https://github.com/pewdiepie-archdaemon/odysseus /opt/odysseus
+          fi
+          echo "Building Odysseus image..."
+          ${pkgs.docker}/bin/docker build -t odysseus:local /opt/odysseus
+          echo "Done."
+        else
+          echo "Odysseus image already exists, skipping build."
+        fi
+      '';
+    };
+  };
+
   virtualisation.oci-containers.containers.odysseus = {
-    image     = "pewdiepie-archdaemon/odysseus:latest";
+    image     = "odysseus:local";
     autoStart = true;
 
     environment = {
-      TZ = "Europe/Warsaw";
+      TZ           = "Europe/Warsaw";
+      APP_BIND     = "0.0.0.0";
+      SECURE_COOKIES = "false";
     };
 
     volumes = [
-      "/home/jakub/docker-data/odysseus:/app/data"
+      "/home/${user}/docker-data/odysseus:/app/data"
     ];
 
     extraOptions = [
@@ -39,7 +68,7 @@
   };
 
   systemd.services.docker-odysseus = {
-    after    = [ "docker-network-traefik.service" ];
-    requires = [ "docker-network-traefik.service" ];
+    after    = [ "odysseus-build.service" "docker-network-traefik.service" ];
+    requires = [ "odysseus-build.service" "docker-network-traefik.service" ];
   };
 }
