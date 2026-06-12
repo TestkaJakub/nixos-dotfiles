@@ -60,6 +60,7 @@ in
     vlc
     hardinfo2
     imv
+    nm-applet
   ];
 
   home-manager.users.${user} = { lib, ... }: {
