@@ -105,6 +105,7 @@ in
       exec_always --no-startup-id ${config.scripts.wallpaperInit}/bin/wallpaper-init
       exec_always --no-startup-id ${pkgs.picom}/bin/picom --daemon
       exec_always --no-startup-id bash -c 'pkill polybar; until [ -S /run/user/$(id -u)/i3/ipc-socket.* ] 2>/dev/null; do sleep 0.1; done; ${polybar}/bin/polybar main'
+	  exec_always --no-startup-id ${pkgs.nm-applet}/bin/nm-applet
       exec        --no-startup-id ${pkgs.udiskie}/bin/udiskie --tray &
       exec        --no-startup-id ${pkgs.dunst}/bin/dunst &
 
