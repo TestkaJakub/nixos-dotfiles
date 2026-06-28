@@ -11,6 +11,7 @@ in
         nvidia-vaapi-driver
         libva-vdpau-driver
         libvdpau-va-gl
+        config.boot.kernelPackages.nvidiaPackages.legacy_470
       ]);
     };
     nvidia = lib.mkIf isDesktop {
