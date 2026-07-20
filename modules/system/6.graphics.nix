@@ -29,6 +29,9 @@ in
     deviceSection = ''
       Option "Coolbits" "4"
     '';
+    screenSection = ''
+      Option "metamodes" "HDMI-0: 1920x1080 {ViewPortIn=1920x1080, ViewPortOut=1840x1035+40+22}"
+    ''
   };
 
   environment = lib.mkIf isDesktop {
