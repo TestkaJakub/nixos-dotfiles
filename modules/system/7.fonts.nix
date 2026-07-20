@@ -13,7 +13,7 @@
     fontconfig = {
       antialias = true;
       hinting   = { enable = true; style = "slight"; };
-      subpixel  = { rgba = "none"; };
+      subpixel  = { rgba = "rgb"; };
     };
   };
 }

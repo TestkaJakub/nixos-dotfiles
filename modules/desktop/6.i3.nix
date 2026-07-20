@@ -44,7 +44,6 @@ in
 {
   services.xserver.enable                        = true;
   services.xserver.displayManager.lightdm.enable = true;
-  services.xserver.dpi = 70;
   services.xserver.windowManager.i3 = {
     enable        = true;
     extraPackages = with pkgs; [ i3status i3lock ];
@@ -64,10 +63,6 @@ in
   ];
 
   home-manager.users.${user} = { lib, ... }: {
-
-    xresources.properties = {
-      "Xft.dpi" = 70;
-    };
 
     # ── i3 config ─────────────────────────────────────────────────────────────
     xdg.configFile."i3/config".text = ''
