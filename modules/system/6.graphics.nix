@@ -23,7 +23,7 @@ in
     };
   };
 
-  sservices.xserver = lib.mkIf isDesktop {
+  services.xserver = lib.mkIf isDesktop {
     enable       = true;
     videoDrivers = [ "nvidia" ];
     deviceSection = ''
