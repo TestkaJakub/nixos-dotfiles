@@ -23,19 +23,23 @@ in
     };
   };
 
-  services.xserver = lib.mkIf isDesktop {
+  sservices.xserver = lib.mkIf isDesktop {
     enable       = true;
     videoDrivers = [ "nvidia" ];
     deviceSection = ''
       Option "Coolbits" "4"
+    '';
+    screenSection = ''
+      Option "metamodes" "HDMI-0: 1920x1080_60 { ViewPortIn=2624x1476, ViewPortOut=1920x1080+0+0 }"
     '';
   };
 
   environment = lib.mkIf isDesktop {
     systemPackages   = [ pkgs.nvtopPackages.full ];
     sessionVariables = {
-      NVD_BACKEND              = "direct";
-      LIBVA_DRIVER_NAME        = "nvidia";
+      NVD_BACKEND       = "direct";
+      LIBVA_DRIVER_NAME = "nvidia";
+      QT_FONT_DPI       = "131";
     };
     etc."ld.so.conf.d/nixos-opengl.conf".text = ''
       /run/opengl-driver/lib

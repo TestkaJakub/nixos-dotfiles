@@ -17,8 +17,26 @@ in
   ];
 
   home-manager.users.${user} = { lib, ... }: {
+    xresources.properties = {
+      "Xft.dpi"      = 131;
+      "Xcursor.size" = 32;
+    };
+
+    home.pointerCursor = {
+      package    = pkgs.adwaita-icon-theme;
+      name       = "Adwaita";
+      size       = 32;
+      x11.enable = true;
+      gtk.enable = true;
+    };
+
     gtk = {
       enable = true;
+      font = {
+        name    = "Noto Sans";
+        size    = 14;
+        package = pkgs.noto-fonts;
+      };
       theme = {
         name    = "Adwaita-dark";
         package = pkgs.gnome-themes-extra;

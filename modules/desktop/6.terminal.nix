@@ -16,11 +16,14 @@ let
     settings = {
       window = {
         opacity = 0.85;
-        padding = { x = 10; y = 10; };
+        padding = { x = 14; y = 14; };
       };
-      font.normal = {
-        family = "JetBrains Mono";
-        style  = "Regular";
+      font = {
+        size = 16;
+        normal = {
+          family = "JetBrains Mono";
+          style  = "Regular";
+        };
       };
     };
   }).wrapper;

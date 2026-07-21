@@ -76,7 +76,7 @@ in
       set $border  ${border}
 
       # ── Font ──────────────────────────────────────────────────────────────
-      font pango:JetBrains Mono 10
+      font pango:JetBrains Mono 14
 
       # ── Apps that should always float ─────────────────────────────────────
       for_window [class="Pavucontrol"]          floating enable
@@ -85,13 +85,13 @@ in
       for_window [class="Steam" title="Steam"]  floating enable
 
       # ── Gaps ──────────────────────────────────────────────────────────────
-      gaps inner 8
-      gaps outer 4
+      gaps inner 11
+      gaps outer 5
       smart_gaps on
 
       # ── Borders ───────────────────────────────────────────────────────────
-      default_floating_border pixel 2
-      default_border           pixel 2
+      default_floating_border pixel 3
+      default_border           pixel 3
       hide_edge_borders        smart
 
       # ── Window colors (static — requires rebuild to change) ───────────────
@@ -202,7 +202,7 @@ in
 
       [bar/main]
       width            = 100%
-      height           = 28
+      height           = 38
       radius           = 0
       background       = ''${colors.bg}
       foreground       = ''${colors.fg}
@@ -210,8 +210,8 @@ in
       padding-left     = 1
       padding-right    = 1
       module-margin    = 1
-      font-0           = JetBrains Mono:size=10;2
-      font-1           = JetBrains Mono:size=14;3
+      font-0           = JetBrains Mono:size=14;3
+      font-1           = JetBrains Mono:size=19;4
       modules-left     = i3
       modules-center   = date
       modules-right    = volume memory cpu network tray
@@ -281,7 +281,7 @@ in
         modi:           "drun,run,window";
         show-icons:     true;
         drun-display-format: "{name}";
-        font:           "JetBrains Mono 11";
+        font:           "JetBrains Mono 15";
       }
 
       * {
@@ -293,21 +293,21 @@ in
         text-color:       @fg;
       }
 
-      window {
+            window {
         background-color: @bg;
-        border:           2px;
+        border:           3px;
         border-color:     @accent;
-        border-radius:    4px;
-        width:            480px;
+        border-radius:    5px;
+        width:            656px;
       }
 
       mainbox       { background-color: @bg; }
-      inputbar      { background-color: @bg; padding: 8px; }
+      inputbar      { background-color: @bg; padding: 11px; }
       entry         { background-color: @bg; }
       prompt        { text-color: @accent; }
 
-      listview      { background-color: @bg; padding: 4px 0; }
-      element       { padding: 6px 8px; }
+      listview      { background-color: @bg; padding: 5px 0; }
+      element       { padding: 8px 11px; }
       element selected {
         background-color: @accent;
         text-color:       ${bg};
