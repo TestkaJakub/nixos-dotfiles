@@ -37,8 +37,6 @@ in
     enable        = true;
     videoDrivers  = [ "modesetting" ];
     deviceSection = ''
-      Identifier "AMD"
-      Driver "modesetting"
       Option "SWcursor" "True"
     '';
   };
