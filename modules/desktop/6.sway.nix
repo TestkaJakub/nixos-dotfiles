@@ -89,8 +89,11 @@ in
   # Screen-sharing / screenshot portals over PipeWire (you already run PipeWire).
   xdg.portal = {
     enable       = true;
-    wlr.enable   = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    extraPortals = [
+      pkgs.xdg-desktop-portal-hyprland
+      pkgs.xdg-desktop-portal-gtk
+    ];
+    config.sway.default = [ "hyprland" "gtk" ];
   };
 
   environment.systemPackages = with pkgs; [
