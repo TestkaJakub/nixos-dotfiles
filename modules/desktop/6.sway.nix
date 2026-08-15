@@ -170,7 +170,6 @@ in
       # scale, use integer `scale 1` and bump font sizes instead.
       output * {
         bg ${wallpaper} fill
-        scale 1.333333
       }
 
       # ── Autostart ────────────────────────────────────────────────────────────
