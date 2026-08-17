@@ -172,7 +172,7 @@ in
       # name and tune per-monitor. If XWayland apps look soft at fractional
       # scale, use integer `scale 1` and bump font sizes instead.
       output * {
-        bg ${wallpaper} fill
+        bg ${wallpaper} fill #1f1f1f
       }
 
       # ── Autostart ────────────────────────────────────────────────────────────
