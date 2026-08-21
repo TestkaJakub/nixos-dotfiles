@@ -42,14 +42,20 @@ in
         ${config.profile.lanInterface}.allowedTCPPorts = [ 53 445 139 ];
       };
 
-      extraCommands = lib.mkIf isNotDesktop ''
-        iptables -I INPUT -i docker0 -p tcp --dport 9000 -j ACCEPT
-        iptables -I INPUT -i br+ -p tcp --dport 9000 -j ACCEPT
-        iptables -I INPUT -i docker0 -p tcp --dport 8053 -j ACCEPT
-        iptables -I INPUT -i br+ -p tcp --dport 8053 -j ACCEPT
+      extraCommands = lib.mkMerge [
+        (lib.mkIf isNotDesktop ''
+          iptables -I INPUT -i docker0 -p tcp --dport 9000 -j ACCEPT
+          iptables -I INPUT -i br+ -p tcp --dport 9000 -j ACCEPT
+          iptables -I INPUT -i docker0 -p tcp --dport 8053 -j ACCEPT
+          iptables -I INPUT -i br+ -p tcp --dport 8053 -j ACCEPT
+          iptables -I INPUT -i docker0 -p tcp --dport 11434 -j ACCEPT
+          iptables -I INPUT -i br+ -p tcp --dport 11434 -j ACCEPT
+      '')
+      (lib.mkIf isDesktop ''
         iptables -I INPUT -i docker0 -p tcp --dport 11434 -j ACCEPT
-        iptables -I INPUT -i br+ -p tcp --dport 11434 -j ACCEPT
-      '';
+        iptables -I INPUT -i br+     -p tcp --dport 11434 -j ACCEPT
+      '')
+      ];
     };
 
     hosts = lib.mkIf isWorkstation {

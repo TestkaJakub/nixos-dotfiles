@@ -1,0 +1,11 @@
+{ config, lib, ... }:
+let
+  isDesktop = config.profile.isRole [ "desktop" ];
+in
+{
+  services.ollama = {
+    enable = true;
+    host   = "0.0.0.0";
+    acceleration = lib.mkIf isDesktop "rocm";
+  };
+}
