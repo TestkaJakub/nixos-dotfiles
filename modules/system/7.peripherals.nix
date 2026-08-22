@@ -2,9 +2,13 @@
 
 # ── Peripherals ────────────────────────────────────────────────────────────────
 {
-  services.blueman.enable = lib.mkIf config.profile.hasBluetooth true;
+  hardware.bluetooth = lib.mkIf config.profile.hasBluetooth {
+    enable      = true;
+    powerOnBoot = true;
+  };
   hardware.opentabletdriver.enable = lib.mkIf config.profile.hasTablet true;
   hardware.uinput.enable           = lib.mkIf config.profile.hasTablet true;
+  services.blueman.enable = lib.mkIf config.profile.hasBluetooth true;
 
   # Storage / removable media — gvfs declared once here, not in filemanager.nix
   services.devmon.enable  = true;

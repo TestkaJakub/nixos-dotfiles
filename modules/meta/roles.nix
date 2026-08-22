@@ -40,7 +40,7 @@
       lanInterface = "enp6s0";
       hasBattery   = false;
       hasBacklight = false;
-      hasBluetooth = false;
+      hasBluetooth = true;
     };
   };
 }
