@@ -9,4 +9,8 @@ in
     acceleration = lib.mkIf isDesktop "rocm";
     models = lib.mkIf isDesktop "/home/jakub/data/ollama-models";
   };
+
+  systemd.tmpfiles.rules = [
+    "d /home/jakub/data/ollama-models 0755 ollama ollama - -"
+  ];
 }
