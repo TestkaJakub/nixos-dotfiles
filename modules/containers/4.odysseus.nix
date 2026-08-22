@@ -63,6 +63,5 @@ in
   systemd.services.docker-odysseus = {
     after    = [ "odysseus-build.service" ];
     requires = [ "odysseus-build.service" ];
-    models = "/home/jakub/data/ollama-models";
   };
 }

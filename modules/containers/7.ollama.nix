@@ -7,5 +7,6 @@ in
     enable = true;
     host   = "0.0.0.0";
     acceleration = lib.mkIf isDesktop "rocm";
+    models = lib.mkIf isDesktop "/home/jakub/data/ollama-models";
   };
 }
