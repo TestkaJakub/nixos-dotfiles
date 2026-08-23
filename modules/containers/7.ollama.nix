@@ -6,7 +6,8 @@ in
   services.ollama = {
     enable = true;
     host   = "0.0.0.0";
-    acceleration = lib.mkIf isDesktop "rocm";
+    acceleration    = lib.mkIf isDesktop "rocm";
+    rocmOverrideGfx = lib.mkIf isDesktop "12.0.1";  # gfx1201, matches this card
   };
 
   systemd.tmpfiles.rules = [

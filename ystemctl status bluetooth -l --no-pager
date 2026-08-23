@@ -1,0 +1,9 @@
+○ bluetooth.service - Bluetooth service
+     Loaded: loaded (]8;;file://desktop/etc/systemd/system/bluetooth.service\/etc/systemd/system/bluetooth.service]8;;\; [0;1;32menabled[0m; preset: ignored)
+    Drop-In: /nix/store/w96080mzx51pnqi89hcbf52kfvbgz26a-system-units/bluetooth.service.d
+             └─]8;;file://desktop/nix/store/w96080mzx51pnqi89hcbf52kfvbgz26a-system-units/bluetooth.service.d/overrides.conf\overrides.conf]8;;\
+     Active: inactive (dead)
+       Docs: ]8;;man:bluetoothd(8)\man:bluetoothd(8)]8;;\
+
+Aug 22 16:05:05 desktop systemd[1]: Bluetooth service skipped, unmet condition check ConditionPathIsDirectory=/sys/class/bluetooth
+Aug 22 16:05:37 desktop systemd[1]: Bluetooth service skipped, unmet condition check ConditionPathIsDirectory=/sys/class/bluetooth
