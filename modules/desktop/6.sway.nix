@@ -179,7 +179,7 @@ in
       # Export the Wayland env into the user systemd + dbus activation env so
       # portals (screen-share) and any WantedBy=graphical-session.target units
       # can see WAYLAND_DISPLAY.
-      exec_always systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
+      exec_always systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP SWAYSOCK
       exec_always dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
 
       exec_always ${pkgs.waybar}/bin/waybar
@@ -298,11 +298,16 @@ in
         height   = 38;
         modules-left   = [ "sway/workspaces" "sway/mode" ];
         modules-center = [ "clock" ];
-        modules-right  = [ "pulseaudio" "memory" "cpu" "network" "tray" ];
+        modules-right  = [ "custom/bing" "pulseaudio" "memory" "cpu" "network" "tray" ];
 
         "sway/workspaces" = {
           disable-scroll = false;
           format         = "{name}";
+        };
+        "custom/bing" = {
+          exec     = "cat ~/.cache/bing-wallpaper/current.txt";
+          interval = 3600;
+          on-click = ''xdg-open "$(${pkgs.jq}/bin/jq -r .link ~/.cache/bing-wallpaper/current.json)"'';
         };
         "clock" = {
           interval = 1;
