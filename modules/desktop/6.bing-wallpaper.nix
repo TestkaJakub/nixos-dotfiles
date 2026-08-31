@@ -55,7 +55,7 @@ in
 
       # ── Fetch metadata + image (skip if today's is already downloaded) ──────
       if [ "$FORCE" = 1 ] || [ ! -f "$IMG" ]; then
-        JSON=$(${pkgs.curl}/bin/curl -fsSL --max-time 20 --retry 2 \
+        JSON=$(${pkgs.curl}/bin/curl -fsSL --http1.1 --max-time 20 --retry 2 \
           "https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=$MARKET") || {
             echo "bing-wallpaper: fetch failed, keeping current wallpaper" >&2
             exit 0
@@ -68,7 +68,7 @@ in
 
         URL="https://www.bing.com''${URLBASE}_UHD.jpg"   # 4K; swap to _1920x1080.jpg if you prefer
 
-        if ! ${pkgs.curl}/bin/curl -fsSL --max-time 60 -o "$IMG.tmp" "$URL"; then
+        if ! ${pkgs.curl}/bin/curl -fsSL --http1.1 --max-time 60 -o "$IMG.tmp" "$URL"; then
           echo "bing-wallpaper: image download failed" >&2
           rm -f "$IMG.tmp"
           exit 0
