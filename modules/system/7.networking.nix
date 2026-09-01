@@ -54,6 +54,8 @@ in
       (lib.mkIf isDesktop ''
         iptables -I INPUT -i docker0 -p tcp --dport 11434 -j ACCEPT
         iptables -I INPUT -i br+     -p tcp --dport 11434 -j ACCEPT
+        iptables -I INPUT -i docker0 -p tcp --dport 8080  -j ACCEPT
+        iptables -I INPUT -i br+     -p tcp --dport 8080  -j ACCEPT
       '')
       ];
     };
