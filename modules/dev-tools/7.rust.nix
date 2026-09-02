@@ -37,6 +37,14 @@ in
       "${pkgs.gdk-pixbuf.dev}/lib/pkgconfig"
       "${pkgs.graphene.dev}/lib/pkgconfig"
       "${pkgs.harfbuzz.dev}/lib/pkgconfig"
+      # ── Tauri (6.tauri.nix) ──
+      "${pkgs.gtk3.dev}/lib/pkgconfig"
+      "${pkgs.webkitgtk_4_1.dev}/lib/pkgconfig"
+      "${pkgs.libsoup_3.dev}/lib/pkgconfig"
+      "${pkgs.atk.dev}/lib/pkgconfig"
+      "${pkgs.at-spi2-atk.dev}/lib/pkgconfig"
+      "${pkgs.librsvg.dev}/lib/pkgconfig"
+      "${pkgs.openssl.dev}/lib/pkgconfig"
     ];
 
     # Trigger rustup to install the declared toolchain on first activation
