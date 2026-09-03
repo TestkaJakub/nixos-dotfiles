@@ -18,6 +18,7 @@ in
     rustup
     gcc        # linker
     pkg-config # needed by gtk4-rs and most C-binding crates
+    dbus
   ];
 
   home-manager.users.${user} = { lib, ... }: {
