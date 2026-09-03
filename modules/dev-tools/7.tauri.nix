@@ -31,6 +31,7 @@
     atk
     at-spi2-atk
     openssl
+    dbus
   ];
 
   # Blank/white WebKit window fix on amdgpu (and generally under Wayland).
