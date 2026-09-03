@@ -38,6 +38,7 @@ in
       "${pkgs.gdk-pixbuf.dev}/lib/pkgconfig"
       "${pkgs.graphene.dev}/lib/pkgconfig"
       "${pkgs.harfbuzz.dev}/lib/pkgconfig"
+      "${pkgs.dbus.dev}/lib/pkgconfig"
       # ── Tauri (6.tauri.nix) ──
       "${pkgs.gtk3.dev}/lib/pkgconfig"
       "${pkgs.webkitgtk_4_1.dev}/lib/pkgconfig"
