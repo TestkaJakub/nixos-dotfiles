@@ -60,8 +60,8 @@ in
       ];
     };
 
-    hosts = lib.mkIf isWorkstation {
-      "127.0.0.1" = [
+    hosts = lib.mkIf isNotServer {
+      ${if isWorkstation then "127.0.0.1" else "100.78.44.13"} = [
         "homarr.home"
         "todo.home"
         "jellyfin.home"
