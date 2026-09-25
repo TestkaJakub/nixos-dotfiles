@@ -55,13 +55,13 @@ in
     };
 
     volumes = [ "/home/${user}/docker-data/odysseus:/app/data" ];
-    ports   = [ "7000:7000" ];
+    ports = [ "7000:7000" ];
 
-    extraOptions = [ "--add-host=host.docker.internal:host-gateway" ];
+    extraOptions = [ "--network=ai" ];
   };
 
   systemd.services.docker-odysseus = {
-    after    = [ "odysseus-build.service" ];
-    requires = [ "odysseus-build.service" ];
+    after    = [ "odysseus-build.service" "docker-network-ai.service" ];
+    requires = [ "odysseus-build.service" "docker-network-ai.service" ];
   };
 }
