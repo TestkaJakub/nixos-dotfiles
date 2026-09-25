@@ -113,7 +113,8 @@ in
       bindsym $mod+q     exec ${meta.terminalPackage}/bin/${meta.terminal}
       bindsym $mod+f     exec ${pkgs.rofi}/bin/rofi -show drun
       bindsym $mod+b     exec ${meta.browserPackage}/bin/${meta.browser}
-      bindsym $mod+n     exec ${meta.fileManagerPackage}/bin/${meta.fileManager}
+      bindsym $mod+n       exec ${meta.terminalRun} ${pkgs.yazi}/bin/yazi
+      bindsym $mod+Shift+n exec ${meta.fileManagerPackage}/bin/${meta.fileManager}
       bindsym $mod+e     kill
       bindsym $mod+Alt+l exec ${pkgs.i3lock}/bin/i3lock -c ${lib.strings.removePrefix "#" bg}
       bindsym $mod+v     fullscreen toggle
