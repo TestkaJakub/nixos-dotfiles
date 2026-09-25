@@ -183,11 +183,10 @@ EOF
       LEGO_CA_CERTIFICATES = "/certs/root_ca.crt";
     };
 
-    ports = [
-      "80:80"
-      "443:443"
-      "8080:8080"
-    ];
+    ports = 
+      if isServer
+      then [ "80:80" "443:443" ]
+      else [ "127.0.0.1:80:80" "127.0.0.1:443:443" ];
 
     volumes = [
       "/var/run/docker.sock:/var/run/docker.sock:ro"
