@@ -13,12 +13,33 @@
 #   phonecam     queries the phone, lets you pick camera + size + fps via fzf
 #   Ctrl+C       stop (the device stays, it just goes blank)
 #
+# Encoder limits:
+#   The picker only lists modes the phone's hardware encoder can handle.
+#   Limits come from the active codec XML on the phone:
+#     adb shell getprop ro.media.xml_variant.codecs      → e.g. _volcano_v1
+#     adb shell 'grep -A8 -E "c2.qti.(avc|hevc).encoder\"" /vendor/etc/media_codecs_volcano_v1.xml'
+#   Blocks are 16x16 macroblocks. A mode is kept if its block count and
+#   blocks × fps both fit. Update the four encoderMax* values for a new phone.
+#
+# Frame-rate hint:
+#   scrcpy configures the encoder for 60 fps by default. Qualcomm encoders
+#   check that against blocks-per-second, so 4K30 gets rejected as "4K60".
+#   The picked fps is passed as the codec's frame-rate key to fix this.
+#
 # Bitrate scales with the chosen mode (~0.15 bit/pixel, 4–80 Mbps).
-# Above 1080p the stream switches to H.265, since phone H.264 encoders often
-# refuse 4K. Override with PHONECAM_CODEC=h264|h265|av1.
+# Above 1080p the stream uses H.265 for better quality per bit.
+# Override with PHONECAM_CODEC=h264|h265|av1.
 let
   videoNr = "10";
   device  = "/dev/video${videoNr}";
+
+  # c2.qti encoder limits (media_codecs_volcano_v1.xml, SM7635 / Nothing A059P).
+  # H.264 values used: slightly stricter than H.265 (34816 / 1044480),
+  # so every listed mode works with either codec.
+  encoderMaxW            = 4096;
+  encoderMaxH            = 4096;
+  encoderMaxBlocks       = 34560;
+  encoderMaxBlocksPerSec = 1036800;
 
   awk    = "${pkgs.gawk}/bin/awk";
   fzf    = "${pkgs.fzf}/bin/fzf";
@@ -41,7 +62,9 @@ let
 
     # ── Parse: one row per (camera, size), tab-separated ──────────────────────
     # id  w  h  fpslist  highspeed  <display text>
-    rows=$(printf '%s\n' "$raw" | ${awk} '
+    rows=$(printf '%s\n' "$raw" | ${awk} \
+      -v maxw=${toString encoderMaxW} -v maxh=${toString encoderMaxH} \
+      -v maxblocks=${toString encoderMaxBlocks} -v maxbps=${toString encoderMaxBlocksPerSec} '
       function gcd(a, b,  t) { while (b) { t = b; b = a % b; a = t } return a }
       function ratio(w, h,  g) {
         g = gcd(w, h)
@@ -57,8 +80,26 @@ let
       /High speed capture/ { hs = 1; next }
       /^[[:space:]]+- [0-9]+x[0-9]+/ {
         match($0, /([0-9]+)x([0-9]+)/, s)
+
+        # size limit, either orientation
+        big   = (s[1] > s[2]) ? s[1] : s[2]
+        small = (s[1] > s[2]) ? s[2] : s[1]
+        if (big > maxw || small > maxh) next
+
+        # macroblock count limit
+        blocks = int((s[1] + 15) / 16) * int((s[2] + 15) / 16)
+        if (blocks > maxblocks) next
+
         f = fps
         if (hs) { match($0, /fps=\[([^]]*)\]/, h); f = h[1]; gsub(/ /, "", f) }
+
+        # keep only fps values the encoder can sustain at this size
+        n = split(f, arr, ","); ok = ""
+        for (i = 1; i <= n; i++)
+          if (blocks * arr[i] <= maxbps) ok = ok (ok == "" ? "" : ",") arr[i]
+        if (ok == "") next
+        f = ok
+
         key = id SUBSEP s[1] SUBSEP s[2] SUBSEP hs
         if (seen[key]++) next
         printf "%s\t%s\t%s\t%s\t%s\t%-6s %5sx%-5s %-8s %5.1f MP   fps %s%s\n",
@@ -70,7 +111,7 @@ let
 
     if [ -z "$rows" ]; then
       echo "$raw"
-      echo "phonecam: no camera sizes found in scrcpy output"
+      echo "phonecam: no usable camera sizes (check encoder limits in the module)"
       exit 1
     fi
 
@@ -117,6 +158,7 @@ let
       --camera-fps="$fps" \
       --video-codec="$codec" \
       --video-bit-rate="$bitrate" \
+      --video-codec-options="frame-rate:int=$fps" \
       "''${extra[@]}" \
       --no-audio \
       --no-playback \
