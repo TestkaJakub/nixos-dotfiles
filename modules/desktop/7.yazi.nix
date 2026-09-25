@@ -84,7 +84,6 @@ in
       enableFishIntegration = true;
       enableBashIntegration = true;
       shellWrapperName      = "y";
-
       # Opener names match yazi's default rules (text → edit, images and
       # fallback → open, media → play), so "Open with…" shows up under O
       # for every file type.
@@ -102,6 +101,19 @@ in
           openWithEntry
         ];
       };
+      keymap.mgr.prepend_keymap = [
+        # ── WASD navigation ───────────────────────────────────────────────
+        { on = "w"; run = "arrow -1"; desc = "Move up"; }
+        { on = "s"; run = "arrow 1";  desc = "Move down"; }
+        { on = "a"; run = "leave";    desc = "Go to parent directory"; }
+        { on = "d"; run = "enter";    desc = "Enter directory"; }
+
+        # ── hjkl take over the displaced actions (same positions) ─────────
+        { on = "k"; run = "tasks:show";      desc = "Show task manager"; }
+        { on = "h"; run = "create";          desc = "Create file (end with / for dir)"; }
+        { on = "j"; run = "search --via=fd"; desc = "Search file names (fd)"; }
+        { on = "l"; run = "remove";          desc = "Move to trash"; }
+      ];
     };
   };
 }
