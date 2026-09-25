@@ -1,0 +1,182 @@
+{ pkgs, lib, config, configurations, ... }:
+
+# ── nix-want — install missing commands on demand ──────────────────────────────
+# Typing an unknown command in fish offers:
+#   [r] run once      nix shell from this system's pinned nixpkgs (unfree works)
+#   [i] install       pick roles, write a module, nrs (if this host), run it
+#   [a] add only      pick roles, write a module, no rebuild
+#   [n] cancel
+#
+# Also usable directly:  nix-want htop [args...]
+#
+# Each install is a tiny generated module in modules/nix-want/, named with the
+# usual role-bitmask prefix, so the module walker handles it like any other:
+#   4.htop.nix         desktop only
+#   6.lazydocker.nix   workstation + desktop
+# Uninstall: delete the file. Change roles: rename the prefix.
+# Installing an existing package for more roles merges the prefixes.
+#
+# Other machines get new files on their next nrs after a manual git pull.
+#
+# Package lookup uses the nix-index database (7.nix-index.nix). Attributes are
+# checked against this system's nixpkgs before a file is written, since the
+# index is built from unstable.
+let
+  user = config.profile.username;
+
+  roleEntries = lib.concatStringsSep "\n" (lib.mapAttrsToList
+    (name: v: "      [\"${name}\"]=${toString v.bitmaskvalue}")
+    configurations);
+  roleNames = lib.concatStringsSep " " (builtins.attrNames configurations);
+
+  nixLocate = "${config.programs.nix-index.package}/bin/nix-locate";
+  fzf       = "${pkgs.fzf}/bin/fzf";
+  nrs       = "${config.scripts.nrs}/bin/nrs";
+
+  nixWant = pkgs.writeShellScriptBin "nix-want" ''
+    set -o pipefail
+
+    FLAKE="$HOME/nixos-dotfiles"
+    DIR="$FLAKE/modules/nix-want"
+    HOST=$(tr -d '[:space:]' < /proc/sys/kernel/hostname)
+    PKGS="$FLAKE#nixosConfigurations.$HOST.pkgs"
+
+    declare -A ROLE_BIT=(
+${roleEntries}
+    )
+    HOST_BIT="''${ROLE_BIT[$HOST]:-0}"
+
+    cmd="$1"
+    if [ -z "$cmd" ]; then
+      echo "Usage: nix-want <command> [args...]"
+      exit 1
+    fi
+    shift
+
+    notfound() { echo "$cmd: command not found" >&2; exit 127; }
+
+    # Scripts / pipes: behave like a normal missing command, never prompt
+    { [ -t 0 ] && [ -t 1 ]; } || notfound
+
+    # ── Find providers (exact attr-name match sorted first) ─────────────────
+    mapfile -t attrs < <(
+      ${nixLocate} --minimal --top-level --type x --type s \
+        --whole-name --at-root "/bin/$cmd" 2>/dev/null \
+        | sed 's/\.[^.]*$//' \
+        | awk -v c="$cmd" '{ print ($0 == c ? 0 : 1) "\t" $0 }' \
+        | sort -u -k1,1n -k2,2 \
+        | cut -f2
+    )
+
+    [ "''${#attrs[@]}" -eq 0 ] && notfound
+
+    if [ "''${#attrs[@]}" -eq 1 ]; then
+      attr="''${attrs[0]}"
+    else
+      attr=$(printf '%s\n' "''${attrs[@]}" | ${fzf} \
+        --prompt="$cmd is provided by> " --height=40% --reverse) || notfound
+    fi
+
+    # ── Ask ─────────────────────────────────────────────────────────────────
+    echo "'$cmd' is not installed. Provided by: $attr"
+    printf '  [r] run once   [i] install + nrs   [a] add only   [n] cancel: '
+    read -r -n1 choice
+    echo
+
+    case "$choice" in
+      r|R)
+        exec nix shell "$PKGS.$attr" -c "$cmd" "$@"
+        ;;
+      i|I|a|A)
+        ;;
+      *)
+        exit 127
+        ;;
+    esac
+
+    # ── Validate against this system's nixpkgs ──────────────────────────────
+    if ! nix eval --raw "$PKGS.$attr.name" >/dev/null 2>&1; then
+      echo "nix-want: '$attr' doesn't exist in this system's nixpkgs (the index is from unstable)."
+      exit 1
+    fi
+
+    # ── Pick roles (current host first; Tab selects several) ────────────────
+    roles=$(
+      {
+        echo "$HOST"
+        for r in ${roleNames}; do [ "$r" != "$HOST" ] && echo "$r"; done
+      } | ${fzf} --multi \
+            --prompt="install $attr on> " \
+            --header="Tab: select several   Enter: confirm" \
+            --height=30% --reverse
+    ) || { echo "Cancelled."; exit 127; }
+
+    mask=0
+    while read -r r; do
+      bit="''${ROLE_BIT[$r]:-0}"
+      mask=$(( mask | bit ))
+    done <<< "$roles"
+
+    # ── Merge with an existing file for the same attribute ──────────────────
+    mkdir -p "$DIR"
+    for f in "$DIR"/*.nix; do
+      [ -e "$f" ] || continue
+      name=$(basename "$f")
+      if [[ $name =~ ^([0-9]+)\.(.+)\.nix$ ]] && [ "''${BASH_REMATCH[2]}" = "$attr" ]; then
+        old="''${BASH_REMATCH[1]}"
+        mask=$(( mask | old ))
+        rm "$f"
+      fi
+    done
+
+    # ── Write the module ────────────────────────────────────────────────────
+    # Attribute components are quoted so names like 0ad or _1password stay valid.
+    IFS=. read -ra parts <<< "$attr"
+    expr="pkgs"
+    for p in "''${parts[@]}"; do expr="$expr.\"$p\""; done
+
+    names=""
+    for r in ${roleNames}; do
+      bit="''${ROLE_BIT[$r]}"
+      (( mask & bit )) && names="$names $r"
+    done
+
+    file="$DIR/$mask.$attr.nix"
+    printf '%s\n' \
+      "# Generated by nix-want: $attr" \
+      "# Roles:$names (prefix $mask)" \
+      "# Rename the prefix to change roles, delete this file to uninstall." \
+      "{ pkgs, ... }:" \
+      "{" \
+      "  environment.systemPackages = [ $expr ];" \
+      "}" > "$file"
+
+    echo "Wrote modules/nix-want/$(basename "$file") →$names"
+
+    case "$choice" in
+      a|A) echo "It will be installed on the next nrs of those machines."; exit 0 ;;
+    esac
+
+    if (( mask & HOST_BIT )); then
+      ${nrs} || exit $?
+      echo ""
+      echo "Running $cmd..."
+      exec "$cmd" "$@"
+    else
+      echo "$HOST wasn't selected, so nothing to rebuild here."
+      echo "On those machines: git pull in the dotfiles, then nrs."
+    fi
+  '';
+in
+{
+  environment.systemPackages = [ nixWant ];
+
+  # Replaces nix-index's fish handler (disabled in 7.nix-index.nix).
+  home-manager.users.${user}.programs.fish.functions.fish_command_not_found = ''
+    if status is-interactive
+      nix-want $argv
+    else
+      __fish_default_command_not_found_handler $argv
+    end
+  '';
+}

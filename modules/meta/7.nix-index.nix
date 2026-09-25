@@ -12,7 +12,7 @@
 {
   programs.nix-index = {
     enable                = true;
-    enableFishIntegration = true;
+    enableFishIntegration = false;
     enableBashIntegration = true;
   };
 
