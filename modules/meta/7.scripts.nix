@@ -266,7 +266,7 @@ in
         ${pkgs.nix-output-monitor}/bin/nom build \
           "$FLAKE#nixosConfigurations.$TARGET.config.system.build.toplevel" \
           --out-link "$OUT_DIR/result"
-        NEW_SYSTEM=$(readlink -f "OUT_DIR/result")
+        NEW_SYSTEM=$(readlink -f "$OUT_DIR/result")
 
         # ── Diff (nvd) ───────────────────────────────────────────────────────
         echo ""
