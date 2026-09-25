@@ -58,12 +58,14 @@ ${roleEntries}
     # Scripts / pipes: behave like a normal missing command, never prompt
     { [ -t 0 ] && [ -t 1 ]; } || notfound
 
-    # ── Find providers (exact attr-name match sorted first) ─────────────────
+    # ── Find providers ──────────────────────────────────────────────────────
+    # Sort: exact attr-name match, then top-level packages, then nested sets
+    # (python3Packages.foo etc.). nix-locate 0.1.9 has no --top-level flag.
     mapfile -t attrs < <(
-      ${nixLocate} --minimal --top-level --type x --type s \
-        --whole-name --at-root "/bin/$cmd" 2>/dev/null \
+      ${nixLocate} --minimal --type x --type s \
+        --whole-name --at-root "/bin/$cmd" \
         | sed 's/\.[^.]*$//' \
-        | awk -v c="$cmd" '{ print ($0 == c ? 0 : 1) "\t" $0 }' \
+        | awk -v c="$cmd" '{ print ($0 == c ? 0 : (index($0, ".") ? 2 : 1)) "\t" $0 }' \
         | sort -u -k1,1n -k2,2 \
         | cut -f2
     )
