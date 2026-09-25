@@ -257,6 +257,28 @@ in
         git push -u origin development || exit 1
 
         # ── Rebuild ──────────────────────────────────────────────────────────
+        OLD_SYSTEM=$(readlink -f /run/current-system)
+        OUT_DIR=$(mktemp -d)
+        trap 'rm -rf "$OUT_DIR"' EXIT
+
+        echo ""
+        echo "Building #$TARGET..."
+        ${pkgs.nix-output-monitor}/bin/nom build \
+          "$FLAKE#nixosConfigurations.$TARGET.config.system.build.toplevel" \
+          --out-link "$OUT_DIR/result"
+        NEW_SYSTEM=$(readlink -f "OUT_DIR/result")
+
+        # ── Diff (nvd) ───────────────────────────────────────────────────────
+        echo ""
+        if [ "$OLD_SYSTEM" = "$NEW_SYSTEM" ]; then
+          echo "No package changes — closure identical to the running system."
+        else
+          ${pkgs.nvd}/bin/nvd diff "$OLD_SYSTEM" "$NEW_SYSTEM"
+        fi
+
+        # ── Switch ───────────────────────────────────────────────────────────
+        # Everything is already built, so this only re-evaluates and activates.
+        echo ""
         sudo nixos-rebuild switch --flake "$FLAKE#$TARGET"
         result=$?
         cd "$SAVED_DIR" || exit 1
@@ -277,6 +299,8 @@ in
       config.scripts.nrs
       config.scripts.nrsr
       config.scripts.dpt
+      pkgs.nix-output-monitor
+      pkgs.nvd
     ];
   };
 }
