@@ -1,8 +1,8 @@
 { pkgs, config, ... }:
 
 # ── Productivity ───────────────────────────────────────────────────────────────
-#   obsidian      — knowledge base / markdown notes
-#   libreoffice   — office suite
+#   obsidian
+#   libreoffice
 let
   user = config.profile.username;
 in
