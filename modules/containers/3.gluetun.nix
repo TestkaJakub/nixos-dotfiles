@@ -2,8 +2,15 @@
 
 # ── Gluetun ────────────────────────────────────────────────────────────────────
 # Mullvad WireGuard VPN gateway container.
-# qbittorrent.nix routes its traffic through this container's network stack.
-# jellyseerr.nix routes outbound HTTP through the built-in SOCKS5 proxy (port 1080).
+#
+# Consumers (all over the `traefik` Docker network, nothing published on host):
+#   qbittorrent  shares this container's network stack (--network=container:gluetun),
+#                WebUI reached by Traefik at gluetun:8085 → https://qbittorrent.home
+#   jellyseerr   outbound HTTP(S) via the built-in HTTP proxy at gluetun:8888
+#
+# No `ports` on purpose: Docker-published ports bypass the NixOS firewall and
+# would expose the proxy and the WebUI to the whole LAN. Mullvad has no port
+# forwarding, so publishing the torrent port wouldn't accept inbound peers anyway.
 #
 # Secrets: ~/secrets/gluetun.env must contain:
 #   WIREGUARD_PRIVATE_KEY=your_key
@@ -18,18 +25,11 @@
       VPN_SERVICE_PROVIDER = "mullvad";
       VPN_TYPE             = "wireguard";
       SERVER_COUNTRIES     = "Chile";
-      # Expose SOCKS5 proxy for other containers (e.g. jellyseerr)
-      # listening on all interfaces so traefik-network containers can reach it
-		HTTPPROXY         = "on";
-		HTTPPROXY_ADDRESS = ":8888";
-    };
 
-    ports = [
-      "6881:6881"
-      "6881:6881/udp"
-      "8085:8085"
-      "8888:8888"
-    ];
+      # HTTP proxy for other containers on the traefik network (jellyseerr).
+      HTTPPROXY         = "on";
+      HTTPPROXY_ADDRESS = ":8888";
+    };
 
     extraOptions = [
       "--cap-add=NET_ADMIN"
