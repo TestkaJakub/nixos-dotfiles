@@ -40,6 +40,11 @@
       url                    = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    sops-nix = {
+      url                    = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs:
@@ -139,6 +144,7 @@
               ++ [ inputs.home-manager.nixosModules.home-manager ]
               ++ [ inputs.vscode-server.nixosModules.default ]
               ++ [ inputs.nix-index-database.nixosModules.nix-index ]
+              ++ [ inputs.sops-nix.nixosModules.sops ]
               ++ [{
                 profile.hostname     = hostname;
                 profile.lanInterface = cfg.lanInterface;

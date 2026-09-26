@@ -249,6 +249,8 @@ in
           git checkout development || exit 1
         fi
 
+        nix flake lock "$FLAKE" || exit 1
+
         git add . || exit 1
         if ! git diff --cached --quiet; then
           git commit -m "upgrade $(date '+%Y-%m-%d %H:%M')" || exit 1
