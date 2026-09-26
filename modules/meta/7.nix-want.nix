@@ -177,6 +177,9 @@ in
   home-manager.users.${user}.programs.fish.functions.fish_command_not_found = ''
     if status is-interactive
       nix-want $argv
+      set -l rc $status
+      test $rc -eq 127; and set -q TAI_ON; and tai say $fish_pid "$argv"
+      return $rc
     else
       __fish_default_command_not_found_handler $argv
     end
