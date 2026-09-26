@@ -15,5 +15,11 @@
 {
   sops.age.keyFile = "/var/lib/sops-nix/key.txt";
 
+  # We use a standalone age key, not SSH host keys (the desktop has no sshd).
+  # Setting these explicitly also skips sops-nix's default, which references
+  # services.openssh.generateHostKeys — an option newer than nixos-25.11.
+  sops.age.sshKeyPaths   = [ ];
+  sops.gnupg.sshKeyPaths = [ ];
+
   environment.systemPackages = with pkgs; [ sops age ];
 }
