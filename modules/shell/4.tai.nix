@@ -103,6 +103,7 @@ let
     esac
 
     content=$(printf '%s' "$content" | redact)
+    [ "$mode" != event ] && rm -f "$sug"
 
     run_tool() {   # $1 = tool name, $2 = arguments (JSON object)
       local arg
@@ -149,6 +150,8 @@ let
           msgs=$(${jq} --arg n "$name" --arg o "$out" \
             '. + [{role:"tool", tool_name:$n, content:$o}]' <<<"$msgs")
         done <<<"$calls"
+        # nothing left to learn if the only tool used was suggest_command
+        ${jq} -e 'any(.tool_calls[]; .function.name != "suggest_command")' <<<"$msg" >/dev/null || break
       done
       reply=$(${jq} -r '.content // empty' <<<"$msg")
     }
