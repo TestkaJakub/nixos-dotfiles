@@ -126,7 +126,9 @@ let
 
         ask() {   # one full request, including up to 5 tool rounds
       msg='{}'
-      for _ in 1 2 3 4 5; do
+      for round in 1 2 3 4 5; do
+        # ...existing request...
+        [ -n "$TAI_DEBUG" ] && echo "tai: round $round, tools: $(${jq} -r '[.tool_calls[]?.function.name] | join(", ")' <<<"$msg")"
         msg=$(${jq} -n --arg m "$model" --arg s "$SYSTEM" --argjson h "$msgs" \
                 --slurpfile t ${toolsFile} \
                 '{model:$m, stream:false, think:false, tools:$t[0],
@@ -144,7 +146,7 @@ let
           name=$(${jq} -r '.function.name' <<<"$call")
           out=$(run_tool "$name" "$(${jq} -c '.function.arguments' <<<"$call")")
           msgs=$(${jq} --arg n "$name" --arg o "$out" \
-                   '. + [{role:"tool", tool_name:$n, content:$o}]' <<<"$msgs")
+              `     '. + [{role:"tool", tool_name:$n, content:$o}]' <<<"$msgs")
         done <<<"$calls"
       done
       reply=$(${jq} -r '.content // empty' <<<"$msg")

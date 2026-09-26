@@ -25,7 +25,7 @@ in
   systemd.services.odysseus-build = {
     description = "Clone and build Odysseus AI Docker image";
     wantedBy    = [ "multi-user.target" ];
-    after       = [ "docker.service" "network-online.target" ];
+    after       = [ "docker.service"];
     requires    = [ "docker.service" ];
     before      = [ "docker-odysseus.service" ];
 

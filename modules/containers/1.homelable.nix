@@ -21,7 +21,7 @@ in
   systemd.services.homelable-build = {
     description = "Build Homelable Docker images from source";
     wantedBy    = [ "multi-user.target" ];
-    after       = [ "docker.service" "network-online.target" ];
+    after       = [ "docker.service"];
     requires    = [ "docker.service" ];
     before      = [
       "docker-homelable-backend.service"
