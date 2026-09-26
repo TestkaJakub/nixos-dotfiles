@@ -124,30 +124,40 @@ let
 
     msgs=$(${jq} --arg c "$content" '. + [{role:"user", content:$c}] | .[-30:]' "$hist")
 
-    msg='{}'
-    for _ in 1 2 3 4 5; do   # at most 5 tool rounds
-      msg=$(${jq} -n --arg m "$model" --arg s "$SYSTEM" --argjson h "$msgs" \
-              --slurpfile t ${toolsFile} \
-              '{model:$m, stream:false, think:false, tools:$t[0],
-                options:{num_ctx:16384},
-                messages:([{role:"system", content:$s}] + $h)}' \
-            | ${curl} -sf -m 90 "$host/api/chat" -d @- \
-            | ${jq} -c '.message') \
-        || { echo "tai: can't reach Ollama at $host" >&2; exit 0; }
+        ask() {   # one full request, including up to 5 tool rounds
+      msg='{}'
+      for _ in 1 2 3 4 5; do
+        msg=$(${jq} -n --arg m "$model" --arg s "$SYSTEM" --argjson h "$msgs" \
+                --slurpfile t ${toolsFile} \
+                '{model:$m, stream:false, think:false, tools:$t[0],
+                  options:{num_ctx:16384},
+                  messages:([{role:"system", content:$s}] + $h)}' \
+              | ${curl} -sf -m 90 "$host/api/chat" -d @- \
+              | ${jq} -c '.message') \
+          || { echo "tai: can't reach Ollama at $host" >&2; exit 0; }
 
-      msgs=$(${jq} --argjson x "$msg" '. + [$x]' <<<"$msgs")
-      calls=$(${jq} -c '.tool_calls // [] | .[]' <<<"$msg")
-      [ -z "$calls" ] && break
+        msgs=$(${jq} --argjson x "$msg" '. + [$x]' <<<"$msgs")
+        calls=$(${jq} -c '.tool_calls // [] | .[]' <<<"$msg")
+        [ -z "$calls" ] && break
 
-      while read -r call; do
-        name=$(${jq} -r '.function.name' <<<"$call")
-        out=$(run_tool "$name" "$(${jq} -c '.function.arguments' <<<"$call")")
-        msgs=$(${jq} --arg n "$name" --arg o "$out" \
-                 '. + [{role:"tool", tool_name:$n, content:$o}]' <<<"$msgs")
-      done <<<"$calls"
-    done
+        while read -r call; do
+          name=$(${jq} -r '.function.name' <<<"$call")
+          out=$(run_tool "$name" "$(${jq} -c '.function.arguments' <<<"$call")")
+          msgs=$(${jq} --arg n "$name" --arg o "$out" \
+                   '. + [{role:"tool", tool_name:$n, content:$o}]' <<<"$msgs")
+        done <<<"$calls"
+      done
+      reply=$(${jq} -r '.content // empty' <<<"$msg")
+    }
 
-    reply=$(${jq} -r '.content // empty' <<<"$msg")
+    ask
+
+    # Direct messages must get an answer: if the model went silent (and didn't
+    # suggest a command either), nudge it once.
+    if [ "$mode" != event ] && [ ! -f "$sug" ] && { [ -z "$reply" ] || [ "$reply" = "-" ]; }; then
+      msgs=$(${jq} '. + [{role:"user", content:"[jakub] That was addressed to you directly. Answer it in words, never with \"-\"."}]' <<<"$msgs")
+      ask
+    fi
 
     # Save only the conversation (no tool traffic), last 30 messages
     ${jq} 'map(select(.role == "user" or (.role == "assistant" and ((.content // "") != ""))))
