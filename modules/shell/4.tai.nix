@@ -124,19 +124,20 @@ let
 
     msgs=$(${jq} --arg c "$content" '. + [{role:"user", content:$c}] | .[-30:]' "$hist")
 
-        ask() {   # one full request, including up to 5 tool rounds
+    ask() {
       msg='{}'
+      tools_json=$([ "$mode" = event ] && echo '[]' || cat ${toolsFile})
       for round in 1 2 3 4 5; do
-        # ...existing request...
-        [ -n "$TAI_DEBUG" ] && echo "tai: round $round, tools: $(${jq} -r '[.tool_calls[]?.function.name] | join(", ")' <<<"$msg")"
         msg=$(${jq} -n --arg m "$model" --arg s "$SYSTEM" --argjson h "$msgs" \
-                --slurpfile t ${toolsFile} \
-                '{model:$m, stream:false, think:false, tools:$t[0],
+                --argjson t "$tools_json" \
+                '{model:$m, stream:false, think:false, tools:$t,
                   options:{num_ctx:16384},
                   messages:([{role:"system", content:$s}] + $h)}' \
               | ${curl} -sf -m 90 "$host/api/chat" -d @- \
               | ${jq} -c '.message') \
           || { echo "tai: can't reach Ollama at $host" >&2; exit 0; }
+
+        [ -n "$TAI_DEBUG" ] && echo "tai: round $round, tools: $(${jq} -r '[.tool_calls[]?.function.name] | join(", ")' <<<"$msg")" >&2
 
         msgs=$(${jq} --argjson x "$msg" '. + [$x]' <<<"$msgs")
         calls=$(${jq} -c '.tool_calls // [] | .[]' <<<"$msg")
