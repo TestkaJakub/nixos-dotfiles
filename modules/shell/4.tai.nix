@@ -147,7 +147,7 @@ let
           name=$(${jq} -r '.function.name' <<<"$call")
           out=$(run_tool "$name" "$(${jq} -c '.function.arguments' <<<"$call")")
           msgs=$(${jq} --arg n "$name" --arg o "$out" \
-              `     '. + [{role:"tool", tool_name:$n, content:$o}]' <<<"$msgs")
+            '. + [{role:"tool", tool_name:$n, content:$o}]' <<<"$msgs")
         done <<<"$calls"
       done
       reply=$(${jq} -r '.content // empty' <<<"$msg")
