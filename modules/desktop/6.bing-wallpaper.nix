@@ -97,6 +97,14 @@ in
           || echo "bing-wallpaper: swaymsg failed (SWAYSOCK not found?)" >&2
       elif [ -n "''${DISPLAY:-}" ]; then
         ${pkgs.feh}/bin/feh --bg-fill "$IMG"
+
+        # Respect grayscale-toggle: ~/.fehbg keeps the colour path (so toggling
+        # off restores it), but a gray copy is shown while grayscale is on.
+        if [ -f "''${XDG_RUNTIME_DIR:-/tmp}/grayscale" ]; then
+          GRAY="''${XDG_RUNTIME_DIR:-/tmp}/grayscale-wall.jpg"
+          ${pkgs.imagemagick}/bin/magick "$IMG" -colorspace Gray "$GRAY" \
+            && ${pkgs.feh}/bin/feh --no-fehbg --bg-fill "$GRAY"
+        fi
       fi
     '';
 
