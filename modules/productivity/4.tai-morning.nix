@@ -23,8 +23,8 @@
 # też autostart.
 let
   user     = config.profile.username;
-  vault    = "/home/${user}/data/Documents/Obsidian";   # ← ścieżka do vaultu
-  dailyDir = vault;                                     # ← folder z daily notes
+  vault    = "/home/${user}/data/Documents/notes";   # ← ścieżka do vaultu
+  dailyDir = "${vault}/notes";                                     # ← folder z daily notes
   curl     = "${pkgs.curl}/bin/curl";
   fish     = "${config.programs.fish.package}/bin/fish";
   morning  = "${config.scripts.taiMorning}/bin/tai-morning";
@@ -35,8 +35,8 @@ let
   # Zbiera notatki i wysyła do tai w sesji podanej jako $1
   taiBrief = pkgs.writeShellScriptBin "tai-brief" ''
     session="''${1:?usage: tai-brief <session>}"
-    today="${dailyDir}/$(date +%F).md"
-    yesterday="${dailyDir}/$(date -d yesterday +%F).md"
+    today="${dailyDir}/$(date +%d-%m-%Y).md"
+    yesterday="${dailyDir}/$(date -d yesterday +%d-%m-%Y).md"
     host="''${OLLAMA_HOST:-http://127.0.0.1:11434}"
 
     # Kontener Ollamy może jeszcze wstawać po boocie
