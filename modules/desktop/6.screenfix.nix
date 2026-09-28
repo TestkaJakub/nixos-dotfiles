@@ -25,21 +25,36 @@ let
   '';
 
   brightnessGui = pkgs.writeShellScriptBin "brightness-gui" ''
+    awk=${pkgs.gawk}/bin/awk
+    xrandr=${pkgs.xorg.xrandr}/bin/xrandr
+
     if [ -n "$(ls -A /sys/class/backlight 2>/dev/null)" ]; then
+      # Laptop panel
       cur=$(( $(${brightnessctl} get) * 100 / $(${brightnessctl} max) ))
       set_b() { ${brightnessctl} -q set "$1%"; }
-    else
-      cur=$(${ddcutil} getvcp 10 --terse | cut -d' ' -f4)
+    elif cur=$(${ddcutil} getvcp 10 --terse 2>/dev/null | cut -d' ' -f4) && [ -n "$cur" ]; then
+      # Monitor over DDC/CI
       set_b() { ${ddcutil} --noverify setvcp 10 "$1"; }
+    else
+      # Software dimming on all outputs (X11)
+      outputs=$($xrandr --query | $awk '/ connected/ {print $1}')
+      cur=$($xrandr --verbose | $awk '/Brightness:/ {printf "%d", $2 * 100; exit}')
+      set_b() {
+        b=$($awk -v v="$1" 'BEGIN { if (v < 10) v = 10; printf "%.2f", v / 100 }')
+        for o in $outputs; do $xrandr --output "$o" --brightness "$b"; done
+      }
     fi
+
     ${pkgs.zenity}/bin/zenity --scale --title=Brightness --text=Brightness \
-      --value="''${cur:-50}" --print-partial \
+      --value="''${cur:-100}" --print-partial \
       | while read -r v; do set_b "$v"; done
   '';
-
+  
   grayscaleToggle = pkgs.writeShellScriptBin "grayscale-toggle" ''
     flag="$XDG_RUNTIME_DIR/grayscale"
+    graywall="$XDG_RUNTIME_DIR/grayscale-wall.jpg"
     picom="${pkgs.picom}/bin/picom"
+    feh="${pkgs.feh}/bin/feh"
 
     restart() {
       ${pkgs.procps}/bin/pkill -x picom
@@ -47,20 +62,38 @@ let
       "$picom" --daemon "$@"
     }
 
-    if [ -f "$flag" ]; then
-      rm "$flag"
+    wall_gray() {
+      wall=$(grep -o "'[^']*'" "$HOME/.fehbg" 2>/dev/null | tail -1 | tr -d "'")
+      mode=$(grep -o -- '--bg-[a-z]*' "$HOME/.fehbg" 2>/dev/null | head -1)
+      [ -f "$wall" ] || return
+      ${pkgs.imagemagick}/bin/magick "$wall" -colorspace Gray "$graywall" \
+        && "$feh" --no-fehbg "''${mode:---bg-fill}" "$graywall"
+    }
+
+    wall_restore() {
+      [ -f "$HOME/.fehbg" ] && sh "$HOME/.fehbg"
+      rm -f "$graywall"
+    }
+
+    turn_off() {
+      rm -f "$flag"
       restart
+      wall_restore
+    }
+
+    if [ -f "$flag" ]; then
+      turn_off
       exit 0
     fi
 
     touch "$flag"
     restart --backend egl --window-shader-fg ${shader}
+    wall_gray
 
     # Safety net: revert unless confirmed within 10 s
     if ! ${pkgs.zenity}/bin/zenity --question --title=Grayscale \
          --text="Keep grayscale?" --timeout=10; then
-      rm -f "$flag"
-      restart
+      turn_off
     fi
   '';
 in
