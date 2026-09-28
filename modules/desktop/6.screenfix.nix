@@ -11,13 +11,14 @@ let
   brightnessctl = "${pkgs.brightnessctl}/bin/brightnessctl";
   ddcutil       = "${pkgs.ddcutil}/bin/ddcutil";
 
-  shader = pkgs.writeText "grayscale.glsl" ''
+    shader = pkgs.writeText "grayscale.glsl" ''
     #version 330
     in vec2 texcoord;
     uniform sampler2D tex;
     vec4 default_post_processing(vec4 c);
     vec4 window_shader() {
-      vec4 c = texelFetch(tex, ivec2(texcoord), 0);
+      vec2 texsize = textureSize(tex, 0);
+      vec4 c = texture2D(tex, texcoord / texsize, 0);
       float y = dot(c.rgb, vec3(0.2126, 0.7152, 0.0722));
       return default_post_processing(vec4(vec3(y), c.a));
     }
@@ -38,14 +39,28 @@ let
 
   grayscaleToggle = pkgs.writeShellScriptBin "grayscale-toggle" ''
     flag="$XDG_RUNTIME_DIR/grayscale"
-    ${pkgs.procps}/bin/pkill -x picom
-    while ${pkgs.procps}/bin/pgrep -x picom >/dev/null; do sleep 0.05; done
+    picom="${pkgs.picom}/bin/picom"
+
+    restart() {
+      ${pkgs.procps}/bin/pkill -x picom
+      while ${pkgs.procps}/bin/pgrep -x picom >/dev/null; do sleep 0.05; done
+      "$picom" --daemon "$@"
+    }
+
     if [ -f "$flag" ]; then
       rm "$flag"
-      ${pkgs.picom}/bin/picom --daemon
-    else
-      touch "$flag"
-      ${pkgs.picom}/bin/picom --daemon --backend glx --window-shader-fg ${shader}
+      restart
+      exit 0
+    fi
+
+    touch "$flag"
+    restart --backend egl --window-shader-fg ${shader}
+
+    # Safety net: revert unless confirmed within 10 s
+    if ! ${pkgs.zenity}/bin/zenity --question --title=Grayscale \
+         --text="Keep grayscale?" --timeout=10; then
+      rm -f "$flag"
+      restart
     fi
   '';
 in
