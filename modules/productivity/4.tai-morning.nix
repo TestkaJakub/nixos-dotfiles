@@ -35,8 +35,8 @@ let
   # Zbiera notatki i wysyła do tai w sesji podanej jako $1
   taiBrief = pkgs.writeShellScriptBin "tai-brief" ''
     session="''${1:?usage: tai-brief <session>}"
-    today="${dailyDir}/$(date +%d-%m-%Y).md"
-    yesterday="${dailyDir}/$(date -d yesterday +%d-%m-%Y).md"
+    today="${dailyDir}/$(date +%d.%m.%Y).md"
+    yesterday="${dailyDir}/$(date -d yesterday +%d.%m.%Y).md"
     host="''${OLLAMA_HOST:-http://127.0.0.1:11434}"
 
     # Kontener Ollamy może jeszcze wstawać po boocie
