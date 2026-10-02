@@ -93,7 +93,7 @@ in
           openWithEntry
         ];
         edit = [
-          { run = "\${EDITOR:-nvim} \"$@\""; desc = "Edit"; block = true; for = "unix"; }
+          { run = "\${EDITOR:-micro} \"$@\""; desc = "Edit"; block = true; for = "unix"; }
           openWithEntry
         ];
         play = [
