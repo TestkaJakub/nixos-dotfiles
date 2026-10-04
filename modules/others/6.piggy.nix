@@ -14,7 +14,7 @@ let
       owner = "TestkaJakub";
       repo  = "piggy";
       rev   = "37b4075c84c252139bead033c44de246db8c6cd4";
-      hash  = lib.fakeHash;
+      hash  = "sha256-spu0YRzUzblsq64Nfn0xo5J4JmHWWmduSR1kv0iSmac=";
     };
 
     cargoHash = lib.fakeHash;
