@@ -41,6 +41,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Secrets management
     sops-nix = {
       url                    = "github:Mic92/sops-nix/13616fff713a9f94055c66f15687ebdc17a335df";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -113,7 +114,6 @@
 
       # Blacklist
       # Files specified below will be omitted by the automatic walker.
-
       moduleBlacklist = [
         "meta/roles.nix"
       ];
