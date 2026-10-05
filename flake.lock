@@ -131,11 +131,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1791222010,
-        "narHash": "sha256-2dXDTQmODAaeYGVfwA5OSojXFWIOSgjRJp13kfbP6Hk=",
+        "lastModified": 1791224380,
+        "narHash": "sha256-RNRJCqaN9TtdYv4UZnVfMCgWohXHGgra0R/nH3nzFcY=",
         "owner": "TestkaJakub",
         "repo": "piggy",
-        "rev": "760664a1fedd680d2e60a61000147ff9d659c144",
+        "rev": "7fa57c25544fd15ad63a5a44e41cc37d993c5bc5",
         "type": "github"
       },
       "original": {
