@@ -16,11 +16,14 @@ let
     settings = {
       window = {
         opacity = 0.85;
-        padding = { x = 10; y = 10; };
+        padding = { x = 14; y = 14; };
       };
-      font.normal = {
-        family = "JetBrains Mono";
-        style  = "Regular";
+      font = {
+        size = 16;
+        normal = {
+          family = "JetBrains Mono";
+          style  = "Regular";
+        };
       };
     };
   }).wrapper;
@@ -53,8 +56,11 @@ in
         -- Hide the tab bar when only one tab is open
         hide_tab_bar_if_only_one_tab = true,
 
-        -- Wayland native
-        enable_wayland = true,
+        enable_wayland = false,
+      
+        keys = {
+          { key = 'Enter', mods = 'ALT', action = wezterm.action.DisableDefaultAssignment },
+        },
       }
     '';
   };

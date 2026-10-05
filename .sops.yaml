@@ -1,0 +1,7 @@
+keys:
+  - &jakub   age1eg4uamh2ctgs7fca8pra8e638uv5lfafy489k2uvxafl85tq454qxavsd4
+  - &desktop age1shsxdywttmxhq08e3he4rpmxm2f4x94ej2zuxjmyz88c7qfmev8sx93kud
+
+creation_rules:
+  - path_regex: secrets/common\.yaml$
+    key_groups: [{ age: [*jakub, *desktop] }]

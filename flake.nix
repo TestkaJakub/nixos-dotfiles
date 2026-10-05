@@ -1,8 +1,29 @@
 {
+  # Welcome to my flakes,
+  #
+  # !!!This project is constantly evolving as it's deployed on a living computer system!!!
+  #
+  # Following dotfiles use dendritic pattern with flake-parts.
+  # Additionally they use home-manager and wrappers.
+  #
+  # There is a custom bitmask based environment dependant files separation,
+  # as well as custom functions that allow for separating parts of a given dotfiles in contrast to separating whole dotfile file.
+  #
+  # Environments further called roles are currently hardware bound to ensure proper hardware.nix is loaded,
+  # but I plan to separate them in the future.
+  #
+  # Module walker imports each module in the dotfiles codebase,
+  # unless it's blacklisted.
+
+  # TODO:
+  # * Separate the roles from the hardware
+  # * Update comments in the whole dotfiles codebase
+
   description = "Jakub's NixOS configuration";
 
   inputs = {
     flake-parts.url  = "github:hercules-ci/flake-parts";
+    wrappers.url     = "github:lassulus/wrappers";
     nixpkgs.url      = "github:NixOS/nixpkgs/nixos-25.11";
 
     home-manager = {
@@ -10,53 +31,63 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    mangowc = {
-      url                    = "github:mangowm/mango/42c02e3dc20eb09c0191b027e387c0268f8e0fb5";
+    vscode-server = {
+      url                    = "github:nix-community/nixos-vscode-server";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    wrappers.url = "github:lassulus/wrappers";
+    nix-index-database = {
+      url                    = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # Secrets management
+    sops-nix = {
+      url                    = "github:Mic92/sops-nix/13616fff713a9f94055c66f15687ebdc17a335df";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # Terminal piggy banks
+    piggy = {
+      url                    = "github:TestkaJakub/piggy";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs:
     inputs.flake-parts.lib.mkFlake { inherit inputs; } ({ lib, ... }:
     let
-      # ── Roles and configurations ────────────────────────────────────────────
-      # Single source of truth — imported by profile.nix and scripts.nix
-      # via specialArgs. Add new machines here only.
+      # Configurations
+      # Each configuration is stored in ./modules/meta/roles.nix
+      # and identified by its hostname (the attrset key).
+      # To add a new machine, add an entry to roles.nix — no changes needed here.
+
       data = import ./modules/meta/roles.nix;
 
-      # ── Role bitmask ────────────────────────────────────────────────────────
-      # server      = 1
-      # workstation = 2
-      # personal    = 4
+      # Role bitmask
+      # Bitmask values are defined per-configuration in roles.nix:
+      #   server      = 1
+      #   workstation = 2
+      #   desktop     = 4
       #
       # File prefix encodes which roles load the module:
-      #   1.foo.nix   → server only
-      #   2.foo.nix   → workstation only
-      #   3.foo.nix   → server + workstation
-      #   4.foo.nix   → personal only
-      #   5.foo.nix   → server + personal
-      #   6.foo.nix   → workstation + personal
-      #   7.foo.nix   → all roles (same as no prefix)
-      #   foo.nix     → all roles (no prefix = 7, emits a warning)
-      roleBits = {
-        server      = 1;
-        workstation = 2;
-        personal    = 4;
-      };
+      #   1.foo.nix   -> server only
+      #   2.foo.nix   -> workstation only
+      #   3.foo.nix   -> server + workstation
+      #   4.foo.nix   -> desktop only
+      #   5.foo.nix   -> server + desktop
+      #   6.foo.nix   -> workstation + desktop
+      #   7.foo.nix   -> all roles (same as no prefix)
+      #   foo.nix     -> all roles (no prefix = 7, emits a warning)
 
-      # ── Recursive module walker ─────────────────────────────────────────────
-      # Accepts the target role string and filters files by bitmask prefix.
-      # Files without a numeric prefix are included for all roles but emit
-      # a warning so uncategorized modules are easy to spot and migrate.
-      collectModules = dir: blacklist: role:
+      # Module walker
+      # Walks over the modules in the dotfiles codebase,
+      # loads only those modules that correspond to the current bitmask value.
+      # If a module name doesn't start with the bitmask prefix,
+      # it gets loaded for all roles and produces a warning.
+
+      collectModules = dir: blacklist: bit:
         let
-          bit = roleBits.${role};
-
-          # Returns the bitmask encoded in the filename prefix, or 7 if absent.
-          # Filename format: "<digits>.<rest>.nix" — prefix must be all digits.
-          # Unprefixed files emit a warning and default to 7 (all roles).
           fileMask = name:
             let
               m = builtins.match "^([0-9]+)\\..*\\.nix$" name;
@@ -64,7 +95,7 @@
               if m != null
               then lib.toInt (builtins.head m)
               else builtins.trace
-                "WARNING: module '${name}' has no role prefix — loaded for all roles. Consider prefixing with a bitmask (1=server, 2=workstation, 4=personal)."
+                "WARNING: module '${name}' has no role prefix — loaded for all roles. Consider prefixing with a bitmask (1=server, 2=workstation, 4=desktop)."
                 7;
 
           walk = prefix: entries:
@@ -87,84 +118,55 @@
         in
           walk "" (builtins.readDir dir);
 
-      # ── Blacklist ───────────────────────────────────────────────────────────
-      # Hardware files are machine-specific and passed explicitly to mkConfig.
-      # The walker must never load them automatically.
+      # Blacklist
+      # Files specified below will be omitted by the automatic walker.
       moduleBlacklist = [
         "meta/roles.nix"
       ];
 
-      # ── Patched pkgs ────────────────────────────────────────────────────────
       pkgs = import inputs.nixpkgs {
         system   = "x86_64-linux";
         overlays = [];
         config   = {
           allowUnfree                = true;
           android_sdk.accept_license = true;
+          nvidia.acceptLicense       = true;
         };
       };
 
-      # ── Base configuration factory ──────────────────────────────────────────
-      # hardwarePath — path to the machine's hardware.nix
-      # role         — "server" | "workstation" | "personal"
-      # extraModules — profile overrides (hostname, hardware flags, etc.)
-      mkConfig = role: extraModules:
-        inputs.nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          inherit pkgs;
-          modules =
-            (collectModules ./modules moduleBlacklist role)
-            ++ [ inputs.home-manager.nixosModules.home-manager ]
-            ++ [ inputs.mangowc.nixosModules.mango ]
-            ++ extraModules;
-          specialArgs = {
-            inherit inputs;
-            inherit (data) roles configurations;
+      # mkConfig
+      # Builds a nixosSystem for the given hostname.
+      # All configuration is sourced from data.configurations.${hostname} in roles.nix.
+
+      mkConfig = hostname: _:
+        let
+          cfg = data.configurations.${hostname};
+        in
+          inputs.nixpkgs.lib.nixosSystem {
+            system = "x86_64-linux";
+            inherit pkgs;
+            modules =
+              (collectModules ./modules moduleBlacklist cfg.bitmaskvalue)
+              ++ [ inputs.home-manager.nixosModules.home-manager ]
+              ++ [ inputs.vscode-server.nixosModules.default ]
+              ++ [ inputs.nix-index-database.nixosModules.nix-index ]
+              ++ [ inputs.sops-nix.nixosModules.sops ]
+              ++ [{
+                profile.hostname     = hostname;
+                profile.lanInterface = cfg.lanInterface;
+                profile.hasBattery   = cfg.hasBattery;
+                profile.hasBacklight = cfg.hasBacklight;
+                profile.hasBluetooth = cfg.hasBluetooth;
+              }];
+            specialArgs = {
+              inherit inputs;
+              inherit (data) configurations;
+            };
           };
-        };
 
     in {
       systems = [ "x86_64-linux" ];
 
-      flake.nixosConfigurations = {
-
-        # ── ThinkPad — workstation profile ──────────────────────────────────
-        nixos = mkConfig "workstation" [{
-          profile.role             = data.configurations.nixos.role;
-          profile.hostname         = data.configurations.nixos.hostname;
-          profile.lanInterface     = "enp5s0";
-          profile.hasBattery       = true;
-          profile.hasBacklight     = true;
-          profile.hasBluetooth     = true;
-          profile.primaryMonitor   = "eDP-1";
-          profile.secondaryMonitor = "HDMI-A-1";
-        }];
-
-        # ── ThinkPad — server profile ───────────────────────────────────────
-        nixos-server = mkConfig "server" [{
-          profile.role             = data.configurations.nixos-server.role;
-          profile.hostname         = data.configurations.nixos-server.hostname;
-          profile.lanInterface     = "enp5s0";
-          profile.hasBattery       = true;
-          profile.hasBacklight     = true;
-          profile.hasBluetooth     = true;
-          profile.primaryMonitor   = "eDP-1";
-          profile.secondaryMonitor = "HDMI-A-1";
-        }];
-
-        # ── Gigabyte desktop — always personal ──────────────────────────────
-        # Gaming, entertainment, full desktop stack. Never server or workstation.
-        desktop = mkConfig "personal" [{
-          profile.role             = data.configurations.desktop.role;
-          profile.hostname         = data.configurations.desktop.hostname;
-          profile.lanInterface     = "enp6s0";
-          profile.hasBattery       = false;
-          profile.hasBacklight     = false;
-          profile.hasBluetooth     = false;
-          profile.primaryMonitor   = "DP-1";
-          profile.secondaryMonitor = "HDMI-A-1";
-        }];
-
-      };
+      flake.nixosConfigurations = builtins.mapAttrs mkConfig data.configurations;
     });
 }

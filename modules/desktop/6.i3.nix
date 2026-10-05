@@ -1,0 +1,339 @@
+{ pkgs, config, lib, ... }:
+
+# ── i3 desktop ─────────────────────────────────────────────────────────────────
+# WM:          i3 (floating by default, Super+Shift+Space to toggle tiling)
+# Bar:         polybar
+# Launcher:    rofi
+# Compositor:  picom
+# Wallpaper:   feh via wallpaper-init
+# DM:          LightDM (unchanged)
+#
+# Colors:
+#   Polybar reads from ~/.cache/wal/colors-polybar.ini at runtime (pywal).
+#   i3 window colors use the Nix-generated palette as they require a rebuild
+#   to change. Rofi and picom also use the Nix-generated palette.
+#   Run theme-apply <wallpaper> to update polybar and terminal colors.
+#
+# Key bindings:
+#   Super+Q           terminal
+#   Super+F           rofi launcher
+#   Super+B           browser
+#   Super+N           file manager
+#   Super+E           close window
+#   Super+Alt+L       lock screen
+#   Super+V           fullscreen
+#   Super+Shift+S     toggle floating/tiling
+#   Super+R           resize mode
+#   Super+1..9        switch workspace
+#   Super+Shift+1..9  move window to workspace
+#   Print             screenshot region
+#   Super+Print       screenshot full
+let
+  user    = config.profile.username;
+  t       = config.theme;
+  p       = t.palette;
+  meta    = config.meta.defaults;
+
+  bg      = p.secondary;
+  fg      = p.primary;
+  accent  = t.functions.complement p.primary;
+  border  = p.border;
+
+  polybar = pkgs.polybar.override { i3Support = true; pulseSupport = true; };
+in
+{
+  services.xserver.enable                        = true;
+  services.xserver.displayManager.lightdm.enable = true;
+  services.xserver.windowManager.i3 = {
+    enable        = true;
+    extraPackages = with pkgs; [ i3status i3lock ];
+  };
+
+  environment.systemPackages = with pkgs; [
+    polybar
+    dunst
+    rofi
+    picom
+    feh
+    xclip
+    xdotool
+    vlc
+    hardinfo2
+    imv
+  ];
+
+  home-manager.users.${user} = { lib, ... }: {
+
+    # ── i3 config ─────────────────────────────────────────────────────────────
+    xdg.configFile."i3/config".text = ''
+      # ── Mod key (Super) ──────────────────────────────────────────────────────
+      set $mod Mod4
+
+      # ── Colors from theme.palette (Nix-generated, static) ────────────────
+      set $bg      ${bg}
+      set $fg      ${fg}
+      set $accent  ${accent}
+      set $border  ${border}
+
+      # ── Font ──────────────────────────────────────────────────────────────
+      font pango:JetBrains Mono 14
+
+      # ── Apps that should always float ─────────────────────────────────────
+      for_window [class="Pavucontrol"]          floating enable
+      for_window [class="Nm-connection-editor"] floating enable
+      for_window [title="File Transfer*"]       floating enable
+      for_window [class="Steam" title="Steam"]  floating enable
+
+      # ── Gaps ──────────────────────────────────────────────────────────────
+      gaps inner 11
+      gaps outer 5
+      smart_gaps on
+
+      # ── Borders ───────────────────────────────────────────────────────────
+      default_floating_border pixel 3
+      default_border           pixel 3
+      hide_edge_borders        smart
+
+      # ── Window colors (static — requires rebuild to change) ───────────────
+      # class                 border   backgr.  text    indicator child_border
+      client.focused          $accent  $bg      $fg     $accent   $accent
+      client.unfocused        $border  $bg      $fg     $border   $border
+      client.focused_inactive $border  $bg      $fg     $border   $border
+      client.urgent           #e06c75  #e06c75  $fg     #e06c75   #e06c75
+
+      # ── Autostart ─────────────────────────────────────────────────────────
+      exec_always --no-startup-id ${config.scripts.wallpaperInit}/bin/wallpaper-init
+      exec_always --no-startup-id ${pkgs.picom}/bin/picom --daemon
+      exec_always --no-startup-id bash -c 'pkill polybar; until [ -S /run/user/$(id -u)/i3/ipc-socket.* ] 2>/dev/null; do sleep 0.1; done; ${polybar}/bin/polybar main'
+	  exec_always --no-startup-id ${pkgs.networkmanagerapplet}/bin/nm-applet
+      exec        --no-startup-id ${pkgs.udiskie}/bin/udiskie --tray &
+      exec        --no-startup-id ${pkgs.dunst}/bin/dunst &
+
+      # ── Key bindings ──────────────────────────────────────────────────────
+      bindsym $mod+q     exec ${meta.terminalPackage}/bin/${meta.terminal}
+      bindsym $mod+f     exec ${pkgs.rofi}/bin/rofi -show drun
+      bindsym $mod+b     exec ${meta.browserPackage}/bin/${meta.browser}
+      bindsym $mod+n       exec ${meta.terminalRun} ${pkgs.yazi}/bin/yazi
+      bindsym $mod+Shift+n exec ${meta.fileManagerPackage}/bin/${meta.fileManager}
+      bindsym $mod+e     kill
+      bindsym $mod+Alt+l exec ${pkgs.i3lock}/bin/i3lock -c ${lib.strings.removePrefix "#" bg}
+      bindsym $mod+v     fullscreen toggle
+
+      bindsym $mod+Shift+s floating toggle
+
+      # Focus
+      bindsym $mod+h focus left
+      bindsym $mod+j focus down
+      bindsym $mod+k focus up
+      bindsym $mod+l focus right
+      bindsym $mod+Left  focus left
+      bindsym $mod+Down  focus down
+      bindsym $mod+Up    focus up
+      bindsym $mod+Right focus right
+
+      # Move floating windows
+      bindsym $mod+Shift+h move left  20px
+      bindsym $mod+Shift+j move down  20px
+      bindsym $mod+Shift+k move up    20px
+      bindsym $mod+Shift+l move right 20px
+      bindsym $mod+Shift+Left  move left  20px
+      bindsym $mod+Shift+Down  move down  20px
+      bindsym $mod+Shift+Up    move up    20px
+      bindsym $mod+Shift+Right move right 20px
+
+      # Workspaces
+      bindsym $mod+1 workspace number 1
+      bindsym $mod+2 workspace number 2
+      bindsym $mod+3 workspace number 3
+      bindsym $mod+4 workspace number 4
+      bindsym $mod+5 workspace number 5
+      bindsym $mod+6 workspace number 6
+      bindsym $mod+7 workspace number 7
+      bindsym $mod+8 workspace number 8
+      bindsym $mod+9 workspace number 9
+
+      bindsym $mod+Shift+1 move container to workspace number 1
+      bindsym $mod+Shift+2 move container to workspace number 2
+      bindsym $mod+Shift+3 move container to workspace number 3
+      bindsym $mod+Shift+4 move container to workspace number 4
+      bindsym $mod+Shift+5 move container to workspace number 5
+      bindsym $mod+Shift+6 move container to workspace number 6
+      bindsym $mod+Shift+7 move container to workspace number 7
+      bindsym $mod+Shift+8 move container to workspace number 8
+      bindsym $mod+Shift+9 move container to workspace number 9
+
+      # Screenshots
+      bindsym Print       exec screenshot-region
+      bindsym $mod+Print  exec screenshot-full
+
+      # Volume
+      bindsym XF86AudioRaiseVolume exec ${pkgs.pamixer}/bin/pamixer -i 5
+      bindsym XF86AudioLowerVolume exec ${pkgs.pamixer}/bin/pamixer -d 5
+      bindsym XF86AudioMute        exec ${pkgs.pamixer}/bin/pamixer -t
+
+      # Resize mode
+      mode "resize" {
+        bindsym h resize shrink width  20px
+        bindsym j resize grow   height 20px
+        bindsym k resize shrink height 20px
+        bindsym l resize grow   width  20px
+        bindsym Left  resize shrink width  20px
+        bindsym Down  resize grow   height 20px
+        bindsym Up    resize shrink height 20px
+        bindsym Right resize grow   width  20px
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+      }
+      bindsym $mod+r mode "resize"
+
+      # Reload / restart / exit
+      bindsym $mod+Shift+c reload
+      bindsym $mod+Shift+r restart
+      bindsym $mod+Shift+e exec i3-msg exit
+
+      # Bar managed by polybar — i3bar disabled
+      # bar { ... }
+    '';
+
+    # ── Polybar ───────────────────────────────────────────────────────────────
+    # Colors are loaded at runtime from ~/.cache/wal/colors-polybar.ini
+    # generated by theme-apply. Falls back to Nix palette if file is missing.
+    xdg.configFile."polybar/config.ini".text = ''
+      include-file = /home/${user}/.cache/wal/colors-polybar.ini
+
+      [bar/main]
+      width            = 100%
+      height           = 38
+      radius           = 0
+      background       = ''${colors.bg}
+      foreground       = ''${colors.fg}
+      border-size      = 0
+      padding-left     = 1
+      padding-right    = 1
+      module-margin    = 1
+      font-0           = JetBrains Mono:size=14;3
+      font-1           = JetBrains Mono:size=19;4
+      modules-left     = i3
+      modules-center   = date
+      modules-right    = volume memory cpu network tray
+      cursor-click     = pointer
+      override-redirect = false
+
+      [module/i3]
+      type                        = internal/i3
+      pin-workspaces              = true
+      show-urgent                 = true
+      strip-wsnumbers             = false
+      index-sort                  = true
+      label-focused               = %index%
+      label-focused-background    = ''${colors.accent}
+      label-focused-foreground    = ''${colors.bg}
+      label-focused-padding       = 2
+      label-unfocused             = %index%
+      label-unfocused-padding     = 2
+      label-urgent                = %index%!
+      label-urgent-background     = ''${colors.urgent}
+      label-urgent-padding        = 2
+
+      [module/date]
+      type          = internal/date
+      interval      = 1
+      date          = %d-%m-%Y
+      time          = %H:%M:%S
+      label         = %date%  %time%
+      label-foreground = ''${colors.fg}
+
+      [module/volume]
+      type                  = internal/pulseaudio
+      format-volume         = <ramp-volume> <label-volume>
+      label-volume          = %percentage%%
+      label-muted           = muted
+      label-muted-foreground = ''${colors.dimmed}
+      ramp-volume-0         = 
+      ramp-volume-1         = 
+      ramp-volume-2         = 
+      click-right           = ${pkgs.pavucontrol}/bin/pavucontrol &
+
+      [module/memory]
+      type     = internal/memory
+      interval = 3
+      label    =  %percentage_used%%
+
+      [module/cpu]
+      type     = internal/cpu
+      interval = 1
+      label    =  %percentage%%
+
+      [module/network]
+      type                    = internal/network
+      interface-type          = wired
+      interval                = 3
+      label-connected         =  %local_ip%
+      label-disconnected      =  disconnected
+      label-disconnected-foreground = ''${colors.dimmed}
+
+      [module/tray]
+      type = internal/tray
+    '';
+
+    # ── Rofi ──────────────────────────────────────────────────────────────────
+    xdg.configFile."rofi/config.rasi".text = ''
+      configuration {
+        modi:           "drun,run,window";
+        show-icons:     true;
+        drun-display-format: "{name}";
+        font:           "JetBrains Mono 15";
+      }
+
+      * {
+        bg:     ${bg};
+        fg:     ${fg};
+        accent: ${accent};
+
+        background-color: transparent;
+        text-color:       @fg;
+      }
+
+            window {
+        background-color: @bg;
+        border:           3px;
+        border-color:     @accent;
+        border-radius:    5px;
+        width:            656px;
+      }
+
+      mainbox       { background-color: @bg; }
+      inputbar      { background-color: @bg; padding: 11px; }
+      entry         { background-color: @bg; }
+      prompt        { text-color: @accent; }
+
+      listview      { background-color: @bg; padding: 5px 0; }
+      element       { padding: 8px 11px; }
+      element selected {
+        background-color: @accent;
+        text-color:       ${bg};
+      }
+    '';
+
+    # ── Picom ─────────────────────────────────────────────────────────────────
+    xdg.configFile."picom/picom.conf".text = ''
+      # Shadows
+      shadow          = true;
+      shadow-radius   = 8;
+      shadow-opacity  = 0.4;
+      shadow-offset-x = -4;
+      shadow-offset-y = -4;
+      shadow-exclude  = [ "class_g = 'i3-frame'" ];
+
+      # Fading
+      fading        = true;
+      fade-in-step  = 0.05;
+      fade-out-step = 0.05;
+      fade-delta    = 5;
+
+      # Backend
+      backend    = "xrender";
+      vsync      = false;
+    '';
+  };
+}

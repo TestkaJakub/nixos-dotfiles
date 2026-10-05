@@ -14,14 +14,14 @@ in
 {
   systemd.tmpfiles.rules = [
     "d /home/${user}/docker-data/homelable 0755 ${user} ${user} -"
-    "d /opt/homelable                       0755 ${user} ${user} -"
+    "d /opt/homelable                       0755 root root -"
   ];
 
   # ── Build service ────────────────────────────────────────────────────────────
   systemd.services.homelable-build = {
     description = "Build Homelable Docker images from source";
     wantedBy    = [ "multi-user.target" ];
-    after       = [ "docker.service" "network-online.target" ];
+    after       = [ "docker.service"];
     requires    = [ "docker.service" ];
     before      = [
       "docker-homelable-backend.service"

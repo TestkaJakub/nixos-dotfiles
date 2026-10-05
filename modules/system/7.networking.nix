@@ -2,9 +2,9 @@
 let
   isServer      = config.profile.isRole [ "server" ];
   isWorkstation = config.profile.isRole [ "workstation" ];
-  isPersonal    = config.profile.isRole [ "personal" ];
-  isNotServer   = isWorkstation || isPersonal;
-  isThinkpad   = isWorkstation || isServer;
+  isDesktop    = config.profile.isRole [ "desktop" ];
+  isNotServer   = isWorkstation || isDesktop;
+  isNotDesktop   = isWorkstation || isServer;
 in
 {
   networking = {
@@ -17,7 +17,7 @@ in
     };
 
     nameservers =
-      if isThinkpad then [ "127.0.0.1" "1.1.1.1" ]
+      if isNotDesktop then [ "127.0.0.1" "1.1.1.1" ]
       else [ "192.168.0.252" "1.1.1.1" ];
     
     defaultGateway = lib.mkIf isServer {
@@ -42,14 +42,18 @@ in
         ${config.profile.lanInterface}.allowedTCPPorts = [ 53 445 139 ];
       };
 
-      extraCommands = lib.mkIf isThinkpad ''
-        iptables -I INPUT -i docker0 -p tcp --dport 9000 -j ACCEPT
-        iptables -I INPUT -i br+ -p tcp --dport 9000 -j ACCEPT
-      '';
+      extraCommands = lib.mkMerge [
+        (lib.mkIf isNotDesktop ''
+          iptables -I INPUT -i docker0 -p tcp --dport 9000 -j ACCEPT
+          iptables -I INPUT -i br+ -p tcp --dport 9000 -j ACCEPT
+          iptables -I INPUT -i docker0 -p tcp --dport 8053 -j ACCEPT
+          iptables -I INPUT -i br+ -p tcp --dport 8053 -j ACCEPT
+      '')
+      ];
     };
 
-    hosts = lib.mkIf isWorkstation {
-      "127.0.0.1" = [
+    hosts = lib.mkIf isNotServer {
+      ${if isWorkstation then "127.0.0.1" else "100.78.44.13"} = [
         "homarr.home"
         "todo.home"
         "jellyfin.home"
@@ -79,9 +83,14 @@ in
     fallbackDns = lib.mkIf isNotServer [ "1.1.1.1" ];
     extraConfig =
       if isServer then "DNSStubListener=no"
-      else ''
-        DNS=${if isWorkstation then "127.0.0.1" else "192.168.0.252"}
+      else if isWorkstation then ''
+        DNS=127.0.0.1
         Domains=~.
+      ''
+      else ''
+        DNS=192.168.0.252
+        Domains=~.
+        MulticastDNS=no
       '';
   };
 

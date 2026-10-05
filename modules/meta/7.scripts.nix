@@ -7,23 +7,28 @@
 #
 # nrs   — smart rebuild: checks DMI + hostname, offers to fix, commits + switches
 # nrsr  — nrs + reboot on success
-# dpt   — display power toggle via wlopm
+# dpt   — display power toggle via xset
 # kbm   — cycle keyboard backlight brightness
 # cpc   — copy all .nix configs to clipboard
 # cpcs  — copy server .nix configs to clipboard over SSH
 #
 # WARNING: always use 'nrs [configuration]' to rebuild — never nixos-rebuild
 # directly. nrs performs DMI and hostname validation before building.
+#
+# Flags:
+#   --force   Skip configuration validation (for bootstrapping after renames).
+#             Requires explicit confirmation unless --yes is also passed.
+#   --yes     Skip confirmation prompt when used with --force.
 let
   hostnameMapEntries = lib.concatStringsSep "\n" (
     lib.mapAttrsToList
-      (cfg: v: "  [\"${cfg}\"]=\"${v.hostname}\"")
+      (hostname: _: "  [\"${hostname}\"]=\"${hostname}\"")
       configurations
   );
 
   dmiMapEntries = lib.concatStringsSep "\n" (
     lib.mapAttrsToList
-      (cfg: v: "  [\"${cfg}\"]=\"${v.dmi}\"")
+      (hostname: v: "  [\"${hostname}\"]=\"${v.dmi}\"")
       configurations
   );
 
@@ -59,7 +64,7 @@ in
     dpt = lib.mkOption {
       type        = lib.types.package;
       readOnly    = true;
-      description = "Toggle all displays on/off via wlopm.";
+      description = "Toggle all displays on/off via xset.";
     };
   };
 
@@ -74,16 +79,28 @@ in
         echo "$val" > "$path"
       '';
 
+      dpt = pkgs.writeShellScriptBin "dpt" ''
+        flag="/run/user/$(id -u)/display-off"
+        if [ -f "$flag" ]; then
+          rm -f "$flag"
+          ${pkgs.xorg.xset}/bin/xset dpms force on
+        else
+          touch "$flag"
+          ${pkgs.xorg.xset}/bin/xset dpms force off
+        fi
+      '';
+
       cpc = pkgs.writeShellScriptBin "cpc" ''
         echo "Copying .nix configs to clipboard..."
         find ~/nixos-dotfiles -type f -name '*.nix' \
-          -exec echo "===== {} =====" \; -exec cat {} \; | ${pkgs.wl-clipboard}/bin/wl-copy
+          -exec echo "===== {} =====" \; -exec cat {} \; \
+          | ${pkgs.xclip}/bin/xclip -selection clipboard
         ${pkgs.libnotify}/bin/notify-send "✅ Config copied to clipboard"
       '';
 
       cpcs = pkgs.writeShellScriptBin "cpcs" ''
         echo "Copying server .nix configs to clipboard..."
-        ssh server cpc | ${pkgs.wl-clipboard}/bin/wl-copy
+        ssh server cpc | ${pkgs.xclip}/bin/xclip -selection clipboard
         ${pkgs.libnotify}/bin/notify-send "✅ Server config copied to clipboard"
       '';
 
@@ -92,7 +109,32 @@ in
 
         FLAKE="$HOME/nixos-dotfiles"
         CURRENT_HOSTNAME=$(cat /proc/sys/kernel/hostname | tr -d '[:space:]')
-        CURRENT_DMI=$(cat /sys/devices/virtual/dmi/id/product_name | tr -d '[:space:]')
+        CURRENT_DMI=$(cat /sys/devices/virtual/dmi/id/board_name | tr -d '[:space:]')
+        FORCE=0
+        YES=0
+        TARGET=""
+
+        # ── Parse arguments ──────────────────────────────────────────────────
+        while [ $# -gt 0 ]; do
+          case "$1" in
+            --force) FORCE=1; shift ;;
+            --yes)   YES=1;   shift ;;
+            -*)
+              echo "ERROR: Unknown flag '$1'."
+              echo "Usage: nrs [--force] [--yes] [configuration]"
+              exit 1
+              ;;
+            *)
+              if [ -n "$TARGET" ]; then
+                echo "ERROR: Unexpected argument '$1'."
+                echo "Usage: nrs [--force] [--yes] [configuration]"
+                exit 1
+              fi
+              TARGET="$1"
+              shift
+              ;;
+          esac
+        done
 
         # ── Known configurations (generated from roles.nix) ─────────────────
         declare -A EXPECTED_HOSTNAME=(
@@ -104,16 +146,32 @@ in
         )
 
         # ── Determine target configuration ──────────────────────────────────
-        if [ -n "$1" ]; then
-          TARGET="$1"
-
+        if [ -n "$TARGET" ]; then
           if [ -z "''${EXPECTED_HOSTNAME[$TARGET]+_}" ]; then
-            echo "ERROR: Unknown configuration '$TARGET'."
-            echo "Known configurations: ${configNames}"
-            exit 1
+            if [ "$FORCE" -eq 1 ]; then
+              echo ""
+              echo "⚠️  FORCE MODE — '$TARGET' is not a known configuration."
+              echo "   Validation has been skipped. This is only safe if you are"
+              echo "   bootstrapping after a configuration rename."
+              echo ""
+              if [ "$YES" -eq 0 ]; then
+                printf "   Type 'yes' to continue: "
+                read -r confirm
+                if [ "$confirm" != "yes" ]; then
+                  echo "Aborted."
+                  exit 1
+                fi
+              fi
+            else
+              echo "ERROR: Unknown configuration '$TARGET'."
+              echo "Known configurations: ${configNames}"
+              echo ""
+              echo "If this is a new or renamed configuration not yet built,"
+              echo "use: nrs --force <configuration>"
+              exit 1
+            fi
           fi
         else
-          TARGET=""
           for cfg in "''${!EXPECTED_HOSTNAME[@]}"; do
             if [ "''${EXPECTED_HOSTNAME[$cfg]}" = "$CURRENT_HOSTNAME" ]; then
               TARGET="$cfg"
@@ -135,48 +193,50 @@ in
           echo "Auto-detected configuration: $TARGET"
         fi
 
-        # ── DMI check ────────────────────────────────────────────────────────
-        REQUIRED_DMI="''${EXPECTED_DMI[$TARGET]}"
+        # ── DMI check (skipped in force mode) ────────────────────────────────
+        if [ "$FORCE" -eq 0 ]; then
+          REQUIRED_DMI="''${EXPECTED_DMI[$TARGET]}"
 
-        if [ "$CURRENT_DMI" != "$REQUIRED_DMI" ]; then
-          echo ""
-          echo "❌ HARDWARE MISMATCH — ABORTING"
-          echo "   Configuration : #$TARGET"
-          echo "   Expected DMI  : $REQUIRED_DMI"
-          echo "   Current DMI   : $CURRENT_DMI"
-          echo ""
-          echo "   You are trying to build the wrong configuration for this machine."
-          echo "   This has been blocked to protect your system."
-          exit 1
-        fi
+          if [ "$CURRENT_DMI" != "$REQUIRED_DMI" ]; then
+            echo ""
+            echo "❌ HARDWARE MISMATCH — ABORTING"
+            echo "   Configuration : #$TARGET"
+            echo "   Expected DMI  : $REQUIRED_DMI"
+            echo "   Current DMI   : $CURRENT_DMI"
+            echo ""
+            echo "   You are trying to build the wrong configuration for this machine."
+            echo "   This has been blocked to protect your system."
+            exit 1
+          fi
 
-        # ── Hostname check ───────────────────────────────────────────────────
-        REQUIRED_HOSTNAME="''${EXPECTED_HOSTNAME[$TARGET]}"
+          # ── Hostname check ─────────────────────────────────────────────────
+          REQUIRED_HOSTNAME="''${EXPECTED_HOSTNAME[$TARGET]}"
 
-        if [ "$CURRENT_HOSTNAME" != "$REQUIRED_HOSTNAME" ]; then
-          echo ""
-          echo "WARNING: This machine's hostname is '$CURRENT_HOSTNAME'."
-          echo "         Configuration '#$TARGET' expects hostname '$REQUIRED_HOSTNAME'."
-          echo ""
-          echo "Options:"
-          echo "  1) Set hostname to '$REQUIRED_HOSTNAME' and continue"
-          echo "     (nixos-rebuild will make it permanent on activation)"
-          echo "  2) Abort"
-          echo ""
-          printf "Choose [1/2]: "
-          read -r choice
+          if [ "$CURRENT_HOSTNAME" != "$REQUIRED_HOSTNAME" ]; then
+            echo ""
+            echo "WARNING: This machine's hostname is '$CURRENT_HOSTNAME'."
+            echo "         Configuration '#$TARGET' expects hostname '$REQUIRED_HOSTNAME'."
+            echo ""
+            echo "Options:"
+            echo "  1) Set hostname to '$REQUIRED_HOSTNAME' and continue"
+            echo "     (nixos-rebuild will make it permanent on activation)"
+            echo "  2) Abort"
+            echo ""
+            printf "Choose [1/2]: "
+            read -r choice
 
-          case "$choice" in
-            1)
-              echo "Setting hostname to '$REQUIRED_HOSTNAME' for this session..."
-              sudo hostname "$REQUIRED_HOSTNAME"
-              echo "Hostname set. nixos-rebuild will persist it on activation."
-              ;;
-            *)
-              echo "Aborted."
-              exit 1
-              ;;
-          esac
+            case "$choice" in
+              1)
+                echo "Setting hostname to '$REQUIRED_HOSTNAME' for this session..."
+                sudo hostname "$REQUIRED_HOSTNAME"
+                echo "Hostname set. nixos-rebuild will persist it on activation."
+                ;;
+              *)
+                echo "Aborted."
+                exit 1
+                ;;
+            esac
+          fi
         fi
 
         # ── Commit dotfiles ──────────────────────────────────────────────────
@@ -189,6 +249,8 @@ in
           git checkout development || exit 1
         fi
 
+        nix flake lock "$FLAKE" || exit 1
+
         git add . || exit 1
         if ! git diff --cached --quiet; then
           git commit -m "upgrade $(date '+%Y-%m-%d %H:%M')" || exit 1
@@ -197,6 +259,28 @@ in
         git push -u origin development || exit 1
 
         # ── Rebuild ──────────────────────────────────────────────────────────
+        OLD_SYSTEM=$(readlink -f /run/current-system)
+        OUT_DIR=$(mktemp -d)
+        trap 'rm -rf "$OUT_DIR"' EXIT
+
+        echo ""
+        echo "Building #$TARGET..."
+        ${pkgs.nix-output-monitor}/bin/nom build \
+          "$FLAKE#nixosConfigurations.$TARGET.config.system.build.toplevel" \
+          --out-link "$OUT_DIR/result"
+        NEW_SYSTEM=$(readlink -f "$OUT_DIR/result")
+
+        # ── Diff (nvd) ───────────────────────────────────────────────────────
+        echo ""
+        if [ "$OLD_SYSTEM" = "$NEW_SYSTEM" ]; then
+          echo "No package changes — closure identical to the running system."
+        else
+          ${pkgs.nvd}/bin/nvd diff "$OLD_SYSTEM" "$NEW_SYSTEM"
+        fi
+
+        # ── Switch ───────────────────────────────────────────────────────────
+        # Everything is already built, so this only re-evaluates and activates.
+        echo ""
         sudo nixos-rebuild switch --flake "$FLAKE#$TARGET"
         result=$?
         cd "$SAVED_DIR" || exit 1
@@ -211,23 +295,14 @@ in
           echo "Rebuild failed, NOT rebooting."
         fi
       '';
-
-      dpt = pkgs.writeShellScriptBin "dpt" ''
-        flag="/run/user/$(id -u)/display-off"
-        if [ -f "$flag" ]; then
-          rm -f "$flag"
-          ${pkgs.wlopm}/bin/wlopm --on '*'
-        else
-          touch "$flag"
-          ${pkgs.wlopm}/bin/wlopm --off '*'
-        fi
-      '';
     };
 
     environment.systemPackages = [
       config.scripts.nrs
       config.scripts.nrsr
       config.scripts.dpt
+      pkgs.nix-output-monitor
+      pkgs.nvd
     ];
   };
 }

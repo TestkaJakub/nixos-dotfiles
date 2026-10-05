@@ -71,7 +71,7 @@ let
     pihole:
       loadBalancer:
         servers:
-          - url: "http://172.17.0.1:8053"
+          - url: "http://host.docker.internal:8053"
   '' else ''http:
   routers:
     ping:
@@ -124,10 +124,10 @@ certificatesResolvers:
     acme:
       email: "jakub@home.local"
       storage: "/acme/acme.json"
-      caServer: "https://host.docker.internal:9000/acme/acme/directory"
+      caServer: "https://host.docker.internal:9000/acme/acme-1/directory"
       certificatesDuration: 24
-      httpChallenge:
-        entryPoint: web
+      keyType: EC256
+      tlsChallenge: {}
 
 serversTransport:
   rootCAs:
@@ -171,6 +171,7 @@ EOF
   systemd.tmpfiles.rules = [
     "d ${dataDir} 0755 ${user} ${user} -"
     "d ${acmeDir} 0700 ${user} ${user} -"
+    "f ${acmeDir}/acme.json 0600 ${user} ${user} -"
   ];
 
   # ── Container ────────────────────────────────────────────────────────────────
@@ -182,11 +183,10 @@ EOF
       LEGO_CA_CERTIFICATES = "/certs/root_ca.crt";
     };
 
-    ports = [
-      "80:80"
-      "443:443"
-      "8080:8080"
-    ];
+    ports = 
+      if isServer
+      then [ "80:80" "443:443" ]
+      else [ "127.0.0.1:80:80" "127.0.0.1:443:443" ];
 
     volumes = [
       "/var/run/docker.sock:/var/run/docker.sock:ro"

@@ -1,11 +1,7 @@
 { lib, ... }:
 
 # ── Locale ─────────────────────────────────────────────────────────────────────
-# Declares localisation options. Consumed by:
-#   - system/boot.nix      (console.keyMap, xkb layout)
-#   - system/nix.nix       (time.timeZone)
-#   - desktop/compositor.nix (xkb_layout in mango config)
-#   - desktop/bar.nix      (gammastep coordinates)
+# Declares localisation options used by other flakes.
 {
   options.locale = {
     keyboardLayout = lib.mkOption {

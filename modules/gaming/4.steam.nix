@@ -17,13 +17,14 @@ in
     dedicatedServer.openFirewall = true;
     package = pkgs.steam.override {
       extraPkgs = p: with p; [ mesa libdrm SDL2 openal faudio gamemode ];
+      extraProfile = ''
+        export LD_LIBRARY_PATH=/run/opengl-driver/lib:/run/opengl-driver-32/lib:$LD_LIBRARY_PATH
+      '';
     };
-  };
 
-  # MangoWC window compositor — required for Steam's Wayland session and
-  # overlay support. Declared here so Steam works standalone even if
-  # desktop/compositor.nix is removed.
-  programs.mango.enable = true;
+    extraCompatPackages = [ pkgs.proton-ge-bin ];
+  };
+  
 
   # Install GE-Proton into Steam's compatibility tools directory.
   # The sentinel check skips unpacking when the version is already present,
@@ -42,5 +43,9 @@ in
           echo "${geProtonVersion} already installed, skipping."
         fi
       '';
+  };
+
+  environment.sessionVariables = {
+    STEAM_COMPAT_MOUNTS = "/run/opengl-driver:/run/opengl-driver-32";
   };
 }

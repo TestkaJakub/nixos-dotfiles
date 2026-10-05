@@ -1,25 +1,25 @@
-{ lib, config, roles, ... }:
+{ lib, config, configurations, ... }:
 
-# ── Profile ────────────────────────────────────────────────────────────────────
+# Profile
 # Declares options for user identity and machine-level constants.
 # Every other module reads from config.profile rather than hardcoding values.
 #
-# roles   — injected via specialArgs from flake.nix, sourced from roles.nix
+# configurations - injected via specialArgs from flake.nix, sourced from roles.nix
 #
-# role    — gates which module groups are active:
-#             "personal"    full desktop + entertainment (Steam, Discord, etc.)
-#             "workstation" desktop + productive/dev tools, no entertainment
-#             "server"      headless, services only
+# hostname - identifies the machine and gates which module groups are active:
+#              "desktop"     full desktop + entertainment (Steam, Discord, etc.)
+#              "workstation" desktop + productive/dev tools, no entertainment
+#              "server"      headless, services only
 #
-# isRole  — helper function, pass a list of roles, returns bool
-#             e.g. config.profile.isRole [ "personal" "workstation" ]
+# isRole  - helper function, pass a list of hostnames, returns bool
+#             e.g. config.profile.isRole [ "desktop" "workstation" ]
 #
-# has*    — machine hardware capability flags, set per nixosConfiguration
-#           in flake.nix, defaults to false so missing overrides fail safe
+# has*    - machine hardware capability flags, sourced from configurations in roles.nix,
+#           defaults to false so missing overrides fail safe
 {
   options.profile = {
 
-    # ── Identity ───────────────────────────────────────────────────────────────
+    # Identity
     username = lib.mkOption {
       type        = lib.types.str;
       default     = "jakub";
@@ -45,17 +45,11 @@
     };
 
     hostname = lib.mkOption {
-      type        = lib.types.str;
-      default     = "nixos";
-      description = "Machine hostname.";
-    };
-
-    # ── Role ───────────────────────────────────────────────────────────────────
-    role = lib.mkOption {
-      type        = lib.types.enum roles;
+      type        = lib.types.enum (builtins.attrNames configurations);
       description = ''
-        Machine role — controls which module groups are active:
-          personal    — full desktop + entertainment (Steam, Discord, gaming)
+        Machine hostname — also serves as the role identifier.
+        Controls which module groups are active:
+          desktop     — full desktop + entertainment (Steam, Discord, gaming)
           workstation — desktop + productive/dev tools, no entertainment
           server      — headless, services only, no desktop stack
       '';
@@ -64,11 +58,18 @@
     isRole = lib.mkOption {
       type        = lib.types.functionTo lib.types.bool;
       readOnly    = true;
-      description = "Returns true if the current role matches any role in the given list.";
+      description = "Returns true if the current hostname matches any entry in the given list.";
     };
 
-    # ── Hardware capabilities ──────────────────────────────────────────────────
-    # Set per nixosConfiguration in flake.nix.
+    # Peripherals
+    hasTablet = lib.mkOption {
+      type        = lib.types.bool;
+      default     = false;
+      description = "Enables OpenTabletDriver and uinput for graphics tablet support.";
+    };
+
+    # Hardware capabilities
+    # Sourced from roles.nix via flake.nix.
     # Defaults to false so missing overrides fail safe.
     lanInterface = lib.mkOption {
       type        = lib.types.str;
@@ -92,21 +93,7 @@
       default     = false;
       description = "Enables blueman and Bluetooth widget in Waybar.";
     };
-
-    # ── Display ────────────────────────────────────────────────────────────────
-    primaryMonitor = lib.mkOption {
-      type        = lib.types.str;
-      default     = "eDP-1";
-      description = "Primary monitor identifier used in compositor and Hyprland configs.";
-    };
-
-    secondaryMonitor = lib.mkOption {
-      type        = lib.types.str;
-      default     = "HDMI-A-1";
-      description = "Secondary monitor identifier.";
-    };
   };
 
-  # roles' with a tick to avoid shadowing the `roles` specialArg
-  config.profile.isRole = roles': builtins.elem config.profile.role roles';
+  config.profile.isRole = roles: builtins.elem config.profile.hostname roles;
 }
