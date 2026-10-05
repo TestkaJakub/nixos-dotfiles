@@ -1,7 +1,7 @@
 # modules/webbrowsers/6.brave-origin-nightly.nix
 { pkgs, lib, ... }:
 let
-  version = "1.99.13"; # bump this when updating
+  version = "1.99.12"; # bump this when updating
   src = pkgs.fetchurl {
     url    = "https://github.com/brave/brave-browser/releases/download/v${version}/brave-origin-nightly_${version}_amd64.deb";
     sha256 = "0ysfrfjrqkzixzcjv5wasfgfrm8d4pwwfwxlkisc7v3mwlyf6kx0";
