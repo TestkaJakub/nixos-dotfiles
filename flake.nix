@@ -46,6 +46,12 @@
       url                    = "github:Mic92/sops-nix/13616fff713a9f94055c66f15687ebdc17a335df";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Terminal piggy banks
+    piggy = {
+      url                    = "github:TestkaJakub/piggy";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs:
