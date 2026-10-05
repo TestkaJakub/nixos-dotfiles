@@ -4,7 +4,7 @@ let
   version = "1.99.12"; # bump this when updating
   src = pkgs.fetchurl {
     url    = "https://github.com/brave/brave-browser/releases/download/v${version}/brave-origin-nightly_${version}_amd64.deb";
-    sha256 = "0ysfrfjrqkzixzcjv5wasfgfrm8d4pwwfwxlkisc7v3mwlyf6kx0";
+    sha256 = "df96c9fa00a9b81ed53a8d076dbc31976614d02579c44f0d1c860ef5b07caebc";
   };
 
   brave-origin-nightly = pkgs.stdenv.mkDerivation {
