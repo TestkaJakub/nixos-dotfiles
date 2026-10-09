@@ -1,13 +1,26 @@
-{ pkgs, inputs, ... }:
+{ inputs, config, ... }:
 
 # ── YeetPatch (Voices of the Void patcher) ─────────────────────────────────────
-# Packaged in its own flake (yeetpatch-nix), pulled in as the `yeetpatch` input.
-# Files land in /run/current-system/sw/share/yeetpatch
+# Module from yeetpatch-nix. Values here become defaults of the `yeetpatch`
+# command; any can still be overridden per run (INSTALL_DIR=… yeetpatch install).
+let
+  user  = config.profile.username;
+  games = "/home/${user}/data/Games";   # ← where VotV lives
+in
 {
-  environment.systemPackages = [
-    inputs.yeetpatch.packages.${pkgs.stdenv.hostPlatform.system}.default
-  ];
+  imports = [ inputs.yeetpatch.nixosModules.default ];
 
-  # share/ isn't linked wholesale into the system profile — opt this folder in
-  environment.pathsToLink = [ "/share/yeetpatch" ];
+  programs.yeetpatch = {
+    enable     = true;
+    installDir = "${games}/VotV";
+    exePath    = "${games}/VotV/VotV.exe";
+    cacheDir   = "/home/${user}/.cache/yeetpatch";
+    # saveGameDir = "…";   # back up saves before patching
+    # noticeUrl   = "";    # silence the startup notice
+
+    launcher = {
+      enable          = true;                              # "Update VotV" in rofi / fuzzel
+      terminalCommand = config.meta.defaults.terminalRun;  # wezterm start --
+    };
+  };
 }
