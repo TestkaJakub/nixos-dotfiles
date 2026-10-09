@@ -153,7 +153,8 @@
         "piggy": "piggy",
         "sops-nix": "sops-nix",
         "vscode-server": "vscode-server",
-        "wrappers": "wrappers"
+        "wrappers": "wrappers",
+        "yeetpatch": "yeetpatch"
       }
     },
     "sops-nix": {
@@ -229,6 +230,26 @@
         "owner": "lassulus",
         "repo": "wrappers",
         "type": "github"
+      }
+    },
+    "yeetpatch": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1791546612,
+        "narHash": "sha256-7tIqCUwkwtvBTNSrJkGrLXm+JnPZ5Tu90brvCA1keiw=",
+        "ref": "refs/heads/master",
+        "rev": "0e9a5e84a102b958952be0b444ee58123a71353e",
+        "revCount": 1,
+        "type": "git",
+        "url": "file:///home/jakub/data/Projects/Nixos/yeetpatch-nix"
+      },
+      "original": {
+        "type": "git",
+        "url": "file:///home/jakub/data/Projects/Nixos/yeetpatch-nix"
       }
     }
   },
