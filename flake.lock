@@ -239,11 +239,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1791548427,
-        "narHash": "sha256-4n9SMj/zVF4Dq27GAECGc0mayV+7aBrrm812kPrQY6M=",
+        "lastModified": 1791550229,
+        "narHash": "sha256-ZFEk0plIIhcROs6gGIxArslOb7DaQHla6cHH5sBvQBM=",
         "ref": "refs/heads/master",
-        "rev": "b6c65afceb1de89cea5e081e18042fbd9740dac7",
-        "revCount": 4,
+        "rev": "141f805fd53ea0ae6cebd4dc58f9ca37c3780d60",
+        "revCount": 5,
         "type": "git",
         "url": "file:///home/jakub/data/Projects/Nixos/yeetpatch-nix"
       },
