@@ -7,4 +7,7 @@
   environment.systemPackages = [
     inputs.yeetpatch.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
+
+  # share/ isn't linked wholesale into the system profile — opt this folder in
+  environment.pathsToLink = [ "/share/yeetpatch" ];
 }
