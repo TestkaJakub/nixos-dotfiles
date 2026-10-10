@@ -62,7 +62,7 @@
     };
 
     bambu-studio = {
-      url                    = "path:/home/jakub/data/Projects/Nixos/bambu-studio";
+      url                    = "github:TestkaJakub/bambu-studio-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };

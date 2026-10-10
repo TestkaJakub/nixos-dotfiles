@@ -7,14 +7,17 @@
         ]
       },
       "locked": {
-        "lastModified": 1791652825,
-        "narHash": "sha256-1uSj3MS7+IefsNMB2t0UTdGnX/NfKO6cIzGHOeRcz1Q=",
-        "path": "/home/jakub/data/Projects/Nixos/bambu-studio",
-        "type": "path"
+        "lastModified": 1791654015,
+        "narHash": "sha256-ngJtF1gKEFnXzN53y1dr3pqG/xnv6DPJr1c4XsBMc7Q=",
+        "owner": "TestkaJakub",
+        "repo": "bambu-studio-nix",
+        "rev": "0f3ed419132cad665aaefd0af30842da00b3d0e5",
+        "type": "github"
       },
       "original": {
-        "path": "/home/jakub/data/Projects/Nixos/bambu-studio",
-        "type": "path"
+        "owner": "TestkaJakub",
+        "repo": "bambu-studio-nix",
+        "type": "github"
       }
     },
     "flake-parts": {
