@@ -31,10 +31,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    yeetpatch = {
-      url                    = "git+file:///home/jakub/data/Projects/Nixos/yeetpatch-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
 
     vscode-server = {
       url                    = "github:nix-community/nixos-vscode-server";
@@ -55,6 +51,12 @@
     # Terminal piggy banks
     piggy = {
       url                    = "github:TestkaJakub/piggy";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # VotV launcher
+    yeetpatch = {
+      url                    = "github:TestkaJakub/yeetpatch-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };

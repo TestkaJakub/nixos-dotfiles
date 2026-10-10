@@ -241,15 +241,15 @@
       "locked": {
         "lastModified": 1791551031,
         "narHash": "sha256-r0MzJrZiEZbcu8HQ8wjl+IrkXTBmtWQO9/vvt9RaUuA=",
-        "ref": "refs/heads/master",
+        "owner": "TestkaJakub",
+        "repo": "yeetpatch-nix",
         "rev": "f481b349da3e856bc9e358b07ed8663b299d0fd1",
-        "revCount": 6,
-        "type": "git",
-        "url": "file:///home/jakub/data/Projects/Nixos/yeetpatch-nix"
+        "type": "github"
       },
       "original": {
-        "type": "git",
-        "url": "file:///home/jakub/data/Projects/Nixos/yeetpatch-nix"
+        "owner": "TestkaJakub",
+        "repo": "yeetpatch-nix",
+        "type": "github"
       }
     }
   },
