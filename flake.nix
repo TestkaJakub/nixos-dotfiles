@@ -60,6 +60,11 @@
       url                    = "github:TestkaJakub/yeetpatch-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    bambu-studio = {
+      url                    = "path:/home/jakub/data/Projects/Nixos/bambu-studio";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs:

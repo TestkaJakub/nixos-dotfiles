@@ -1,5 +1,22 @@
 {
   "nodes": {
+    "bambu-studio": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1791652825,
+        "narHash": "sha256-1uSj3MS7+IefsNMB2t0UTdGnX/NfKO6cIzGHOeRcz1Q=",
+        "path": "/home/jakub/data/Projects/Nixos/bambu-studio",
+        "type": "path"
+      },
+      "original": {
+        "path": "/home/jakub/data/Projects/Nixos/bambu-studio",
+        "type": "path"
+      }
+    },
     "flake-parts": {
       "inputs": {
         "nixpkgs-lib": "nixpkgs-lib"
@@ -146,6 +163,7 @@
     },
     "root": {
       "inputs": {
+        "bambu-studio": "bambu-studio",
         "flake-parts": "flake-parts",
         "home-manager": "home-manager",
         "nix-index-database": "nix-index-database",
