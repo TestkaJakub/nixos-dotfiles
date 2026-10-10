@@ -83,10 +83,10 @@ in
         flag="/run/user/$(id -u)/display-off"
         if [ -f "$flag" ]; then
           rm -f "$flag"
-          ${pkgs.xorg.xset}/bin/xset dpms force on
+          ${pkgs.xset}/bin/xset dpms force on
         else
           touch "$flag"
-          ${pkgs.xorg.xset}/bin/xset dpms force off
+          ${pkgs.xset}/bin/xset dpms force off
         fi
       '';
 

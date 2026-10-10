@@ -79,19 +79,22 @@ in
 
   services.resolved = {
     enable = true;
-    domains     = lib.mkIf isNotServer [ "~." ];
-    fallbackDns = lib.mkIf isNotServer [ "1.1.1.1" ];
-    extraConfig =
-      if isServer then "DNSStubListener=no"
-      else if isWorkstation then ''
-        DNS=127.0.0.1
-        Domains=~.
-      ''
-      else ''
-        DNS=192.168.0.252
-        Domains=~.
-        MulticastDNS=no
-      '';
+    settings.Resolve = lib.mkMerge [
+      (lib.mkIf isServer {
+        DNSStubListener = "no";        # Pi-hole owns port 53 on the server
+      })
+      (lib.mkIf isNotServer {
+        Domains     = [ "~." ];
+        FallbackDNS = [ "1.1.1.1" ];
+      })
+      (lib.mkIf isWorkstation {
+        DNS = [ "127.0.0.1" ];
+      })
+      (lib.mkIf isDesktop {
+        DNS          = [ "192.168.0.252" ];
+        MulticastDNS = "no";
+      })
+    ];
   };
 
   services.mullvad-vpn = lib.mkIf isNotServer {

@@ -12,7 +12,7 @@ let
   user = config.profile.username;
 
   alacrittyPkg = (inputs.wrappers.wrapperModules.alacritty.apply {
-    pkgs = pkgs // { lndir = pkgs.xorg.lndir; };
+    pkgs = pkgs // { lndir = pkgs.lndir; };
     settings = {
       window = {
         opacity = 0.85;

@@ -24,18 +24,18 @@
   inputs = {
     flake-parts.url      = "github:hercules-ci/flake-parts";
     wrappers.url         = "github:lassulus/wrappers";
-    nixpkgs.url          = "github:NixOS/nixpkgs/nixos-25.11";
+    nixpkgs.url          = "github:NixOS/nixpkgs/nixos-26.05";
 
 
     home-manager = {
-      url                    = "github:nix-community/home-manager/release-25.11";
+      url                    = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
 
     vscode-server = {
-      url                    = "github:nix-community/nixos-vscode-server";
-      inputs.nixpkgs.follows = "nixpkgs";
+      url                        = "github:nix-community/nixos-vscode-server";
+      inputs.flake-parts.follows = "flake-parts";
     };
 
     nix-index-database = {

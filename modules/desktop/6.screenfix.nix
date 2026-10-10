@@ -26,7 +26,7 @@ let
 
   brightnessGui = pkgs.writeShellScriptBin "brightness-gui" ''
     awk=${pkgs.gawk}/bin/awk
-    xrandr=${pkgs.xorg.xrandr}/bin/xrandr
+    xrandr=${pkgs.xrandr}/bin/xrandr
 
     if [ -n "$(ls -A /sys/class/backlight 2>/dev/null)" ]; then
       # Laptop panel
