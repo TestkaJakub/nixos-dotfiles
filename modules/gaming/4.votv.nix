@@ -14,7 +14,7 @@ in
   programs.yeetpatch = {
     enable     = true;
     installDir = "${games}/VotV";
-    exePath    = "${games}/VotV/VotV.exe";
+    exePath    = "${games}/VotV/WindowsNoEditor/VotV.exe";
     cacheDir   = "/home/${user}/.cache/yeetpatch";
 
     launcher = {
