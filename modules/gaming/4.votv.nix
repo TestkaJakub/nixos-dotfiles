@@ -1,8 +1,9 @@
-{ inputs, config, ... }:
+{ pkgs, inputs, config, ... }:
 
-# ── YeetPatch (Voices of the Void patcher) ─────────────────────────────────────
-# Module from yeetpatch-nix. Values here become defaults of the `yeetpatch`
-# command; any can still be overridden per run (INSTALL_DIR=… yeetpatch install).
+# ── Voices of the Void ─────────────────────────────────────────────────────────
+# YeetPatch: module from yeetpatch-nix. Values here become defaults of the
+# `yeetpatch` command; any can still be overridden per run.
+# Gale: Thunderstore mod manager (VotV mods go through Shimloader / UE4SS).
 let
   user  = config.profile.username;
   games = "/home/${user}/data/Games";   # ← where VotV lives
@@ -15,12 +16,12 @@ in
     installDir = "${games}/VotV";
     exePath    = "${games}/VotV/VotV.exe";
     cacheDir   = "/home/${user}/.cache/yeetpatch";
-    # saveGameDir = "…";   # back up saves before patching
-    # noticeUrl   = "";    # silence the startup notice
 
     launcher = {
-      enable          = true;                              # "Update VotV" in rofi / fuzzel
-      terminalCommand = config.meta.defaults.terminalRun;  # wezterm start --
+      enable          = true;
+      terminalCommand = config.meta.defaults.terminalRun;
     };
   };
+
+  environment.systemPackages = [ pkgs.gale ];
 }
