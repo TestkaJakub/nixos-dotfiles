@@ -226,11 +226,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1791652300,
-        "narHash": "sha256-GZsAHybftT9F9B0b0xcbac5VRlUqViMBOViYRdq4a+8=",
+        "lastModified": 1791704743,
+        "narHash": "sha256-On3lz00u9OZRsc3/nug9C95W6PMJ9fX5GMQNdxw0GJY=",
         "owner": "TestkaJakub",
         "repo": "yeetpatch-nix",
-        "rev": "677119b06a2468f91852bb1e9f9b65590ac7311a",
+        "rev": "c4ad58709210846a97b9eab3a5ba6a8b6d8eaf94",
         "type": "github"
       },
       "original": {
