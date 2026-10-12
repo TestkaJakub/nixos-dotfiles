@@ -74,7 +74,7 @@ let
       /--camera-id=/ {
         match($0, /--camera-id=([0-9]+)/, a); id = a[1]
         match($0, /\(([a-z]+),/, b);         facing = b[1]
-        match($0, /fps=\[([^]]*)\]/, c);     fps = c[1]; gsub(/ /, "", fps)
+                match($0, /fps=.([0-9, ]+)/, c);     fps = c[1]; gsub(/ /, "", fps)
         hs = 0; next
       }
       /High speed capture/ { hs = 1; next }
@@ -91,7 +91,7 @@ let
         if (blocks > maxblocks) next
 
         f = fps
-        if (hs) { match($0, /fps=\[([^]]*)\]/, h); f = h[1]; gsub(/ /, "", f) }
+                if (hs) { match($0, /fps=.([0-9, ]+)/, h); f = h[1]; gsub(/ /, "", f) }
 
         # keep only fps values the encoder can sustain at this size
         n = split(f, arr, ","); ok = ""
