@@ -5,10 +5,10 @@
 let
   user = config.profile.username;
 
-  geProtonVersion = "GE-Proton10-28";
+  geProtonVersion = "GE-Proton11-7";
   geProtonTarball = builtins.fetchurl {
-    url    = "https://github.com/GloriousEggroll/proton-ge-custom/releases/download/${geProtonVersion}/${geProtonVersion}.tar.gz";
-    sha256 = "05p39lnai27m5qvp401b0wpdic0d8z4hpih21rhkzx8sgxpc8p2c";
+    url    = "https://github.com/GloriousEggroll/proton-ge-custom/releases/download/${geProtonVersion}/${geProtonVersion}-x86_65.tar.gz";
+    sha256 = "c5448b76a230384e2d7bc6beb5ccb97bafb7e2c3b6c527cb03a1a546bbcb00a0";
   };
 in
 {
