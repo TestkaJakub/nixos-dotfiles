@@ -35,7 +35,7 @@ in
           cat >> $out/etc/sane.d/airscan.conf <<EOF
 
           [devices]
-          "Epson" = http://${printerIp}:80/WSD/DEVICE, WSD
+          "Epson" = http://${printerIp}:80/WSD/SCAN, WSD
           EOF
         '';
       }))
