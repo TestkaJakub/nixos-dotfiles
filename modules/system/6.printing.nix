@@ -24,12 +24,21 @@ in
   };
 
   # ── Scanning ────────────────────────────────────────────────────────────────
+    # ── Scanning ────────────────────────────────────────────────────────────────
+  # nixpkgs has no hardware.sane.extraConfig, so the printer is appended to
+  # sane-airscan's bundled airscan.conf, which ends up in /etc/sane.d.
   hardware.sane = {
     enable        = true;
-    extraBackends = [ pkgs.sane-airscan ];
-    extraConfig.airscan = ''
-      [devices]
-      "Epson" = http://${printerIp}/eSCL, eSCL
-    '';
+    extraBackends = [
+      (pkgs.sane-airscan.overrideAttrs (old: {
+        postInstall = (old.postInstall or "") + ''
+          cat >> $out/etc/sane.d/airscan.conf <<EOF
+
+          [devices]
+          "Epson" = http://${printerIp}/eSCL, eSCL
+          EOF
+        '';
+      }))
+    ];
   };
 }
