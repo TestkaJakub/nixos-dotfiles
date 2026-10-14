@@ -5,7 +5,7 @@
 # Static lease on the MikroTik: 192.168.8.45 (MAC A4:D7:3C:D3:19:49).
 # Pinned by IP, so no Avahi/mDNS discovery is needed.
 let
-  printerIp = "192.168.8.45";
+  printerIp = "192.168.8.245";
 in
 {
   # ── Printing ────────────────────────────────────────────────────────────────
