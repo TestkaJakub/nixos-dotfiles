@@ -61,7 +61,7 @@ let
   # Calibrate visually — see the tuning loop. All values in pixels.
   pillHeight = 30;   # height of each pill
   capPx      = 23;   # size of the rounded end-cap glyph: raise until caps are as tall as the pill
-  capOffset  = 0;    # vertical nudge for the caps: higher moves them down
+  capOffset  = -2;    # vertical nudge for the caps: higher moves them down
 
   capL = builtins.fromJSON ''"\ue0b6"'';
   capR = builtins.fromJSON ''"\ue0b4"'';
