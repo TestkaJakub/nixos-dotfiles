@@ -364,25 +364,54 @@ in
       element selected.urgent                             { background-color: @accent; text-color: @bg; }
     '';
 
-    # ── Picom ─────────────────────────────────────────────────────────────────
+        # ── Picom ─────────────────────────────────────────────────────────────────
+    # EGL backend: needed for rounded corners + blur; grayscale-toggle uses it too.
+    # Fullscreen windows (games, video) are unredirected — no compositor in the way.
     xdg.configFile."picom/picom.conf".text = ''
+      # Backend
+      backend    = "egl";
+      vsync      = true;
+      use-damage = true;
+      unredir-if-possible = true;
+
+      # Rounded corners
+      corner-radius = 8;
+      rounded-corners-exclude = [
+        "window_type = 'dock'",
+        "window_type = 'desktop'",
+        "class_g = 'Polybar'",
+        "class_g = 'Rofi'",
+        "class_g = 'Dunst'",
+        "fullscreen"
+      ];
+
+      # Blur (behind translucent windows)
+      blur-method   = "dual_kawase";
+      blur-strength = 5;
+      blur-background-exclude = [
+        "window_type = 'dock'",
+        "window_type = 'desktop'",
+        "_GTK_FRAME_EXTENTS@"
+      ];
+
       # Shadows
       shadow          = true;
-      shadow-radius   = 8;
+      shadow-radius   = 12;
       shadow-opacity  = 0.4;
-      shadow-offset-x = -4;
-      shadow-offset-y = -4;
-      shadow-exclude  = [ "class_g = 'i3-frame'" ];
+      shadow-offset-x = -8;
+      shadow-offset-y = -8;
+      shadow-exclude  = [
+        "class_g = 'i3-frame'",
+        "window_type = 'dock'",
+        "_GTK_FRAME_EXTENTS@",
+        "fullscreen"
+      ];
 
       # Fading
       fading        = true;
       fade-in-step  = 0.05;
       fade-out-step = 0.05;
       fade-delta    = 5;
-
-      # Backend
-      backend    = "xrender";
-      vsync      = false;
     '';
   };
 }
