@@ -2,11 +2,9 @@
 
 # ── Nemo — file manager ────────────────────────────────────────────────────────
 # Note: services.gvfs.enable is set in system/peripherals.nix — not here.
+# GTK/Qt theme, fonts and cursor are managed by Stylix (meta/7.stylix.nix).
 let
-  user   = config.profile.username;
-  t      = config.theme;
-  bg     = t.palette.secondary;
-  accent = t.palette.primary;
+  user = config.profile.username;
 in
 {
   environment.systemPackages = with pkgs; [
@@ -17,44 +15,7 @@ in
   ];
 
   home-manager.users.${user} = { lib, ... }: {
-    xresources.properties = {
-      "Xft.dpi"      = 131;
-      "Xcursor.size" = 32;
-    };
-
-    home.pointerCursor = {
-      package    = pkgs.adwaita-icon-theme;
-      name       = "Adwaita";
-      size       = 32;
-      x11.enable = true;
-      gtk.enable = true;
-    };
-
-    gtk = {
-      enable = true;
-      font = {
-        name    = "Noto Sans";
-        size    = 14;
-        package = pkgs.noto-fonts;
-      };
-      theme = {
-        name    = "Adwaita-dark";
-        package = pkgs.gnome-themes-extra;
-      };
-      gtk4.theme = {
-        name    = "Adwaita-dark";
-        package = pkgs.gnome-themes-extra;
-      };
-    };
-
-    qt = {
-      enable        = true;
-      platformTheme = { name = "gtk"; };
-    };
-
-    dconf.settings."org/gnome/desktop/interface" = {
-      color-scheme = "prefer-dark";
-    };
+    xresources.properties."Xft.dpi" = 131;
 
     dconf.settings."org/nemo/preferences" = {
       default-folder-viewer     = "list-view";
