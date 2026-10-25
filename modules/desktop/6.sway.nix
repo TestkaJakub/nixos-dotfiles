@@ -7,29 +7,32 @@
 # matching 6.i3.nix.
 #
 # WM:          sway (FLOATING by default; tiling summoned on demand)
-# Bar:         waybar          (polybar is X11-only → replaced here)
-# Launcher:    fuzzel          (rofi is X11; you already had toFuzzel in theme)
-# Wallpaper:   sway `output bg` (feh is X11; static for now — see notes below)
+# Bar:         waybar
+# Launcher:    fuzzel
+# Wallpaper:   sway `output bg`
 # Lock:        swaylock
-# Screenshots: grimshot        (scrot is X11; see 6.screenshots.nix note below)
-# Clipboard:   wl-clipboard    (xclip is X11)
-# Notifs:      dunst           (works on Wayland; shared with i3.nix)
-# Portals:     xdg-desktop-portal-wlr (+ gtk) for screen-sharing over PipeWire
-# DM:          LightDM (unchanged — an X greeter can launch a Wayland session)
+# Screenshots: grimshot
+# Clipboard:   wl-clipboard
+# Notifs:      dunst (shared with i3.nix)
+# Portals:     xdg-desktop-portal-hyprland (+ gtk) for screen-sharing over PipeWire
+# DM:          LightDM (an X greeter can launch a Wayland session)
 #
-# ── The float-first workflow (your (a) + (b) requirement) ─────────────────────
+# Colors & fonts:
+#   Everything comes from Stylix (meta/7.stylix.nix) via config.lib.stylix.colors.
+#   Stylix's own waybar target is disabled below — this module owns the bar CSS
+#   so the two don't stack on top of each other.
+#
+# ── The float-first workflow ──────────────────────────────────────────────────
 # Every window opens FLOATING. To arrange windows in a tiled layout:
 #   1. Focus a window, press $mod+Shift+s   → it drops into the tiling tree.
-#   2. Tile more windows the same way; they auto-split (a).
+#   2. Tile more windows the same way; they auto-split.
 #   3. On the focused tiling container:
-#        $mod+w  → tabbed   (b)
-#        $mod+s  → stacking (b)
+#        $mod+w  → tabbed
+#        $mod+s  → stacking
 #        $mod+t  → toggle split direction
 #   4. $mod+Shift+s again pops a window back out to floating.
-# Tabbed/stacked headers render fine even with pixel borders — the tab/stack
-# decoration is drawn by the container, not the per-window titlebar.
 #
-# Key bindings (mirrors your i3 map; layout keys are the additions):
+# Key bindings:
 #   Super+Q            terminal
 #   Super+F            fuzzel launcher
 #   Super+B            browser
@@ -51,17 +54,25 @@
 #   Super+Print        screenshot current output
 #   Super+Shift+C      reload    /  Super+Shift+E  exit (with confirm)
 let
-  user   = config.profile.username;
-  t      = config.theme;
-  p      = t.palette;
-  meta   = config.meta.defaults;
+  user = config.profile.username;
+  meta = config.meta.defaults;
 
-  bg     = p.secondary;
-  fg     = p.primary;
-  accent = t.functions.complement p.primary;
-  border = p.border;
+  # ── Stylix palette + fonts ──────────────────────────────────────────────────
+  c      = config.lib.stylix.colors.withHashtag;   # "#rrggbb"
+  raw    = config.lib.stylix.colors;               # "rrggbb"
+  fonts  = config.stylix.fonts;
+  cursor = config.stylix.cursor;
+  mono   = fonts.monospace.name;
+  uiSize = toString fonts.sizes.desktop;
 
-  bgNoHash  = lib.strings.removePrefix "#" bg;
+  bg     = c.base00;   # main background
+  bgAlt  = c.base01;   # bars / panels
+  border = c.base02;   # unfocused borders
+  dimmed = c.base03;   # muted / inactive
+  fg     = c.base05;   # text
+  accent = c.base0D;   # focus, selection, active workspace
+  urgent = c.base08;   # red
+
   wallpaper = meta.wallpaper;
   kbdLayout = config.locale.keyboardLayout;
 
@@ -72,21 +83,15 @@ in
   # ── Session ─────────────────────────────────────────────────────────────────
   programs.sway = {
     enable              = true;
-    wrapperFeatures.gtk = true;   # GTK apps under the sway wrapper
-    # XWayland ships with sway by default; X-only apps (electron, bambu via xcb,
-    # steam, etc.) keep working.
+    wrapperFeatures.gtk = true;
   };
 
-  # LightDM is an X greeter but can launch the Sway Wayland session. Declared
-  # here too (identical to i3.nix, so it merges) so this module is self-contained
-  # if you ever delete 6.i3.nix.
   services.xserver.enable                        = true;
   services.xserver.displayManager.lightdm.enable = true;
 
   # swaylock needs a PAM entry or it can never authenticate the unlock.
   security.pam.services.swaylock = {};
 
-  # Screen-sharing / screenshot portals over PipeWire (you already run PipeWire).
   xdg.portal = {
     enable       = true;
     extraPortals = [
@@ -106,37 +111,38 @@ in
     sway-contrib.grimshot
     wl-clipboard
     swaybg
-    dunst          # also in i3.nix; harmless duplicate, keeps this module standalone
+    dunst
   ];
 
   home-manager.users.${user} = { lib, ... }: {
+
+    # This module writes its own waybar CSS from the Stylix palette.
+    stylix.targets.waybar.enable = false;
 
     # ── Sway config ───────────────────────────────────────────────────────────
     xdg.configFile."sway/config".text = ''
       # ── Mod key (Super) ──────────────────────────────────────────────────────
       set $mod Mod4
 
-      # ── Colours from theme.palette (Nix-generated, static) ───────────────────
+      # ── Colours (Stylix) ─────────────────────────────────────────────────────
       set $bg      ${bg}
       set $fg      ${fg}
       set $accent  ${accent}
       set $border  ${border}
+      set $urgent  ${urgent}
 
       # ── Font (also used for tab/stack headers) ───────────────────────────────
-      font pango:JetBrains Mono 14
+      font pango:${mono} ${uiSize}
       title_align center
 
       # ── FLOAT BY DEFAULT ─────────────────────────────────────────────────────
-      # app_id matches native Wayland windows; class matches XWayland windows.
-      # (A rare window with neither an app_id nor a class won't match — add a
-      #  title rule if you ever hit one.)
       for_window [app_id=".*"] floating enable
       for_window [class=".*"]  floating enable
 
       # Drag to move with $mod; $mod+right-drag to resize.
       floating_modifier $mod normal
 
-      # ── Gaps / borders (your i3 look) ────────────────────────────────────────
+      # ── Gaps / borders ───────────────────────────────────────────────────────
       gaps inner 11
       gaps outer 5
       smart_gaps on
@@ -150,12 +156,9 @@ in
       client.focused          $accent  $bg      $fg    $accent   $accent
       client.unfocused        $border  $bg      $fg    $border   $border
       client.focused_inactive $border  $bg      $fg    $border   $border
-      client.urgent           #e06c75  #e06c75  $fg    #e06c75   #e06c75
+      client.urgent           $urgent  $urgent  $fg    $urgent   $urgent
 
       # ── Input ────────────────────────────────────────────────────────────────
-      # NOTE: services.libinput in system/mouse.nix only configures Xorg. Sway
-      # drives libinput itself via wlroots, so your flat 1:1 Model O- tuning is
-      # re-declared here or it won't apply under Wayland.
       input "type:keyboard" {
         xkb_layout ${kbdLayout}
       }
@@ -164,30 +167,23 @@ in
         pointer_accel 0
       }
 
-      seat seat0 xcursor_theme Adwaita 24
+      # Cursor follows Stylix so sway and apps agree on theme + size
+      seat seat0 xcursor_theme ${cursor.name} ${toString cursor.size}
 
-      # ── Output: wallpaper + scaling ──────────────────────────────────────────
-      # Your X setup runs Xft.dpi 131 (~1.36 scale). 1.333 is a close, cleaner
-      # fractional match; run `swaymsg -t get_outputs` to get the real output
-      # name and tune per-monitor. If XWayland apps look soft at fractional
-      # scale, use integer `scale 1` and bump font sizes instead.
+      # ── Output: wallpaper ────────────────────────────────────────────────────
       output * {
-        bg ${wallpaper} fill #1f1f1f
+        bg ${wallpaper} fill ${bg}
       }
 
       # ── Autostart ────────────────────────────────────────────────────────────
-      # Export the Wayland env into the user systemd + dbus activation env so
-      # portals (screen-share) and any WantedBy=graphical-session.target units
-      # can see WAYLAND_DISPLAY.
       exec_always systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP SWAYSOCK
       exec_always dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
 
-      exec_always ${pkgs.waybar}/bin/waybar
+      # pkill first so a reload ($mod+Shift+c) doesn't stack a second bar
+      exec_always sh -c 'pkill -x waybar; exec ${pkgs.waybar}/bin/waybar'
       exec        ${pkgs.dunst}/bin/dunst
       exec        ${pkgs.networkmanagerapplet}/bin/nm-applet --indicator
       exec        ${pkgs.udiskie}/bin/udiskie --tray
-      # EasyEffects is a systemd user service; exec it too in case the session
-      # target isn't wired under Sway (dbus makes the 2nd instance a no-op).
       exec        ${pkgs.easyeffects}/bin/easyeffects --gapplication-service
 
       # ── Apps ─────────────────────────────────────────────────────────────────
@@ -197,7 +193,7 @@ in
       bindsym $mod+n       exec ${meta.terminalRun} ${pkgs.yazi}/bin/yazi
       bindsym $mod+Shift+n exec ${meta.fileManagerPackage}/bin/${meta.fileManager}
       bindsym $mod+e     kill
-      bindsym $mod+Alt+l exec ${pkgs.swaylock}/bin/swaylock -f -c ${bgNoHash}
+      bindsym $mod+Alt+l exec ${pkgs.swaylock}/bin/swaylock -f -c ${raw.base00}
       bindsym $mod+v     fullscreen toggle
 
       # ── Float / tile on demand ───────────────────────────────────────────────
@@ -205,7 +201,7 @@ in
       bindsym $mod+space   focus mode_toggle
       bindsym $mod+c       move position center
 
-      # ── Tiling container layouts — your (a) + (b) ────────────────────────────
+      # ── Tiling container layouts ─────────────────────────────────────────────
       bindsym $mod+w layout tabbed
       bindsym $mod+s layout stacking
       bindsym $mod+t layout toggle split
@@ -220,7 +216,7 @@ in
       bindsym $mod+Up    focus up
       bindsym $mod+Right focus right
 
-      # ── Move (px for floating, tree-move for tiled) ──────────────────────────
+      # ── Move ─────────────────────────────────────────────────────────────────
       bindsym $mod+Shift+h move left  20px
       bindsym $mod+Shift+j move down  20px
       bindsym $mod+Shift+k move up    20px
@@ -283,13 +279,9 @@ in
       bindsym $mod+Shift+c reload
       bindsym $mod+Shift+e exec ${pkgs.sway}/bin/swaynag -t warning \
         -m 'Exit sway?' -B 'Yes, exit' 'swaymsg exit'
-
-      # Bar is waybar, launched above — sway's built-in bar stays disabled.
     '';
 
     # ── Waybar ──────────────────────────────────────────────────────────────────
-    # Launched from sway autostart (systemd integration off) so it starts the
-    # same way your polybar does under i3.
     programs.waybar = {
       enable         = true;
       systemd.enable = false;
@@ -315,48 +307,65 @@ in
           format   = "{:%d-%m-%Y  %H:%M:%S}";
         };
         "pulseaudio" = {
-          format         = "{icon} {volume}%";
-          format-muted   = "muted";
-          format-icons   = { default = [ "" "" "" ]; };
-          on-click       = "${pkgs.pavucontrol}/bin/pavucontrol";
+          format       = "{icon} {volume}%";
+          format-muted = "󰝟 muted";
+          format-icons = { default = [ "󰕿" "󰖀" "󰕾" ]; };
+          on-click     = "${pkgs.pavucontrol}/bin/pavucontrol";
         };
-        "memory" = { interval = 3; format = " {percentage}%"; };
-        "cpu"    = { interval = 1; format = " {usage}%"; };
+        "memory"  = { interval = 3; format = "󰍛 {percentage}%"; };
+        "cpu"     = { interval = 1; format = "󰻠 {usage}%"; };
         "network" = {
-          interval           = 3;
-          format-ethernet    = " {ipaddr}";
-          format-disconnected = " disconnected";
-          tooltip-format     = "{ifname}: {ipaddr}";
+          interval            = 3;
+          format-ethernet     = "󰈀 {ipaddr}";
+          format-disconnected = "󰈂 disconnected";
+          tooltip-format      = "{ifname}: {ipaddr}";
         };
         "tray" = { spacing = 8; };
       };
 
       style = ''
         * {
-          font-family: "JetBrains Mono";
-          font-size: 14px;
+          font-family: "${mono}";
+          font-size: ${uiSize}pt;
           min-height: 0;
         }
         window#waybar {
-          background-color: ${bg};
+          background-color: ${bgAlt};
           color: ${fg};
+        }
+        tooltip {
+          background-color: ${bg};
+          border: 2px solid ${accent};
+          border-radius: 5px;
         }
         #workspaces button {
           padding: 0 8px;
-          color: ${fg};
+          color: ${dimmed};
           background: transparent;
+          border-radius: 0;
         }
         #workspaces button.focused {
           background-color: ${accent};
           color: ${bg};
         }
         #workspaces button.urgent {
-          background-color: #e06c75;
+          background-color: ${urgent};
           color: ${bg};
         }
-        #clock, #pulseaudio, #memory, #cpu, #network, #tray {
+        #mode {
+          background-color: ${urgent};
+          color: ${bg};
+          padding: 0 10px;
+        }
+        #clock, #pulseaudio, #memory, #cpu, #network, #tray, #custom-bing {
           padding: 0 10px;
           color: ${fg};
+        }
+        #custom-bing {
+          color: ${dimmed};
+        }
+        #pulseaudio.muted, #network.disconnected {
+          color: ${dimmed};
         }
       '';
     };
@@ -364,15 +373,20 @@ in
     # ── Fuzzel ──────────────────────────────────────────────────────────────────
     xdg.configFile."fuzzel/fuzzel.ini".text = ''
       [main]
-      font=JetBrains Mono:size=15
+      font=${mono}:size=${toString fonts.sizes.popups}
       width=30
       lines=12
 
       [colors]
       background=${fuzzelC bg}
       text=${fuzzelC fg}
+      prompt=${fuzzelC accent}
+      placeholder=${fuzzelC dimmed}
+      input=${fuzzelC fg}
+      match=${fuzzelC accent}
       selection=${fuzzelC accent}
       selection-text=${fuzzelC bg}
+      selection-match=${fuzzelC bg}
       border=${fuzzelC accent}
 
       [border]
