@@ -53,24 +53,28 @@ let
   # Pill height = line height of the bar font at 131 dpi, so the rounded
   # end-caps (Nerd Font glyphs) fill the pill exactly.
   # If you see a 1px sliver above/below the caps, nudge pillFudge by ±1.
-  pillFudge  = 0;
-  pillHeight = builtins.ceil (fonts.sizes.desktop * 131.0 / 72.0 * 1.32) + pillFudge;
 
   # Rounded end-caps: l1/r1 … l4/r4, one pair per pill
     # Rounded end-caps, generated from codepoints (U+E0B6 / U+E0B4) so there
   # are no invisible characters to lose when copying.
+    # ── Polybar pills ───────────────────────────────────────────────────────────
+  # Calibrate visually — see the tuning loop. All values in pixels.
+  pillHeight = 30;   # height of each pill
+  capPx      = 23;   # size of the rounded end-cap glyph: raise until caps are as tall as the pill
+  capOffset  = 2;    # vertical nudge for the caps: higher moves them down
+
   capL = builtins.fromJSON ''"\ue0b6"'';
   capR = builtins.fromJSON ''"\ue0b4"'';
 
   polybarCaps = lib.concatMapStrings (n: ''
     [module/l${toString n}]
     type              = custom/text
-    format            = ${capL}
+    format            = %{T2}${capL}%{T-}
     format-foreground = ''${colors.pill}
 
     [module/r${toString n}]
     type              = custom/text
-    format            = ${capR}
+    format            = %{T2}${capR}%{T-}
     format-foreground = ''${colors.pill}
 
   '') [ 1 2 3 4 ];
@@ -260,6 +264,7 @@ in
       padding           = 0
       module-margin     = 0
       font-0            = ${mono}:size=${uiSize};0
+      font-1            = ${mono}:pixelsize=${toString capPx};${toString capOffset}
       modules-left      = l1 i3 r1
       modules-center    = l2 date r2
       modules-right     = l3 volume memory cpu network r3 gap l4 tray r4
