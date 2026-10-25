@@ -57,15 +57,20 @@ let
   pillHeight = builtins.ceil (fonts.sizes.desktop * 131.0 / 72.0 * 1.32) + pillFudge;
 
   # Rounded end-caps: l1/r1 … l4/r4, one pair per pill
+    # Rounded end-caps, generated from codepoints (U+E0B6 / U+E0B4) so there
+  # are no invisible characters to lose when copying.
+  capL = builtins.fromJSON ''"\ue0b6"'';
+  capR = builtins.fromJSON ''"\ue0b4"'';
+
   polybarCaps = lib.concatMapStrings (n: ''
     [module/l${toString n}]
     type              = custom/text
-    format            = 
+    format            = ${capL}
     format-foreground = ''${colors.pill}
 
     [module/r${toString n}]
     type              = custom/text
-    format            = 
+    format            = ${capR}
     format-foreground = ''${colors.pill}
 
   '') [ 1 2 3 4 ];
@@ -241,23 +246,26 @@ in
       transparent = #00000000
 
       [bar/main]
-      width          = 100%:-24
-      offset-x       = 12
-      offset-y       = 8
-      height         = ${toString pillHeight}
-      dpi            = 131
-      background     = ''${colors.transparent}
-      foreground     = ''${colors.fg}
-      padding        = 0
-      module-margin  = 0
-      font-0         = ${mono}:size=${uiSize};0
-      modules-left   = l1 i3 r1
-      modules-center = l2 date r2
-      modules-right  = l3 volume memory cpu network r3 gap l4 tray r4
-      cursor-click   = pointer
-      wm-restack     = i3
+      ; i3 positions dock bars itself and ignores offset-x/y, so the floating
+      ; look comes from transparent borders drawn inside the bar instead.
+      width             = 100%
+      height            = ${toString (pillHeight + 8)}
+      border-top-size   = 8
+      border-left-size  = 12
+      border-right-size = 12
+      border-color      = ''${colors.transparent}
+      dpi               = 131
+      background        = ''${colors.transparent}
+      foreground        = ''${colors.fg}
+      padding           = 0
+      module-margin     = 0
+      font-0            = ${mono}:size=${uiSize};0
+      modules-left      = l1 i3 r1
+      modules-center    = l2 date r2
+      modules-right     = l3 volume memory cpu network r3 gap l4 tray r4
+      cursor-click      = pointer
+      wm-restack        = i3
       override-redirect = false
-
       ${polybarCaps}
 
       [module/gap]
