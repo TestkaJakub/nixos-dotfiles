@@ -48,6 +48,27 @@ let
   urgent = c.base08;   # red
 
   polybar = pkgs.polybar.override { i3Support = true; pulseSupport = true; };
+
+    # ── Polybar pills ───────────────────────────────────────────────────────────
+  # Pill height = line height of the bar font at 131 dpi, so the rounded
+  # end-caps (Nerd Font glyphs) fill the pill exactly.
+  # If you see a 1px sliver above/below the caps, nudge pillFudge by ±1.
+  pillFudge  = 0;
+  pillHeight = builtins.ceil (fonts.sizes.desktop * 131.0 / 72.0 * 1.32) + pillFudge;
+
+  # Rounded end-caps: l1/r1 … l4/r4, one pair per pill
+  polybarCaps = lib.concatMapStrings (n: ''
+    [module/l${toString n}]
+    type              = custom/text
+    format            = 
+    format-foreground = ''${colors.pill}
+
+    [module/r${toString n}]
+    type              = custom/text
+    format            = 
+    format-foreground = ''${colors.pill}
+
+  '') [ 1 2 3 4 ];
 in
 {
   services.xserver.enable                        = true;
@@ -204,99 +225,133 @@ in
       # Bar managed by polybar — i3bar disabled
     '';
 
-    # ── Polybar ───────────────────────────────────────────────────────────────
-    # Colors are baked in from Stylix — no more pywal include file.
-    # Icons are Nerd Font glyphs (Stylix monospace = JetBrainsMono Nerd Font).
+        # ── Polybar ───────────────────────────────────────────────────────────────
+    # Floating pills: the bar itself is transparent (picom provides the alpha);
+    # each group gets a solid background and rounded Nerd Font end-caps.
+    #   left   [ workspaces ]
+    #   center [ date ]
+    #   right  [ volume  memory  cpu  network ] [ tray ]
     xdg.configFile."polybar/config.ini".text = ''
       [colors]
-      bg     = ${bgAlt}
-      fg     = ${fg}
-      accent = ${accent}
-      dimmed = ${dimmed}
-      urgent = ${urgent}
+      pill        = ${bg}
+      fg          = ${fg}
+      accent      = ${accent}
+      dimmed      = ${dimmed}
+      urgent      = ${urgent}
+      transparent = #00000000
 
       [bar/main]
-      width            = 100%
-      height           = 38
-      radius           = 0
-      background       = ''${colors.bg}
-      foreground       = ''${colors.fg}
-      border-size      = 0
-      padding-left     = 1
-      padding-right    = 1
-      module-margin    = 1
-      font-0           = ${mono}:size=${uiSize};3
-      font-1           = ${mono}:size=${toString (fonts.sizes.desktop + 4)};4
-      modules-left     = i3
-      modules-center   = date
-      modules-right    = volume memory cpu network tray
-      cursor-click     = pointer
+      width          = 100%:-24
+      offset-x       = 12
+      offset-y       = 8
+      height         = ${toString pillHeight}
+      dpi            = 131
+      background     = ''${colors.transparent}
+      foreground     = ''${colors.fg}
+      padding        = 0
+      module-margin  = 0
+      font-0         = ${mono}:size=${uiSize};0
+      modules-left   = l1 i3 r1
+      modules-center = l2 date r2
+      modules-right  = l3 volume memory cpu network r3 gap l4 tray r4
+      cursor-click   = pointer
+      wm-restack     = i3
       override-redirect = false
 
+      ${polybarCaps}
+
+      [module/gap]
+      type   = custom/text
+      format = "  "
+
       [module/i3]
-      type                        = internal/i3
-      pin-workspaces              = true
-      show-urgent                 = true
-      strip-wsnumbers             = false
-      index-sort                  = true
-      label-focused               = %index%
-      label-focused-background    = ''${colors.accent}
-      label-focused-foreground    = ''${colors.bg}
-      label-focused-padding       = 2
-      label-unfocused             = %index%
-      label-unfocused-foreground  = ''${colors.dimmed}
-      label-unfocused-padding     = 2
-      label-urgent                = %index%!
-      label-urgent-background     = ''${colors.urgent}
-      label-urgent-foreground     = ''${colors.bg}
-      label-urgent-padding        = 2
+      type              = internal/i3
+      pin-workspaces    = true
+      show-urgent       = true
+      index-sort        = true
+      format            = <label-state><label-mode>
+      format-background = ''${colors.pill}
+      label-focused              = %index%
+      label-focused-background   = ''${colors.accent}
+      label-focused-foreground   = ''${colors.pill}
+      label-focused-padding      = 1
+      label-unfocused            = %index%
+      label-unfocused-foreground = ''${colors.dimmed}
+      label-unfocused-padding    = 1
+      label-visible              = %index%
+      label-visible-padding      = 1
+      label-urgent               = %index%
+      label-urgent-background    = ''${colors.urgent}
+      label-urgent-foreground    = ''${colors.pill}
+      label-urgent-padding       = 1
+      label-mode-foreground      = ''${colors.urgent}
+      label-mode-padding         = 1
 
       [module/date]
-      type          = internal/date
-      interval      = 1
-      date          = %d-%m-%Y
-      time          = %H:%M:%S
-      label         = %date%  %time%
-      label-foreground = ''${colors.fg}
+      type              = internal/date
+      interval          = 1
+      date              = %d-%m-%Y
+      time              = %H:%M:%S
+      label             = %date%  %time%
+      format-background = ''${colors.pill}
+      format-padding    = 1
 
       [module/volume]
-      type                  = internal/pulseaudio
-      format-volume         = <ramp-volume> <label-volume>
-      label-volume          = %percentage%%
-      label-muted           = 󰝟 muted
-      label-muted-foreground = ''${colors.dimmed}
-      ramp-volume-0         = 󰕿
-      ramp-volume-1         = 󰖀
-      ramp-volume-2         = 󰕾
-      ramp-volume-foreground = ''${colors.accent}
-      click-right           = ${pkgs.pavucontrol}/bin/pavucontrol &
+      type                     = internal/pulseaudio
+      format-volume            = <ramp-volume> <label-volume>
+      format-volume-background = ''${colors.pill}
+      format-volume-padding    = 1
+      format-muted-background  = ''${colors.pill}
+      format-muted-padding     = 1
+      label-volume             = %percentage%%
+      label-muted              = 󰝟 muted
+      label-muted-foreground   = ''${colors.dimmed}
+      ramp-volume-0            = 󰕿
+      ramp-volume-1            = 󰖀
+      ramp-volume-2            = 󰕾
+      ramp-volume-foreground   = ''${colors.accent}
+      click-right              = ${pkgs.pavucontrol}/bin/pavucontrol &
 
       [module/memory]
-      type     = internal/memory
-      interval = 3
+      type                     = internal/memory
+      interval                 = 3
       format-prefix            = "󰍛 "
       format-prefix-foreground = ''${colors.accent}
-      label    = %percentage_used%%
+      format-background        = ''${colors.pill}
+      format-padding           = 1
+      label                    = %percentage_used%%
 
       [module/cpu]
-      type     = internal/cpu
-      interval = 1
+      type                     = internal/cpu
+      interval                 = 1
       format-prefix            = "󰻠 "
       format-prefix-foreground = ''${colors.accent}
-      label    = %percentage%%
+      format-background        = ''${colors.pill}
+      format-padding           = 1
+      label                    = %percentage%%
 
       [module/network]
-      type                    = internal/network
-      interface-type          = wired
-      interval                = 3
+      type                               = internal/network
+      interface-type                     = wired
+      interval                           = 3
       format-connected-prefix            = "󰈀 "
       format-connected-prefix-foreground = ''${colors.accent}
-      label-connected         = %local_ip%
-      label-disconnected      = 󰈂 disconnected
-      label-disconnected-foreground = ''${colors.dimmed}
+      format-connected-background        = ''${colors.pill}
+      format-connected-padding           = 1
+      label-connected                    = %local_ip%
+      format-disconnected                = <label-disconnected>
+      format-disconnected-background     = ''${colors.pill}
+      format-disconnected-padding        = 1
+      label-disconnected                 = 󰈂 disconnected
+      label-disconnected-foreground      = ''${colors.dimmed}
 
       [module/tray]
-      type = internal/tray
+      type              = internal/tray
+      tray-background   = ''${colors.pill}
+      tray-spacing      = 6
+      tray-size         = 66%
+      format-background = ''${colors.pill}
+      format-padding    = 1
     '';
 
     # ── Rofi ──────────────────────────────────────────────────────────────────
