@@ -93,7 +93,7 @@ in
       for_window [title="File Transfer*"]       floating enable
       for_window [class="Steam" title="Steam"]  floating enable
       for_window [class=".*"] border pixel 3
-      
+
       # ── Gaps ──────────────────────────────────────────────────────────────
       gaps inner 11
       gaps outer 5
@@ -302,10 +302,10 @@ in
     # ── Rofi ──────────────────────────────────────────────────────────────────
     xdg.configFile."rofi/config.rasi".text = ''
       configuration {
-        modi:           "drun,run,window";
-        show-icons:     true;
+        modi:                "drun,run,window";
+        show-icons:          true;
         drun-display-format: "{name}";
-        font:           "${mono} ${toString fonts.sizes.popups}";
+        font:                "${mono} ${toString fonts.sizes.popups}";
       }
 
       * {
@@ -314,31 +314,54 @@ in
         fg:     ${fg};
         dimmed: ${dimmed};
         accent: ${accent};
+        urgent: ${urgent};
 
         background-color: transparent;
         text-color:       @fg;
+        border-color:     @accent;
       }
 
       window {
         background-color: @bg;
         border:           3px;
-        border-color:     @accent;
         border-radius:    5px;
-        width:            656px;
+        width:            600px;
+        padding:          12px;
       }
 
-      mainbox       { background-color: @bg; }
-      inputbar      { background-color: @bg-alt; padding: 11px; }
-      entry         { background-color: transparent; placeholder-color: @dimmed; }
-      prompt        { text-color: @accent; }
+      mainbox { spacing: 12px; children: [ inputbar, listview ]; }
 
-      listview      { background-color: @bg; padding: 5px 0; }
-      element       { padding: 8px 11px; }
-      element-text  { text-color: inherit; }
-      element selected {
-        background-color: @accent;
-        text-color:       @bg;
+      inputbar {
+        background-color: @bg-alt;
+        border-radius:    5px;
+        padding:          10px 12px;
+        spacing:          10px;
+        children:         [ prompt, entry ];
       }
+      prompt { text-color: @accent; }
+      entry  { placeholder: "Search…"; placeholder-color: @dimmed; }
+
+      listview {
+        lines:     8;
+        spacing:   4px;
+        scrollbar: false;
+        fixed-height: false;
+      }
+
+      element {
+        padding:       8px 12px;
+        spacing:       12px;
+        border-radius: 5px;
+      }
+      element-icon { size: 1.4em; vertical-align: 0.5; }
+      element-text { text-color: inherit; vertical-align: 0.5; }
+
+      /* Row states — override every one so no default-theme colors leak */
+      element normal.normal,   element alternate.normal   { background-color: transparent; text-color: @fg; }
+      element normal.active,   element alternate.active   { background-color: transparent; text-color: @accent; }
+      element normal.urgent,   element alternate.urgent   { background-color: transparent; text-color: @urgent; }
+      element selected.normal, element selected.active,
+      element selected.urgent                             { background-color: @accent; text-color: @bg; }
     '';
 
     # ── Picom ─────────────────────────────────────────────────────────────────
