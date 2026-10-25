@@ -110,28 +110,6 @@ in
 
     home-manager.users.${user} = {
       home.packages = [ config.scripts.bingWallpaper ];
-
-      # ── Daily + on-login refresh ──────────────────────────────────────────
-      systemd.user.services.bing-wallpaper = {
-        Unit = {
-          Description = "Set Bing photo of the day as wallpaper";
-          After       = [ "graphical-session.target" ];
-        };
-        Service = {
-          Type      = "oneshot";
-          ExecStart = "${config.scripts.bingWallpaper}/bin/bing-wallpaper";
-        };
-      };
-
-      systemd.user.timers.bing-wallpaper = {
-        Unit.Description = "Daily Bing wallpaper refresh";
-        Timer = {
-          OnStartupSec = "30s";   # apply shortly after login
-          OnCalendar   = "daily"; # and once a day thereafter
-          Persistent   = true;    # catch up if the machine was off
-        };
-        Install.WantedBy = [ "timers.target" ];
-      };
     };
   };
 }

@@ -1,58 +1,44 @@
 { lib, pkgs, config, ... }:
 
 # ── Desktop scripts ────────────────────────────────────────────────────────────
-# Desktop-specific binaries exposed via config.scripts.* so compositor and
-# other desktop modules can reference their store paths directly.
+# The wallpaper drives the whole theme: Stylix generates the palette from
+# modules/meta/wallpapers/current.jpg at build time (see 7.stylix.nix).
 #
-# wallpaper-set    — set a wallpaper by path, or open a GUI picker (zenity)
-#                    if no argument is given. Copies to collection/, updates
-#                    the current symlink, applies via feh, runs hook if present.
-# wallpaper-next   — advance to the next wallpaper in collection/, wrapping
-#                    around.
-# wallpaper-init   — apply current wallpaper on login, falling back to the
-#                    store-backed default if no current wallpaper is set.
-#
-# Colors no longer follow the wallpaper — the palette lives in Stylix
-# (meta/7.stylix.nix). The old pywal / theme-apply pipeline is gone.
-#
-# Hook (optional, yours to create):
-#   ~/.config/wallpaper/on-change is run with the new wallpaper path after
-#   every change, if it exists and is executable.
+# set-theme [image]   — pick a wallpaper (zenity picker if no argument),
+#                       copy it into the repo as current.jpg, run nrs so Stylix
+#                       regenerates the palette, then reload i3/sway.
+# wallpaper-init      — apply the wallpaper on login (i3 / feh).
+#                       sway sets it itself via `output * bg`.
 let
-  user        = config.profile.username;
-  defaultWall = config.meta.defaults.wallpaper;
-  feh         = "${pkgs.feh}/bin/feh";
+  user      = config.profile.username;
+  wallpaper = config.meta.defaults.wallpaper;
+  nrs       = "${config.scripts.nrs}/bin/nrs";
 in
 {
   options.scripts = {
-    wallpaperSet = lib.mkOption {
-      type        = lib.types.package;
-      readOnly    = true;
-      description = "Set a wallpaper by path or open a GUI picker.";
-    };
-    wallpaperNext = lib.mkOption {
-      type        = lib.types.package;
-      readOnly    = true;
-      description = "Advance to the next wallpaper in collection, wrapping around.";
-    };
     wallpaperInit = lib.mkOption {
       type        = lib.types.package;
       readOnly    = true;
-      description = "Apply current wallpaper on login, falling back to store default.";
+      description = "Apply the Stylix wallpaper on login (X11).";
+    };
+    setTheme = lib.mkOption {
+      type        = lib.types.package;
+      readOnly    = true;
+      description = "Set a wallpaper, regenerate the Stylix palette from it, and rebuild.";
     };
   };
 
   config = {
     scripts = {
-      wallpaperSet = pkgs.writeShellScriptBin "wallpaper-set" ''
+      wallpaperInit = pkgs.writeShellScriptBin "wallpaper-init" ''
+        ${pkgs.feh}/bin/feh --no-fehbg --bg-fill "${wallpaper}"
+      '';
+
+      setTheme = pkgs.writeShellScriptBin "set-theme" ''
         set -e
 
-        WALLPAPER_DIR="$HOME/.config/wallpaper"
-        COLLECTION="$WALLPAPER_DIR/collection"
-        CURRENT="$WALLPAPER_DIR/current"
-        HOOK="$WALLPAPER_DIR/on-change"
-
-        mkdir -p "$COLLECTION"
+        FLAKE="$HOME/nixos-dotfiles"
+        DEST="$FLAKE/modules/meta/wallpapers/current.jpg"
 
         # ── Pick image ────────────────────────────────────────────────────────
         if [ -n "$1" ]; then
@@ -60,106 +46,46 @@ in
         else
           SOURCE=$(${pkgs.zenity}/bin/zenity \
             --file-selection \
-            --title="Select wallpaper" \
+            --title="Pick a wallpaper — the theme will follow it" \
             --filename="$HOME/data/Pictures/" \
-            --file-filter="Images|*.jpg *.jpeg *.png *.bmp *.gif *.tiff *.webp" \
+            --file-filter="Images|*.jpg *.jpeg *.png *.webp *.bmp *.tiff" \
             2>/dev/null) || { echo "Cancelled."; exit 0; }
-
-          if [ -z "$SOURCE" ]; then
-            echo "No file selected."
-            exit 0
-          fi
         fi
 
         if [ ! -f "$SOURCE" ]; then
-          echo "ERROR: File not found: $SOURCE"
+          echo "set-theme: file not found: $SOURCE"
           exit 1
         fi
 
-        # ── Copy to collection ────────────────────────────────────────────────
-        FILENAME=$(basename "$SOURCE")
-        DEST="$COLLECTION/$FILENAME"
+        # ── Copy into the repo as JPEG (one fixed name Stylix points at) ──────
+        ${pkgs.imagemagick}/bin/magick "$SOURCE" -strip -quality 92 "$DEST"
+        echo "Wallpaper: $(basename "$SOURCE") → modules/meta/wallpapers/current.jpg"
+        echo "Rebuilding — Stylix regenerates the palette from it..."
+        echo ""
 
-        if [ "$SOURCE" != "$DEST" ]; then
-          cp "$SOURCE" "$DEST"
+        # nrs commits the new image and switches
+        ${nrs}
+
+        # ── Reload the running session so bar/borders/wallpaper update ────────
+        if [ -n "''${SWAYSOCK:-}" ]; then
+          ${pkgs.sway}/bin/swaymsg reload >/dev/null
+        elif [ -n "''${DISPLAY:-}" ]; then
+          ${pkgs.i3}/bin/i3-msg restart >/dev/null 2>&1 || true
         fi
 
-        # ── Update current symlink + apply ────────────────────────────────────
-        ln -sfT "$DEST" "$CURRENT"
-        ${feh} --bg-scale "$CURRENT"
-
-        echo "Wallpaper set to: $FILENAME"
-
-        if [ -x "$HOOK" ]; then
-          "$HOOK" "$CURRENT"
-        fi
-      '';
-
-      wallpaperNext = pkgs.writeShellScriptBin "wallpaper-next" ''
-        set -e
-
-        WALLPAPER_DIR="$HOME/.config/wallpaper"
-        COLLECTION="$WALLPAPER_DIR/collection"
-        CURRENT="$WALLPAPER_DIR/current"
-        HOOK="$WALLPAPER_DIR/on-change"
-
-        if [ ! -d "$COLLECTION" ] || [ -z "$(ls -A "$COLLECTION" 2>/dev/null)" ]; then
-          echo "No wallpapers in collection. Use wallpaper-set to add some."
-          exit 1
-        fi
-
-        mapfile -t WALLS < <(find "$COLLECTION" -maxdepth 1 -type f | sort)
-        COUNT=''${#WALLS[@]}
-
-        if [ "$COUNT" -eq 0 ]; then
-          echo "No wallpapers found in collection."
-          exit 1
-        fi
-
-        CURRENT_TARGET=$(readlink -f "$CURRENT" 2>/dev/null || echo "")
-        CURRENT_IDX=-1
-
-        for i in "''${!WALLS[@]}"; do
-          if [ "''${WALLS[$i]}" = "$CURRENT_TARGET" ]; then
-            CURRENT_IDX=$i
-            break
-          fi
-        done
-
-        NEXT_IDX=$(( (CURRENT_IDX + 1) % COUNT ))
-        NEXT="''${WALLS[$NEXT_IDX]}"
-
-        ln -sfT "$NEXT" "$CURRENT"
-        ${feh} --bg-scale "$CURRENT"
-
-        echo "Wallpaper: $(basename "$NEXT") ($((NEXT_IDX + 1))/$COUNT)"
-
-        if [ -x "$HOOK" ]; then
-          "$HOOK" "$CURRENT"
-        fi
-      '';
-
-      wallpaperInit = pkgs.writeShellScriptBin "wallpaper-init" ''
-        CURRENT="$HOME/.config/wallpaper/current"
-
-        if [ -L "$CURRENT" ] && [ -f "$CURRENT" ]; then
-          ${feh} --bg-scale "$CURRENT"
-        else
-          ${feh} --bg-scale "${defaultWall}"
-        fi
+        echo ""
+        echo "Theme applied. Open new terminals (or run: exec fish) to see the new colors."
       '';
     };
 
     home-manager.users.${user} = { lib, ... }: {
       home.packages = [
-        config.scripts.wallpaperSet
-        config.scripts.wallpaperNext
         config.scripts.wallpaperInit
+        config.scripts.setTheme
         pkgs.zenity
       ];
 
-      # The old activation installed an on-change hook that called theme-apply.
-      # Remove it so wallpaper-set/next don't run a dead store path.
+      # Remove the old on-change hook (it called theme-apply, which is gone).
       home.activation.removeOldWallpaperHook =
         lib.hm.dag.entryAfter [ "writeBoundary" ] ''
           hook="$HOME/.config/wallpaper/on-change"
