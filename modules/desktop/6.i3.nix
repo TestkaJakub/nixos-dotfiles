@@ -92,7 +92,8 @@ in
       for_window [class="Nm-connection-editor"] floating enable
       for_window [title="File Transfer*"]       floating enable
       for_window [class="Steam" title="Steam"]  floating enable
-
+      for_window [class=".*"] border pixel 3
+      
       # ── Gaps ──────────────────────────────────────────────────────────────
       gaps inner 11
       gaps outer 5

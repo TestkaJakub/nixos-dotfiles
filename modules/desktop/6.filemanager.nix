@@ -15,6 +15,11 @@ in
   ];
 
   home-manager.users.${user} = { lib, ... }: {
+        # Hide titlebar buttons in GTK3/GTK4 apps — the WM handles windows
+    gtk.gtk3.extraConfig.gtk-decoration-layout = ":";
+    gtk.gtk4.extraConfig.gtk-decoration-layout = ":";
+    dconf.settings."org/gnome/desktop/wm/preferences".button-layout = ":";
+    
     xresources.properties."Xft.dpi" = 131;
 
     dconf.settings."org/nemo/preferences" = {

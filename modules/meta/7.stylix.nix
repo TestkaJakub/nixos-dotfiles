@@ -3,6 +3,8 @@
 {
   imports = [ inputs.stylix.nixosModules.stylix ];
 
+  environment.systemPackages = [ pkgs.pastel ];
+
   stylix = {
     enable   = true;
     polarity = "dark";

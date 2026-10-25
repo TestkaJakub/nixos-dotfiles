@@ -136,8 +136,10 @@ in
       title_align center
 
       # ── FLOAT BY DEFAULT ─────────────────────────────────────────────────────
-      for_window [app_id=".*"] floating enable
-      for_window [class=".*"]  floating enable
+      # border pixel 3 also overrides apps that draw their own titlebar
+      # (GTK4, Electron) and would otherwise get no border at all.
+      for_window [app_id=".*"] floating enable, border pixel 3
+      for_window [class=".*"]  floating enable, border pixel 3
 
       # Drag to move with $mod; $mod+right-drag to resize.
       floating_modifier $mod normal

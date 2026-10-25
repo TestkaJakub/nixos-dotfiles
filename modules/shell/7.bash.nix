@@ -16,10 +16,10 @@ let
   cpc  = config.scripts.cpc;
   cpcs = config.scripts.cpcs;
 
-  p      = config.theme.palette;
-  toPs1  = config.theme.functions.toPs1;
-  clUser = toPs1 p.termUser;
-  clAcc  = toPs1 p.termAccent;
+    c      = config.lib.stylix.colors;
+  ansi   = n: "\\033[38;2;${c."${n}-rgb-r"};${c."${n}-rgb-g"};${c."${n}-rgb-b"}m";
+  clUser = ansi "base0D";
+  clAcc  = ansi "base0E";
   reset  = "\\033[0m";
 in
 {
