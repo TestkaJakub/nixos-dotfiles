@@ -85,7 +85,7 @@ in
     swaylock
     swaybg
     wl-clipboard
-    grimblast
+    pkgs.grimblast   # `grimblast` alone is the bin path from the let block
     hyprpicker
   ];
 
