@@ -15,6 +15,7 @@ in
   programs.steam = {
     enable                       = true;
     dedicatedServer.openFirewall = true;
+    protontricks.enable          = true;
     package = pkgs.steam.override {
       extraPkgs = p: with p; [ mesa libdrm SDL2 openal faudio gamemode ];
       extraProfile = ''
@@ -24,6 +25,8 @@ in
 
     extraCompatPackages = [ pkgs.proton-ge-bin ];
   };
+
+  networking.firewall.allowedUDPPorts = [ 47800 ];
   
 
   # Install GE-Proton into Steam's compatibility tools directory.
