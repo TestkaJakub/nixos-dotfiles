@@ -48,7 +48,10 @@ in
       '';
   };
 
-  environment.sessionVariables = {
-    STEAM_COMPAT_MOUNTS = "/run/opengl-driver:/run/opengl-driver-32";
+  environment= {
+    sessionVariables = {
+      STEAM_COMPAT_MOUNTS = "/run/opengl-driver:/run/opengl-driver-32";
+    };
+    systemPackages = [ pkgs.r2modman ];
   };
 }
