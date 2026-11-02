@@ -29,9 +29,25 @@
 #
 #   Pair it with direnv (you already have it) via an `.envrc` containing
 #   `layout python` or `source .venv/bin/activate` for auto-activation per project.
+#
+# ── Package overrides ──────────────────────────────────────────────────────────
+#   Temporary fixes for nixpkgs breakages live in `python` below. Remove each one
+#   once a `nix flake update` builds without it.
 
 let
-  pythonEnv = pkgs.python3.withPackages (ps: with ps; [
+  python = pkgs.python3.override {
+    self = python;
+    packageOverrides = pyfinal: pyprev: {
+      # TEMP (2026-11): imageio 2.37.2's Pillow PNG tests fail with
+      # "ValueError: Invalid mode for data type" on the pinned nixpkgs.
+      # Pulled in via scikit-image ← plotly. Drop after the next flake update.
+      imageio = pyprev.imageio.overridePythonAttrs (_: {
+        doCheck = false;
+      });
+    };
+  };
+
+  pythonEnv = python.withPackages (ps: with ps; [
     # ── Notebook / interactive ──────────────────────────────────────────────
     jupyterlab
     ipython
