@@ -20,8 +20,13 @@
 # through redact() (age/PEM keys, tokens, KEY=value secrets). Context lives in
 # $XDG_RUNTIME_DIR (tmpfs, per shell). System prompt: sops secret `tai-prompt`.
 #
-# Tools (all read-only): man, tldr, nix_locate, which, and suggest_command
-# (places a command on the prompt — never executes anything).
+# Tools (all read-only): man, tldr, nix_locate, which, find_files (fd),
+# search_text (rg), docker_ps, docker_logs, and suggest_command (places a
+# command on the prompt — never executes anything).
+#
+# find_files / search_text only search inside $HOME (symlinks resolved), skip
+# hidden + gitignored files (so ~/.ssh, ~/.config/sops etc. stay out) and any
+# secrets/ folder. Their output and docker logs go through redact() too.
 #
 # WezTerm binds Alt+Enter to fullscreen by default — disabled in 6.terminal.nix.
 let
@@ -32,25 +37,44 @@ let
   col       = "${pkgs.util-linux}/bin/col";
   tldr      = "${pkgs.tealdeer}/bin/tldr";
   nixLocate = "${config.programs.nix-index.package}/bin/nix-locate";
+  fd        = "${pkgs.fd}/bin/fd";
+  rg        = "${pkgs.ripgrep}/bin/rg";
+  timeout   = "${pkgs.coreutils}/bin/timeout";
 
-  mkTool = name: description: param: {
+  # Tool with any set of parameters; `required` lists the mandatory ones.
+  mkToolWith = name: description: properties: required: {
     type = "function";
     function = {
       inherit name description;
-      parameters = {
-        type       = "object";
-        properties = { ${param} = { type = "string"; }; };
-        required   = [ param ];
-      };
+      parameters = { type = "object"; inherit properties required; };
     };
   };
+
+  # Tool with a single required string parameter.
+  mkTool = name: description: param:
+    mkToolWith name description { ${param} = { type = "string"; }; } [ param ];
+
+  str = description: { type = "string"; inherit description; };
 
   toolsFile = pkgs.writeText "tai-tools.json" (builtins.toJSON [
     (mkTool "man"             "Read a man page (truncated)." "page")
     (mkTool "tldr"            "Short practical usage examples for a command." "command")
     (mkTool "nix_locate"      "Find which nixpkgs package provides a binary that is not installed." "binary")
     (mkTool "which"           "Check whether a command is installed and what it resolves to." "command")
-    (mkTool "suggest_command" "Place a shell command on the user's prompt for him to review and run. Always use this instead of writing a command in your answer." "command")
+    (mkToolWith "find_files"
+      "Find files and folders by name (fd) inside the user's home. Skips hidden and gitignored files. Use this before guessing paths."
+      { pattern = str "Regex matched against names, e.g. 'wallpaper' or '\\.nix$'";
+        path    = str "Folder to search (absolute or ~/...). Default: the user's current directory"; }
+      [ "pattern" ])
+    (mkToolWith "search_text"
+      "Search inside files (ripgrep) in the user's home. Returns matching lines as file:line:text. Skips hidden and gitignored files."
+      { pattern = str "Regex to search for";
+        path    = str "Folder to search (absolute or ~/...). Default: the user's current directory";
+        glob    = str "Optional file filter, e.g. '*.nix'"; }
+      [ "pattern" ])
+    (mkToolWith "docker_ps" "List all Docker containers with their status and image." { } [ ])
+    (mkTool "docker_logs"     "Last 60 lines of a Docker container's logs (name from docker_ps)." "container")
+    (mkTool "suggest_command" "Place a shell command on the user's prompt for him to review and run. Always use this instead of writing a command in your answer. Prefer fd over find and rg over grep." "command")
   ]);
 
   tai = pkgs.writeShellScriptBin "tai" ''
@@ -105,21 +129,55 @@ let
     content=$(printf '%s' "$content" | redact)
     [ "$mode" != event ] && rm -f "$sug"
 
+    # Folder for the search tools: must exist and resolve to inside $HOME.
+    safe_dir() {
+      local p="''${1:-$PWD}" d
+      p="''${p/#\~/$HOME}"
+      d=$(realpath -e -- "$p" 2>/dev/null) && [ -d "$d" ] || return 1
+      case "$d/" in "$HOME"/*) printf '%s' "$d" ;; *) return 1 ;; esac
+    }
+
     run_tool() {   # $1 = tool name, $2 = arguments (JSON object)
-      local arg
-      arg=$(${jq} -r '.page // .command // .binary // empty' <<<"$2")
-      if [ "$1" = suggest_command ]; then
-        printf '%s' "$arg" > "$sug"
-        echo "placed on the user's prompt"
-        return
-      fi
+      local arg pat dir glob
+      local -a filter=()
+      case "$1" in
+        suggest_command)
+          arg=$(${jq} -r '.command // empty' <<<"$2")
+          printf '%s' "$arg" > "$sug"
+          echo "placed on the user's prompt"
+          return ;;
+
+        # Free-form patterns: passed as separate argv entries after `--`,
+        # never through a shell, so they can't inject anything.
+        find_files|search_text)
+          pat=$(${jq} -r '.pattern // empty' <<<"$2")
+          [ -n "$pat" ] || { echo "missing pattern"; return; }
+          dir=$(safe_dir "$(${jq} -r '.path // empty' <<<"$2")") \
+            || { echo "path must be an existing folder inside $HOME"; return; }
+          if [ "$1" = find_files ]; then
+            ${timeout} 10 ${fd} --color never --max-results 50 -E secrets -- "$pat" "$dir" 2>&1
+          else
+            glob=$(${jq} -r '.glob // empty' <<<"$2")
+            [ -n "$glob" ] && filter=(-g "$glob")
+            ${timeout} 10 ${rg} --color never -n --max-count 5 --max-columns 200 \
+              -g '!secrets/**' "''${filter[@]}" -- "$pat" "$dir" 2>&1
+          fi | head -c 6000 | redact
+          return ;;
+
+        docker_ps)
+          docker ps -a --format '{{.Names}}\t{{.Status}}\t{{.Image}}' 2>&1 | head -c 4000
+          return ;;
+      esac
+
+      arg=$(${jq} -r '.page // .command // .binary // .container // empty' <<<"$2")
       case "$arg" in ""|*[!A-Za-z0-9._+-]*) echo "invalid name"; return ;; esac
       case "$1" in
-        man)        MANPAGER=cat MANWIDTH=100 man "$arg" 2>&1 | ${col} -bx | head -c 8000 ;;
-        tldr)       ${tldr} --raw "$arg" 2>&1 | head -c 4000 ;;
-        nix_locate) ${nixLocate} --minimal --whole-name --at-root "/bin/$arg" | head -20 ;;
-        which)      type -a "$arg" 2>&1 ;;
-        *)          echo "unknown tool" ;;
+        man)         MANPAGER=cat MANWIDTH=100 man "$arg" 2>&1 | ${col} -bx | head -c 8000 ;;
+        tldr)        ${tldr} --raw "$arg" 2>&1 | head -c 4000 ;;
+        nix_locate)  ${nixLocate} --minimal --whole-name --at-root "/bin/$arg" | head -20 ;;
+        which)       type -a "$arg" 2>&1 ;;
+        docker_logs) ${timeout} 10 docker logs --tail 60 "$arg" 2>&1 | head -c 6000 | redact ;;
+        *)           echo "unknown tool" ;;
       esac
     }
 
