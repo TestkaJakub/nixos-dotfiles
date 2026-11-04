@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, lib, ... }:
 
 # ── Shared shell aliases ───────────────────────────────────────────────────────
 # Single source of truth for aliases that are identical across bash and fish.
