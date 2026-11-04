@@ -40,6 +40,9 @@ let
   fd        = "${pkgs.fd}/bin/fd";
   rg        = "${pkgs.ripgrep}/bin/rg";
   timeout   = "${pkgs.coreutils}/bin/timeout";
+  duf       = "${pkgs.duf}/bin/duf";
+  dust      = "${pkgs.dust}/bin/dust";
+  eza       = "${pkgs.eza}/bin/eza";
 
   # Tool with any set of parameters; `required` lists the mandatory ones.
   mkToolWith = name: description: properties: required: {
@@ -72,6 +75,15 @@ let
         path    = str "Folder to search (absolute or ~/...). Default: the user's current directory";
         glob    = str "Optional file filter, e.g. '*.nix'"; }
       [ "pattern" ])
+    (mkToolWith "list_dir"
+      "List a folder in the user's home (eza): sizes, modification dates and git status (M = modified, N = new). Hidden files are not shown."
+      { path = str "Folder to list (absolute or ~/...). Default: the user's current directory"; }
+      [ ])
+    (mkToolWith "disks" "Show local disks with size, used and free space (duf). Use for 'is my disk full' questions." { } [ ])
+    (mkToolWith "folder_sizes"
+      "Show what takes up space inside a folder in the user's home, as a size-sorted tree two levels deep (dust). Use after disks to find what is filling a drive."
+      { path = str "Folder to measure (absolute or ~/...). Default: the user's current directory"; }
+      [ ])
     (mkToolWith "docker_ps" "List all Docker containers with their status and image." { } [ ])
     (mkTool "docker_logs"     "Last 60 lines of a Docker container's logs (name from docker_ps)." "container")
     (mkTool "suggest_command" "Place a shell command on the user's prompt for him to review and run. Always use this instead of writing a command in your answer. Prefer fd over find and rg over grep." "command")
@@ -129,6 +141,8 @@ let
     content=$(printf '%s' "$content" | redact)
     [ "$mode" != event ] && rm -f "$sug"
 
+    strip_ansi() { sed -E 's/\x1b\[[0-9;]*[A-Za-z]//g'; }
+
     # Folder for the search tools: must exist and resolve to inside $HOME.
     safe_dir() {
       local p="''${1:-$PWD}" d
@@ -162,6 +176,21 @@ let
             ${timeout} 10 ${rg} --color never -n --max-count 5 --max-columns 200 \
               -g '!secrets/**' "''${filter[@]}" -- "$pat" "$dir" 2>&1
           fi | head -c 6000 | redact
+          return ;;
+
+        list_dir|folder_sizes)
+          dir=$(safe_dir "$(${jq} -r '.path // empty' <<<"$2")") \
+            || { echo "path must be an existing folder inside $HOME"; return; }
+          if [ "$1" = list_dir ]; then
+            ${eza} -l --git --group-directories-first --color=never --icons=never \
+              --time-style=long-iso --no-user -- "$dir" 2>&1
+          else
+            ${timeout} 20 ${dust} -d 2 -n 30 "$dir" 2>/dev/null
+          fi | strip_ansi | head -c 6000 | redact
+          return ;;
+
+        disks)
+          ${duf} --only local 2>&1 | strip_ansi | head -c 4000 | redact
           return ;;
 
         docker_ps)
