@@ -7,7 +7,7 @@ let
   user = config.profile.username;
 
   aliasMap = {
-    ll   = "ls -lah";
+    ll   = lib.mkDefault "ls -lah";
     dps  = "docker ps";
     dlog = "docker logs -f";
   };
