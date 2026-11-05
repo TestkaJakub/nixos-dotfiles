@@ -96,7 +96,7 @@ let
     mode="$1"; session="$2"; shift 2
 
     host="''${OLLAMA_HOST:-http://127.0.0.1:11434}"
-    model="''${TAI_MODEL:-qwen3:14b}"
+    model="''${TAI_MODEL:-gemma4}"
     dir="''${XDG_RUNTIME_DIR:-/tmp}/tai"
     mkdir -p -m 700 "$dir"
     hist="$dir/$session.json"
