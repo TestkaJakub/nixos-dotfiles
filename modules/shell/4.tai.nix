@@ -286,10 +286,13 @@ in
         set -l line (commandline)
         test -n "$line"; or return
         commandline -r ""
-        echo
-        echo "› $line"
-        tai say $fish_pid $line
+        __fish_echo __tai_say $line
         __tai_insert
+      '';
+
+      __tai_say = ''
+        echo "› $argv"
+        tai say $fish_pid $argv
       '';
 
       # Alt+S (and after Alt+Enter): load the pending suggestion
