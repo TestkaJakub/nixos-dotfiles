@@ -222,7 +222,7 @@ let
                   options:{num_ctx:16384},
                   messages:([{role:"system", content:$s}] + $h)}' \
               | ${curl} -sf -m 90 "$host/api/chat" -d @- \
-              | ${jq} -c '.message') \
+              | ${jq} -c '.message | .content |= ((. // "") | sub("^\\s*(<\\|channel>)?thought[\\s\\S]*?<channel\\|>\\s*"; ""))') \
           || { echo "tai: can't reach Ollama at $host" >&2; exit 0; }
 
         [ -n "$TAI_DEBUG" ] && echo "tai: round $round, tools: $(${jq} -r '[.tool_calls[]?.function.name] | join(", ")' <<<"$msg")" >&2
