@@ -10,16 +10,16 @@
 #   desktop host     → http://127.0.0.1:11434 (ollama CLI, editor plugins)
 #   tailnet devices  → http://desktop:11434 via `tailscale serve` (below)
 #
-# Models: bind-mounted from the store the native service used, so the existing
-# ~32 GB in /home/jakub/data/ollama-store carries over untouched.
+# Models: /var/lib/ollama-store on the system SSD. They used to live on the
+# data HDD, where a cold load of a 12 GB model took ~90 s; from the SSD it's
+# a matter of seconds.
 let
-  user      = config.profile.username;
   docker    = "${pkgs.docker}/bin/docker";
   tailscale = "${config.services.tailscale.package}/bin/tailscale";
 in
 {
   systemd.tmpfiles.rules = [
-    "d /home/${user}/data/ollama-store 0755 ${user} ${user} -"
+    "d /var/lib/ollama-store 0755 root root -"
   ];
 
   # ── Shared network for Ollama consumers (Odysseus) ──────────────────────────
@@ -44,11 +44,13 @@ in
     environment = {
       TZ          = "Europe/Warsaw";
       OLLAMA_HOST = "0.0.0.0:11434";   # inside the container; exposure is controlled by `ports`
+      OLLAMA_MAX_LOADED_MODELS = "1";  # 16 GB VRAM: one model at a time, never a CPU spill
+      OLLAMA_KEEP_ALIVE        = "30m"; # keep the model warm between tai calls
       # gfx1201 is native in ROCm 7.x — if a future image regresses, add:
       # HSA_OVERRIDE_GFX_VERSION = "12.0.1";
     };
 
-    volumes = [ "/home/${user}/data/ollama-store:/root/.ollama" ];
+    volumes = [ "/var/lib/ollama-store:/root/.ollama" ];
 
     ports = [ "127.0.0.1:11434:11434" ];   # host-local only
 

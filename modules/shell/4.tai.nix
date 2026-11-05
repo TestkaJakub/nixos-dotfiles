@@ -221,7 +221,7 @@ let
                 '{model:$m, stream:false, think:false, tools:$t,
                   options:{num_ctx:16384},
                   messages:([{role:"system", content:$s}] + $h)}' \
-              | ${curl} -sf -m 90 "$host/api/chat" -d @- \
+              | ${curl} -sf -m 180 "$host/api/chat" -d @- \
               | ${jq} -c '.message | .content |= ((. // "") | sub("^\\s*(<\\|channel>)?thought[\\s\\S]*?<channel\\|>\\s*"; ""))') \
           || { echo "tai: can't reach Ollama at $host" >&2; exit 0; }
 
